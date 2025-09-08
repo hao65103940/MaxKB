@@ -129,6 +129,7 @@ export default {
       start: 'Start',
       end: 'End',
     },
+    mcp_output_enable: 'Output MCP/Tool Execution Process',
   },
   buttons: {},
   dialog: {

@@ -215,7 +215,7 @@
           <template #label>
             <div class="flex-between">
               <span class="mr-4">
-                输出MCP/工具执行过程
+                {{ $t('views.application.form.mcp_output_enable') }}
               </span>
               <div class="flex">
                 <el-switch

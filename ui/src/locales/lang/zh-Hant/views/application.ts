@@ -120,6 +120,7 @@ export default {
       start: '開始',
       end: '結束',
     },
+    mcp_output_enable: '輸出MCP/工具執行過程',
   },
 
   dialog: {
