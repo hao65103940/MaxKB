@@ -706,6 +706,8 @@ class ApplicationOperateSerializer(serializers.Serializer):
             'stt_model_enable': 'stt_model_enable', 'tts_type': 'tts_type',
             'tts_autoplay': 'tts_autoplay', 'stt_autosend': 'stt_autosend', 'file_upload_enable': 'file_upload_enable',
             'file_upload_setting': 'file_upload_setting',
+            'mcp_enable': 'mcp_enable', 'mcp_tool_ids': 'mcp_tool_ids', 'mcp_servers': 'mcp_servers',
+            'mcp_source': 'mcp_source', 'tool_enable': 'tool_enable', 'tool_ids': 'tool_ids',
             'type': 'type'
         }
 
@@ -829,6 +831,7 @@ class ApplicationOperateSerializer(serializers.Serializer):
                        'stt_model_id', 'tts_model_id', 'tts_model_enable', 'stt_model_enable', 'tts_type',
                        'tts_autoplay', 'stt_autosend', 'file_upload_enable', 'file_upload_setting',
                        'api_key_is_active', 'icon', 'work_flow', 'model_params_setting', 'tts_model_params_setting',
+                       'mcp_enable', 'mcp_tool_ids', 'mcp_servers', 'mcp_source', 'tool_enable', 'tool_ids',
                        'problem_optimization_prompt', 'clean_time', 'folder_id']
         for update_key in update_keys:
             if update_key in instance and instance.get(update_key) is not None:

@@ -273,6 +273,111 @@
                     @submitDialog="submitPrologueDialog"
                   />
                 </el-form-item>
+                <!-- MCP-->
+                <el-form-item @click.prevent>
+                  <template #label>
+                    <div class="flex-between">
+                      <span>MCP</span>
+                      <div class="flex">
+                        <el-button
+                          type="primary"
+                          link
+                          @click="openMcpServersDialog"
+                          @refreshForm="refreshParam"
+                          v-if="applicationForm.mcp_enable"
+                        >
+                          <AppIcon iconName="app-setting"></AppIcon>
+                        </el-button>
+                        <el-switch class="ml-8" size="small" v-model="applicationForm.mcp_enable" />
+                      </div>
+                    </div>
+                  </template>
+                </el-form-item>
+                <div
+                  class="w-full mb-16"
+                  v-if="applicationForm.mcp_tool_ids &&
+                    applicationForm.mcp_tool_ids.length > 0 || (applicationForm.mcp_servers && applicationForm.mcp_servers.length > 0)
+                  "
+                >
+                  <template v-for="(item, index) in applicationForm.mcp_tool_ids" :key="index">
+                    <div class="flex-between border border-r-6 white-bg mb-4" style="padding: 5px 8px"
+                      v-if="relatedObject(mcpToolSelectOptions, item, 'id')"
+                    >
+                      <div class="flex align-center" style="line-height: 20px">
+                        <el-avatar
+                          v-if="relatedObject(mcpToolSelectOptions, item, 'id')?.icon"
+                          shape="square"
+                          :size="20"
+                          style="background: none"
+                          class="mr-8"
+                        >
+                          <img :src="resetUrl(relatedObject(mcpToolSelectOptions, item, 'id')?.icon)" alt="" />
+                        </el-avatar>
+                        <ToolIcon v-else type="MCP" class="mr-8" :size="20" />
+
+                        <div
+                          class="ellipsis"
+                          :title="relatedObject(mcpToolSelectOptions, item, 'id')?.name"
+                        >
+                          {{
+                            relatedObject(mcpToolSelectOptions, item, 'id')?.name ||
+                            $t('common.custom') + ' MCP'
+                          }}
+                        </div>
+                      </div>
+                      <el-button text @click="removeMcpTool(item)">
+                        <el-icon><Close /></el-icon>
+                      </el-button>
+                    </div>
+                  </template>
+                </div>
+                <!-- 工具       -->
+                <el-form-item @click.prevent>
+                  <template #label>
+                    <div class="flex-between">
+                      <span class="mr-4">
+                        {{ $t('views.tool.title') }}
+                      </span>
+                      <div class="flex">
+                        <el-button
+                          type="primary"
+                          link
+                          @click="openToolDialog"
+                          @refreshForm="refreshParam"
+                          v-if="applicationForm.tool_enable"
+                        >
+                          <AppIcon iconName="app-setting"></AppIcon>
+                        </el-button>
+                        <el-switch class="ml-8" size="small" v-model="applicationForm.tool_enable" />
+                    </div>
+                  </div>
+                  </template>
+                </el-form-item>
+                <div class="w-full mb-16" v-if="applicationForm.tool_ids && applicationForm.tool_ids.length > 0">
+                  <template v-for="(item, index) in applicationForm.tool_ids" :key="index">
+                    <div class="flex-between border border-r-6 white-bg mb-4" style="padding: 5px 8px">
+                      <div class="flex align-center" style="line-height: 20px">
+                        <el-avatar
+                          v-if="relatedObject(toolSelectOptions, item, 'id')?.icon"
+                          shape="square"
+                          :size="20"
+                          style="background: none"
+                          class="mr-8"
+                        >
+                          <img :src="resetUrl(relatedObject(toolSelectOptions, item, 'id')?.icon)" alt="" />
+                        </el-avatar>
+                        <ToolIcon v-else class="mr-8" :size="20" />
+
+                        <div class="ellipsis" :title="relatedObject(toolSelectOptions, item, 'id')?.name">
+                          {{ relatedObject(toolSelectOptions, item, 'id')?.name }}
+                        </div>
+                      </div>
+                      <el-button text @click="removeTool(item)">
+                        <el-icon><Close /></el-icon>
+                      </el-button>
+                    </div>
+                  </template>
+                </div>
                 <el-form-item @click.prevent>
                   <template #label>
                     <div class="flex-between">
@@ -436,12 +541,14 @@
       ref="ReasoningParamSettingDialogRef"
       @refresh="submitReasoningDialog"
     />
+    <McpServersDialog ref="mcpServersDialogRef" @refresh="submitMcpServersDialog" />
+    <ToolDialog ref="toolDialogRef" @refresh="submitToolDialog" />
   </div>
 </template>
 <script setup lang="ts">
 import { reactive, ref, onMounted, computed, onBeforeMount } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { groupBy } from 'lodash'
+import { groupBy, set } from 'lodash'
 import AIModeParamSettingDialog from './component/AIModeParamSettingDialog.vue'
 import ParamSettingDialog from './component/ParamSettingDialog.vue'
 import AddKnowledgeDialog from './component/AddKnowledgeDialog.vue'
@@ -456,6 +563,9 @@ import permissionMap from '@/permission'
 import { EditionConst } from '@/utils/permission/data'
 import { hasPermission } from '@/utils/permission/index'
 import { loadSharedApi } from '@/utils/dynamics-api/shared-api'
+import { resetUrl } from "@/utils/common.ts";
+import McpServersDialog from "@/views/application/component/McpServersDialog.vue";
+import ToolDialog from "@/views/application/component/ToolDialog.vue";
 const route = useRoute()
 const router = useRouter()
 const {
@@ -528,6 +638,12 @@ const applicationForm = ref<ApplicationFormType>({
   tts_model_enable: false,
   tts_type: 'BROWSER',
   type: 'SIMPLE',
+  mcp_enable: false,
+  mcp_tool_ids: [],
+  mcp_servers: '',
+  mcp_source: 'referencing',
+  tool_enable: false,
+  tool_ids: [],
 })
 const themeDetail = ref({})
 
@@ -626,6 +742,85 @@ const openTTSParamSettingDialog = () => {
 
 const openParamSettingDialog = () => {
   ParamSettingDialogRef.value?.open(applicationForm.value)
+}
+
+function removeTool(id: any) {
+  applicationForm.value.tool_ids = applicationForm.value.tool_ids.filter((v: any) => v !== id)
+}
+
+function removeMcpTool(id: any) {
+  applicationForm.value.mcp_tool_ids = applicationForm.value.mcp_tool_ids.filter((v: any) => v !== id)
+}
+
+const mcpServersDialogRef = ref()
+function openMcpServersDialog() {
+  const config = {
+    mcp_servers: applicationForm.value.mcp_servers,
+    mcp_tool_ids: applicationForm.value.mcp_tool_ids,
+    mcp_source: applicationForm.value.mcp_source,
+  }
+  mcpServersDialogRef.value.open(config, mcpToolSelectOptions.value)
+}
+
+function submitMcpServersDialog(config: any) {
+  applicationForm.value.mcp_servers = config.mcp_servers
+  applicationForm.value.mcp_tool_ids = config.mcp_tool_ids
+  applicationForm.value.mcp_source = config.mcp_source
+}
+
+const toolDialogRef = ref()
+function openToolDialog() {
+  toolDialogRef.value.open(applicationForm.value.tool_ids)
+}
+
+function submitToolDialog(config: any) {
+  applicationForm.value.tool_ids = config.tool_ids
+}
+
+const toolSelectOptions = ref<any[]>([])
+function getToolSelectOptions() {
+  const obj =
+    apiType.value === 'systemManage'
+      ? {
+          scope: 'WORKSPACE',
+          tool_type: 'CUSTOM',
+          workspace_id: application.value?.workspace_id,
+        }
+      : {
+          scope: 'WORKSPACE',
+          tool_type: 'CUSTOM',
+        }
+
+  loadSharedApi({ type: 'tool', systemType: apiType.value })
+    .getAllToolList(obj)
+    .then((res: any) => {
+      toolSelectOptions.value = [...res.data.shared_tools, ...res.data.tools].filter(
+        (item: any) => item.is_active,
+      )
+    })
+}
+
+const mcpToolSelectOptions = ref<any[]>([])
+function getMcpToolSelectOptions() {
+  const obj =
+    apiType.value === 'systemManage'
+      ? {
+          scope: 'WORKSPACE',
+          tool_type: 'MCP',
+          workspace_id: application.value?.workspace_id,
+        }
+      : {
+          scope: 'WORKSPACE',
+          tool_type: 'MCP',
+        }
+
+  loadSharedApi({ type: 'tool', systemType: apiType.value })
+    .getAllToolList(obj)
+    .then((res: any) => {
+      mcpToolSelectOptions.value = [...res.data.shared_tools, ...res.data.tools].filter(
+        (item: any) => item.is_active,
+      )
+    })
 }
 
 function refreshParam(data: any) {
@@ -783,6 +978,8 @@ onMounted(() => {
   getDetail()
   getSTTModel()
   getTTSModel()
+  getToolSelectOptions()
+  getMcpToolSelectOptions()
 })
 </script>
 <style lang="scss" scoped>

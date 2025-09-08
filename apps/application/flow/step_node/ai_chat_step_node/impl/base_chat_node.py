@@ -6,58 +6,27 @@
     @date：2024/6/4 14:30
     @desc:
 """
-import asyncio
 import json
 import os
 import re
-import sys
 import time
-import traceback
 from functools import reduce
 from typing import List, Dict
 
-import uuid_utils.compat as uuid
 from django.db.models import QuerySet
 from langchain.schema import HumanMessage, SystemMessage
-from langchain_core.messages import BaseMessage, AIMessage, AIMessageChunk, ToolMessage
-from langchain_mcp_adapters.client import MultiServerMCPClient
-from langgraph.prebuilt import create_react_agent
+from langchain_core.messages import BaseMessage, AIMessage
+
 
 from application.flow.i_step_node import NodeResult, INode
 from application.flow.step_node.ai_chat_step_node.i_chat_node import IChatNode
-from application.flow.tools import Reasoning
-from common.utils.logger import maxkb_logger
+from application.flow.tools import Reasoning, mcp_response_generator
 from common.utils.rsa_util import rsa_long_decrypt
 from common.utils.tool_code import ToolExecutor
 from maxkb.const import CONFIG
 from models_provider.models import Model
 from models_provider.tools import get_model_credential, get_model_instance_by_model_workspace_id
 from tools.models import Tool
-
-tool_message_template = """
-<details>
-    <summary>
-        <strong>Called MCP Tool: <em>%s</em></strong>
-    </summary>
-
-%s
-
-</details>
-
-"""
-
-tool_message_json_template = """
-```json
-%s
-```
-"""
-
-
-def generate_tool_message_template(name, context):
-    if '```' in context:
-        return tool_message_template % (name, context)
-    else:
-        return tool_message_template % (name, tool_message_json_template % (context))
 
 
 def _write_context(node_variable: Dict, workflow_variable: Dict, node: INode, workflow, answer: str,
@@ -121,39 +90,6 @@ def write_context_stream(node_variable: Dict, workflow_variable: Dict, node: INo
                                                                              False) else ''}
     _write_context(node_variable, workflow_variable, node, workflow, answer, reasoning_content)
 
-
-async def _yield_mcp_response(chat_model, message_list, mcp_servers):
-    client = MultiServerMCPClient(json.loads(mcp_servers))
-    tools = await client.get_tools()
-    agent = create_react_agent(chat_model, tools)
-    response = agent.astream({"messages": message_list}, stream_mode='messages')
-    async for chunk in response:
-        if isinstance(chunk[0], ToolMessage):
-            content = generate_tool_message_template(chunk[0].name, chunk[0].content)
-            chunk[0].content = content
-            yield chunk[0]
-        if isinstance(chunk[0], AIMessageChunk):
-            yield chunk[0]
-
-
-def mcp_response_generator(chat_model, message_list, mcp_servers):
-    loop = asyncio.new_event_loop()
-    try:
-        async_gen = _yield_mcp_response(chat_model, message_list, mcp_servers)
-        while True:
-            try:
-                chunk = loop.run_until_complete(anext_async(async_gen))
-                yield chunk
-            except StopAsyncIteration:
-                break
-    except Exception as e:
-        maxkb_logger.error(f'Exception: {e}', traceback.format_exc())
-    finally:
-        loop.close()
-
-
-async def anext_async(agen):
-    return await agen.__anext__()
 
 
 def write_context(node_variable: Dict, workflow_variable: Dict, node: INode, workflow):
