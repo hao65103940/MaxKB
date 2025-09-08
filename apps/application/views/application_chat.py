@@ -17,9 +17,9 @@ from application.api.application_chat import ApplicationChatQueryAPI, Applicatio
     ApplicationChatExportAPI
 from application.models import ChatUserType
 from application.serializers.application_chat import ApplicationChatQuerySerializers
-from chat.api.chat_api import ChatAPI
+from chat.api.chat_api import ChatAPI, PromptGenerateAPI
 from chat.api.chat_authentication_api import ChatOpenAPI
-from chat.serializers.chat import OpenChatSerializers, ChatSerializers, DebugChatSerializers
+from chat.serializers.chat import OpenChatSerializers, ChatSerializers, DebugChatSerializers, PromptGenerateSerializer
 from common.auth import TokenAuth
 from common.auth.authentication import has_permissions
 from common.constants.permission_constants import PermissionConstants, RoleConstants, ViewPermission, CompareConstants
@@ -144,3 +144,18 @@ class ChatView(APIView):
     )
     def post(self, request: Request, chat_id: str):
         return DebugChatSerializers(data={'chat_id': chat_id}).chat(request.data)
+
+class PromptGenerateView(APIView):
+
+    @extend_schema(
+        methods=['POST'],
+        description=_("generate prompt"),
+        summary=_("generate prompt"),
+        operation_id=_("generate prompt"),  # type: ignore
+        request=PromptGenerateAPI.get_request(),
+        parameters=PromptGenerateAPI.get_parameters(),
+        responses=None,
+        tags=[_('Application')]  # type: ignore
+    )
+    def post(self, request: Request, workspace_id: str, model_id:str):
+        return PromptGenerateSerializer(data={'workspace_id': workspace_id, 'model_id': model_id}).generate_prompt(instance=request.data)

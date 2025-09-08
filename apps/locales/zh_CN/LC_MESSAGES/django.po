@@ -8799,3 +8799,15 @@ msgstr "系统资源授权"
 
 msgid "This folder contains resources that you dont have permission"
 msgstr "此文件夹包含您没有权限的资源"
+
+msgid "Authentication failed. Please verify that the parameters are correct"
+msgstr "认证失败，请检查参数是否正确"
+
+msgid "Chat context"
+msgstr "聊天上下文"
+
+msgid "Prompt template"
+msgstr "提示词模板"
+
+msgid "generate prompt"
+msgstr "生成提示词"
