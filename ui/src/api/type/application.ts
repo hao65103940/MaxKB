@@ -32,6 +32,7 @@ interface ApplicationFormType {
   mcp_source?: string
   tool_enable?: boolean
   tool_ids?: string[]
+  mcp_output_enable?: boolean
 }
 interface Chunk {
   real_node_id: string

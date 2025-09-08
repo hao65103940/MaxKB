@@ -181,6 +181,7 @@ class BaseChatStep(IChatStep):
                 mcp_source="referencing",
                 tool_enable=False,
                 tool_ids=None,
+                mcp_output_enable=True,
                 **kwargs):
         chat_model = get_model_instance_by_model_workspace_id(model_id, workspace_id,
                                                               **model_params_setting) if model_id is not None else None
@@ -190,13 +191,13 @@ class BaseChatStep(IChatStep):
                                        manage, padding_problem_text, chat_user_id, chat_user_type,
                                        no_references_setting,
                                        model_setting,
-                                       mcp_enable, mcp_tool_ids, mcp_servers, mcp_source, tool_enable, tool_ids)
+                                       mcp_enable, mcp_tool_ids, mcp_servers, mcp_source, tool_enable, tool_ids, mcp_output_enable)
         else:
             return self.execute_block(message_list, chat_id, problem_text, post_response_handler, chat_model,
                                       paragraph_list,
                                       manage, padding_problem_text, chat_user_id, chat_user_type, no_references_setting,
                                       model_setting,
-                                      mcp_enable, mcp_tool_ids, mcp_servers, mcp_source, tool_enable, tool_ids)
+                                      mcp_enable, mcp_tool_ids, mcp_servers, mcp_source, tool_enable, tool_ids, mcp_output_enable)
 
     def get_details(self, manage, **kwargs):
         # 删除临时生成的MCP代码文件
@@ -229,7 +230,7 @@ class BaseChatStep(IChatStep):
         return result
 
     def _handle_mcp_request(self, mcp_enable, tool_enable, mcp_source, mcp_servers, mcp_tool_ids, tool_ids,
-                            chat_model, message_list):
+                            mcp_output_enable, chat_model, message_list):
         if not mcp_enable and not tool_enable:
             return None
 
@@ -269,7 +270,7 @@ class BaseChatStep(IChatStep):
                     mcp_servers_config[str(tool.id)] = tool_config
 
         if len(mcp_servers_config) > 0:
-            return mcp_response_generator(chat_model, message_list, json.dumps(mcp_servers_config))
+            return mcp_response_generator(chat_model, message_list, json.dumps(mcp_servers_config), mcp_output_enable)
 
         return None
 
@@ -284,7 +285,8 @@ class BaseChatStep(IChatStep):
                           mcp_servers='',
                           mcp_source="referencing",
                           tool_enable=False,
-                          tool_ids=None):
+                          tool_ids=None,
+                          mcp_output_enable=True):
         if paragraph_list is None:
             paragraph_list = []
         directly_return_chunk_list = [AIMessageChunk(content=paragraph.content)
@@ -302,7 +304,7 @@ class BaseChatStep(IChatStep):
         else:
             # 处理 MCP 请求
             mcp_result = self._handle_mcp_request(
-                mcp_enable, tool_enable, mcp_source, mcp_servers, mcp_tool_ids, tool_ids, chat_model, message_list,
+                mcp_enable, tool_enable, mcp_source, mcp_servers, mcp_tool_ids, tool_ids, mcp_output_enable, chat_model, message_list,
             )
             if mcp_result:
                 return mcp_result, True
@@ -324,9 +326,11 @@ class BaseChatStep(IChatStep):
                        mcp_servers='',
                        mcp_source="referencing",
                        tool_enable=False,
-                       tool_ids=None):
+                       tool_ids=None,
+                       mcp_output_enable=True):
         chat_result, is_ai_chat = self.get_stream_result(message_list, chat_model, paragraph_list,
-                                                         no_references_setting, problem_text, mcp_enable, mcp_tool_ids, mcp_servers, mcp_source, tool_enable, tool_ids)
+                                                         no_references_setting, problem_text, mcp_enable, mcp_tool_ids, mcp_servers, mcp_source, tool_enable, tool_ids,
+                                                         mcp_output_enable)
         chat_record_id = uuid.uuid7()
         r = StreamingHttpResponse(
             streaming_content=event_content(chat_result, chat_id, chat_record_id, paragraph_list,
@@ -348,7 +352,9 @@ class BaseChatStep(IChatStep):
                          mcp_servers='',
                          mcp_source="referencing",
                          tool_enable=False,
-                         tool_ids=None):
+                         tool_ids=None,
+                         mcp_output_enable=True
+                         ):
         if paragraph_list is None:
             paragraph_list = []
         directly_return_chunk_list = [AIMessageChunk(content=paragraph.content)
@@ -365,7 +371,8 @@ class BaseChatStep(IChatStep):
         else:
             # 处理 MCP 请求
             mcp_result = self._handle_mcp_request(
-                mcp_enable, tool_enable, mcp_source, mcp_servers, mcp_tool_ids, tool_ids, chat_model, message_list,
+                mcp_enable, tool_enable, mcp_source, mcp_servers, mcp_tool_ids, tool_ids, mcp_output_enable,
+                chat_model, message_list,
             )
             if mcp_result:
                 return mcp_result, True
@@ -386,7 +393,8 @@ class BaseChatStep(IChatStep):
                       mcp_servers='',
                       mcp_source="referencing",
                       tool_enable=False,
-                      tool_ids=None):
+                      tool_ids=None,
+                      mcp_output_enable=True):
         reasoning_content_enable = model_setting.get('reasoning_content_enable', False)
         reasoning_content_start = model_setting.get('reasoning_content_start', '<think>')
         reasoning_content_end = model_setting.get('reasoning_content_end', '</think>')
@@ -396,7 +404,7 @@ class BaseChatStep(IChatStep):
         # 调用模型
         try:
             chat_result, is_ai_chat = self.get_block_result(message_list, chat_model, paragraph_list,
-                                                            no_references_setting, problem_text, mcp_enable, mcp_tool_ids, mcp_servers, mcp_source, tool_enable, tool_ids)
+                                                            no_references_setting, problem_text, mcp_enable, mcp_tool_ids, mcp_servers, mcp_source, tool_enable, tool_ids, mcp_output_enable)
             if is_ai_chat:
                 request_token = chat_model.get_num_tokens_from_messages(message_list)
                 response_token = chat_model.get_num_tokens(chat_result.content)

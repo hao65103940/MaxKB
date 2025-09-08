@@ -227,13 +227,13 @@ def generate_tool_message_template(name, context):
         return tool_message_template % (name, tool_message_json_template % (context))
 
 
-async def _yield_mcp_response(chat_model, message_list, mcp_servers):
+async def _yield_mcp_response(chat_model, message_list, mcp_servers, mcp_output_enable=True):
     client = MultiServerMCPClient(json.loads(mcp_servers))
     tools = await client.get_tools()
     agent = create_react_agent(chat_model, tools)
     response = agent.astream({"messages": message_list}, stream_mode='messages')
     async for chunk in response:
-        if isinstance(chunk[0], ToolMessage):
+        if mcp_output_enable and isinstance(chunk[0], ToolMessage):
             content = generate_tool_message_template(chunk[0].name, chunk[0].content)
             chunk[0].content = content
             yield chunk[0]
@@ -241,10 +241,10 @@ async def _yield_mcp_response(chat_model, message_list, mcp_servers):
             yield chunk[0]
 
 
-def mcp_response_generator(chat_model, message_list, mcp_servers):
+def mcp_response_generator(chat_model, message_list, mcp_servers, mcp_output_enable=True):
     loop = asyncio.new_event_loop()
     try:
-        async_gen = _yield_mcp_response(chat_model, message_list, mcp_servers)
+        async_gen = _yield_mcp_response(chat_model, message_list, mcp_servers, mcp_output_enable)
         while True:
             try:
                 chunk = loop.run_until_complete(anext_async(async_gen))

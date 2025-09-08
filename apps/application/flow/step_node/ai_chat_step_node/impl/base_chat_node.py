@@ -159,6 +159,7 @@ class BaseChatNode(IChatNode):
                 mcp_source=None,
                 tool_enable=False,
                 tool_ids=None,
+                mcp_output_enable=True,
                 **kwargs) -> NodeResult:
         if dialogue_type is None:
             dialogue_type = 'WORKFLOW'
@@ -184,8 +185,8 @@ class BaseChatNode(IChatNode):
 
         # 处理 MCP 请求
         mcp_result = self._handle_mcp_request(
-            mcp_enable, tool_enable, mcp_source, mcp_servers, mcp_tool_id, mcp_tool_ids, tool_ids, chat_model, message_list,
-            history_message, question
+            mcp_enable, tool_enable, mcp_source, mcp_servers, mcp_tool_id, mcp_tool_ids, tool_ids, mcp_output_enable,
+            chat_model, message_list, history_message, question
         )
         if mcp_result:
             return mcp_result
@@ -202,7 +203,7 @@ class BaseChatNode(IChatNode):
                               _write_context=write_context)
 
     def _handle_mcp_request(self, mcp_enable, tool_enable, mcp_source, mcp_servers, mcp_tool_id, mcp_tool_ids, tool_ids,
-                            chat_model, message_list, history_message, question):
+                            mcp_output_enable, chat_model, message_list, history_message, question):
         if not mcp_enable and not tool_enable:
             return None
 
@@ -244,7 +245,7 @@ class BaseChatNode(IChatNode):
                     mcp_servers_config[str(tool.id)] = tool_config
 
         if len(mcp_servers_config) > 0:
-            r = mcp_response_generator(chat_model, message_list, json.dumps(mcp_servers_config))
+            r = mcp_response_generator(chat_model, message_list, json.dumps(mcp_servers_config), mcp_output_enable)
             return NodeResult(
                 {'result': r, 'chat_model': chat_model, 'message_list': message_list,
                  'history_message': history_message, 'question': question.content}, {},

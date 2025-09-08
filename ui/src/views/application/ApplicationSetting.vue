@@ -382,6 +382,22 @@
                   <template #label>
                     <div class="flex-between">
                       <span class="mr-4">
+                        输出MCP/工具执行过程
+                      </span>
+                      <div class="flex">
+                        <el-switch
+                          class="ml-8"
+                          size="small"
+                          v-model="applicationForm.mcp_output_enable"
+                        />
+                      </div>
+                    </div>
+                  </template>
+                </el-form-item>
+                <el-form-item @click.prevent>
+                  <template #label>
+                    <div class="flex-between">
+                      <span class="mr-4">
                         {{ $t('views.application.form.reasoningContent.label') }}
                       </span>
 
@@ -644,6 +660,7 @@ const applicationForm = ref<ApplicationFormType>({
   mcp_source: 'referencing',
   tool_enable: false,
   tool_ids: [],
+  mcp_output_enable: true,
 })
 const themeDetail = ref({})
 

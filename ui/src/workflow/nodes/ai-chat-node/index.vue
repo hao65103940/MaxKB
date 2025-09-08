@@ -211,7 +211,22 @@
             </div>
           </template>
         </div>
-
+        <el-form-item @click.prevent>
+          <template #label>
+            <div class="flex-between">
+              <span class="mr-4">
+                输出MCP/工具执行过程
+              </span>
+              <div class="flex">
+                <el-switch
+                  class="ml-8"
+                  size="small"
+                  v-model="chat_data.mcp_output_enable"
+                />
+              </div>
+            </div>
+          </template>
+        </el-form-item>
         <el-form-item @click.prevent>
           <template #label>
             <div class="flex-between w-full">
@@ -515,6 +530,9 @@ onMounted(() => {
   if (props.nodeModel.properties.node_data?.mcp_tool_id) {
    set(props.nodeModel.properties.node_data, 'mcp_tool_ids', [props.nodeModel.properties.node_data?.mcp_tool_id])
    set(props.nodeModel.properties.node_data, 'mcp_tool_id', undefined)
+  }
+  if (props.nodeModel.properties.node_data?.mcp_output_enable === undefined) {
+   set(props.nodeModel.properties.node_data, 'mcp_output_enable', true)
   }
 
   getToolSelectOptions()

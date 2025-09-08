@@ -40,7 +40,7 @@ class ChatNodeSerializer(serializers.Serializer):
     tool_enable = serializers.BooleanField(required=False, default=False, label=_("Whether to enable tools"))
     tool_ids = serializers.ListField(child=serializers.UUIDField(), required=False, allow_empty=True,
                                      label=_("Tool IDs"), )
-
+    mcp_output_enable = serializers.BooleanField(required=False, default=True, label=_("Whether to enable MCP output"))
 
 class IChatNode(INode):
     type = 'ai-chat-node'
@@ -63,5 +63,6 @@ class IChatNode(INode):
                 mcp_source=None,
                 tool_enable=False,
                 tool_ids=None,
+                mcp_output_enable=True,
                 **kwargs) -> NodeResult:
         pass

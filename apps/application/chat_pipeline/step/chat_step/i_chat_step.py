@@ -88,6 +88,7 @@ class IChatStep(IBaseChatPipelineStep):
         mcp_source = serializers.CharField(label="MCP Source", required=False, default="referencing")
         tool_enable = serializers.BooleanField(label="工具是否启用", required=False, default=False)
         tool_ids = serializers.JSONField(label="工具ID列表", required=False, default=list)
+        mcp_output_enable = serializers.BooleanField(label="MCP输出是否启用", required=False, default=True)
 
         def is_valid(self, *, raise_exception=False):
             super().is_valid(raise_exception=True)
@@ -114,6 +115,6 @@ class IChatStep(IBaseChatPipelineStep):
                 padding_problem_text: str = None, stream: bool = True, chat_user_id=None, chat_user_type=None,
                 no_references_setting=None, model_params_setting=None, model_setting=None,
                 mcp_enable=False, mcp_tool_ids=None, mcp_servers='', mcp_source="referencing",
-                tool_enable=False, tool_ids=None,
+                tool_enable=False, tool_ids=None, mcp_output_enable=True,
                 **kwargs):
         pass

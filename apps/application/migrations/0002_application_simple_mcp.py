@@ -41,6 +41,11 @@ class Migration(migrations.Migration):
             field=models.JSONField(default=list, verbose_name='工具ID列表'),
         ),
         migrations.AddField(
+            model_name='application',
+            name='mcp_output_enable',
+            field=models.BooleanField(default=True, verbose_name='MCP输出是否启用'),
+        ),
+        migrations.AddField(
             model_name='applicationversion',
             name='mcp_enable',
             field=models.BooleanField(default=False, verbose_name='MCP否启用'),
@@ -69,5 +74,10 @@ class Migration(migrations.Migration):
             model_name='applicationversion',
             name='tool_ids',
             field=models.JSONField(default=list, verbose_name='工具ID列表'),
+        ),
+        migrations.AddField(
+            model_name='applicationversion',
+            name='mcp_output_enable',
+            field=models.BooleanField(default=True, verbose_name='MCP输出是否启用'),
         ),
     ]

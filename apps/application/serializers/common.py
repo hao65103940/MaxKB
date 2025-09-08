@@ -161,6 +161,7 @@ class ChatInfo:
             'mcp_source': self.application.mcp_source,
             'tool_enable': self.application.tool_enable,
             'tool_ids': self.application.tool_ids,
+            'mcp_output_enable': self.application.mcp_output_enable,
         }
 
     def to_pipeline_manage_params(self, problem_text: str, post_response_handler: PostResponseHandler,
