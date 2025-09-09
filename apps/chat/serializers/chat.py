@@ -158,9 +158,12 @@ class PromptGenerateSerializer(serializers.Serializer):
         q = prompt.replace("{userInput}", message)
         messages[-1]['content'] = q
 
-        model_exist = QuerySet(Model).filter(workspace_id=workspace_id, id=model_id).exists()
+        model_exist = QuerySet(Model).filter(workspace_id=workspace_id,
+                                             id=model_id,
+                                             model_type = "LLM"
+                                             ).exists()
         if not model_exist:
-            raise Exception(_("model does not exists"))
+            raise Exception(_("Model does not exists or is not an LLM model"))
 
         def process():
             model = get_model_instance_by_model_workspace_id(model_id=model_id, workspace_id=workspace_id)

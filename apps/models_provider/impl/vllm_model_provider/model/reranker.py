@@ -28,10 +28,11 @@ class VllmBgeReranker(MaxKBBaseModel, BaseDocumentCompressor):
 
     @staticmethod
     def new_instance(model_type, model_name, model_credential: Dict[str, object], **model_kwargs):
+        r_url = model_credential.get('api_url')[:-3] if model_credential.get('api_url').endswith('/v1') else model_credential.get('api_url')
         return VllmBgeReranker(
             model=model_name,
             api_key=model_credential.get('api_key'),
-            api_url=model_credential.get('api_url'),
+            api_url=r_url,
             params=model_kwargs,
             **model_kwargs
         )
