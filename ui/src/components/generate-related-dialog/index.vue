@@ -13,7 +13,7 @@
         :model="form"
         :rules="rules"
         label-position="top"
-        require-asterisk-position="right"
+        hide-required-asterisk
       >
         <div class="update-info flex border-r-6 mb-16 p-8-12">
           <div class="mt-4">
@@ -31,7 +31,12 @@
         <el-form-item prop="model_id">
           <template #label>
             <div class="flex-between">
-              <span>{{ $t('views.application.form.aiModel.label') }}</span>
+              <div>
+                <span
+                  >{{ $t('views.application.form.aiModel.label') }}
+                  <span class="color-danger">*</span></span
+                >
+              </div>
               <el-button
                 type="primary"
                 link
@@ -52,6 +57,16 @@
           ></ModelSelect>
         </el-form-item>
         <el-form-item :label="$t('views.application.form.prompt.label')" prop="prompt">
+          <template #label>
+            <div class="flex-between">
+              <div>
+                <span
+                  >{{ $t('views.application.form.prompt.label') }}
+                  <span class="color-danger">*</span></span
+                >
+              </div>
+            </div>
+          </template>
           <el-input
             v-model="form.prompt"
             :placeholder="$t('views.application.form.prompt.placeholder')"
@@ -83,7 +98,6 @@
     </template>
   </el-dialog>
   <AIModeParamSettingDialog ref="AIModeParamSettingDialogRef" @refresh="refreshForm" />
-
 </template>
 <script setup lang="ts">
 import { reactive, ref, watch, computed } from 'vue'
@@ -94,7 +108,7 @@ import { MsgSuccess } from '@/utils/message'
 import { t } from '@/locales'
 import type { FormInstance } from 'element-plus'
 import { loadSharedApi } from '@/utils/dynamics-api/shared-api'
-import AIModeParamSettingDialog from "@/views/application/component/AIModeParamSettingDialog.vue";
+import AIModeParamSettingDialog from '@/views/application/component/AIModeParamSettingDialog.vue'
 
 const props = defineProps<{
   apiType: 'systemShare' | 'workspace' | 'systemManage' | 'workspaceShare'
@@ -161,7 +175,6 @@ const openAIParamSettingDialog = () => {
 function refreshForm(data: any) {
   form.value.model_params_setting = data
 }
-
 
 const open = (ids: string[], type: string, _knowledge?: any) => {
   currentKnowledge.value = _knowledge
