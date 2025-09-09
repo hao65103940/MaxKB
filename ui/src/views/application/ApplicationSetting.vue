@@ -100,6 +100,19 @@
                   </ModelSelect>
                 </el-form-item>
                 <el-form-item :label="$t('views.application.form.roleSettings.label')">
+                  <template #label>
+                    <div class="flex-between">
+                      <span>{{ $t('views.application.form.roleSettings.label') }}</span>
+                      <el-button
+                      type="primary"
+                      link
+                      @click="handleGeneratePromptClick(applicationForm.model_id as string)"
+                      :disabled="!applicationForm.model_id"
+                      >
+                        生成
+                      </el-button>
+                    </div>
+                  </template>
                   <MdEditorMagnify
                     :title="$t('views.application.form.roleSettings.label')"
                     v-model="applicationForm.model_setting.system"
@@ -545,6 +558,7 @@
     </el-card>
 
     <AIModeParamSettingDialog ref="AIModeParamSettingDialogRef" @refresh="refreshForm" />
+    <GeneratePromptDialog @replace="replace " ref="GeneratePromptDialogRef"   />
     <TTSModeParamSettingDialog ref="TTSModeParamSettingDialogRef" @refresh="refreshTTSForm" />
     <ParamSettingDialog ref="ParamSettingDialogRef" @refresh="refreshParam" />
     <AddKnowledgeDialog
@@ -566,6 +580,7 @@ import { reactive, ref, onMounted, computed, onBeforeMount } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { groupBy, set } from 'lodash'
 import AIModeParamSettingDialog from './component/AIModeParamSettingDialog.vue'
+import GeneratePromptDialog from './component/GeneratePrompt.vue'
 import ParamSettingDialog from './component/ParamSettingDialog.vue'
 import AddKnowledgeDialog from './component/AddKnowledgeDialog.vue'
 import type { FormInstance, FormRules } from 'element-plus'
@@ -587,7 +602,9 @@ const router = useRouter()
 const {
   params: { id },
 } = route as any
-
+const replace = (v: any) => {
+  applicationForm.value.model_setting.system=v
+}
 const apiType = computed(() => {
   if (route.path.includes('resource-management')) {
     return 'systemManage'
@@ -615,6 +632,7 @@ const AIModeParamSettingDialogRef = ref<InstanceType<typeof AIModeParamSettingDi
 const ReasoningParamSettingDialogRef = ref<InstanceType<typeof ReasoningParamSettingDialog>>()
 const TTSModeParamSettingDialogRef = ref<InstanceType<typeof TTSModeParamSettingDialog>>()
 const ParamSettingDialogRef = ref<InstanceType<typeof ParamSettingDialog>>()
+const GeneratePromptDialogRef = ref<InstanceType<typeof GeneratePromptDialog>>()
 
 const applicationFormRef = ref<FormInstance>()
 const AddKnowledgeDialogRef = ref()
@@ -742,6 +760,15 @@ const openAIParamSettingDialog = () => {
     )
   }
 }
+
+const openGeneratePromptDialog = (modelId: string) => {
+  GeneratePromptDialogRef.value?.open(modelId)
+}
+
+const handleGeneratePromptClick = (model_id:string) => {
+  openGeneratePromptDialog(model_id)
+}
+
 
 const openReasoningParamSettingDialog = () => {
   ReasoningParamSettingDialogRef.value?.open(applicationForm.value.model_setting)
