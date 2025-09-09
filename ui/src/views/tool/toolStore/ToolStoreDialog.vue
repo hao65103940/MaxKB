@@ -6,8 +6,10 @@
         <h4 :id="titleId" class="medium">
           {{ $t('views.tool.toolStore.title') }}
         </h4>
-
-        <!-- <el-tag class="store-type default-tag">{{t('views.tool.toolStore.internal')}}</el-tag> -->
+        <el-radio-group v-model="toolType" @change="radioChange" class="app-radio-button-group">
+          <el-radio-button value="INTERNAL">{{ $t('views.tool.toolStore.internal') }}</el-radio-button>
+          <el-radio-button value="APPSTORE">{{ $t('views.tool.toolStore.title') }}</el-radio-button>
+        </el-radio-group>
 
         <div class="flex align-center" style="margin-right: 28px;">
           <el-input v-model="searchValue" :placeholder="$t('common.search')" prefix-icon="Search" class="w-240 mr-8"
@@ -88,6 +90,7 @@ const dialogVisible = ref(false)
 const loading = ref(false)
 const searchValue = ref('')
 const folderId = ref('')
+const toolType = ref('INTERNAL')
 
 const categories = ref<ToolCategory[]>([
   // 第一版不上
@@ -139,6 +142,14 @@ onBeforeMount(() => {
 })
 
 async function getList() {
+  if (toolType.value === 'INTERNAL') {
+    await getInternalToolList()
+  } else {
+    await getStoreToolList()
+  }
+}
+
+async function getInternalToolList() {
   try {
     const res = await ToolStoreApi.getInternalToolList({ name: searchValue.value }, loading)
     if (searchValue.value.length) {
@@ -158,16 +169,36 @@ async function getList() {
   }
 }
 
+async function getStoreToolList() {
+  try {
+    const res = await ToolStoreApi.getStoreToolList({ name: searchValue.value }, loading)
+    const tags = res.data.additionalProperties.tags
+    const storeTools = res.data.apps
+
+    categories.value = tags.map((tag: any) => ({
+      id: tag.key,
+      title: tag.name, // 国际化
+      tools: storeTools.filter((tool: any) => tool.label === tag.key)
+    }))
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 const handleClick = (e: MouseEvent) => {
   e.preventDefault()
 }
 
 const internalDescDrawerRef = ref<InstanceType<typeof InternalDescDrawer>>()
 async function handleDetail(tool: any) {
-  const index = tool.icon.replace('icon.png', 'detail.md')
-  const response = await fetch(index)
-  const content = await response.text()
-  internalDescDrawerRef.value?.open(content, tool)
+  if (toolType.value === 'INTERNAL') {
+    const index = tool.icon.replace('icon.png', 'detail.md')
+    const response = await fetch(index)
+    const content = await response.text()
+    internalDescDrawerRef.value?.open(content, tool)
+  } else {
+    internalDescDrawerRef.value?.open(tool.readMe, tool)
+  }
 }
 
 const addInternalToolDialogRef = ref<InstanceType<typeof AddInternalToolDialog>>()
@@ -177,19 +208,54 @@ function handleOpenAdd(data?: any, isEdit?: boolean) {
 
 const addLoading = ref(false)
 async function handleAdd(tool: any) {
+  if (toolType.value === 'INTERNAL') {
+    await handleInternalAdd(tool)
+  } else {
+    await handleStoreAdd(tool)
+  }
+}
+
+async function handleInternalAdd(tool: any) {
   try {
     await loadSharedApi({ type: 'tool', systemType: props.apiType })
       .addInternalTool(tool.id, { name: tool.name, folder_id: folderId.value }, addLoading)
       .then(() => {
         return user.profile()
       })
-    // await ToolStoreApi.addInternalTool(tool.id, { name: tool.name, folder_id: folderId.value }, addLoading)
     emit('refresh')
     MsgSuccess(t('common.addSuccess'))
     dialogVisible.value = false
   } catch (error) {
     console.error(error)
   }
+}
+
+async function handleStoreAdd(tool: any) {
+  try {
+    const obj = {
+      name: tool.name,
+      folder_id: folderId.value,
+      download_url: tool.downloadUrl,
+      download_callback_url: tool.downloadCallbackUrl,
+      icon: tool.icon,
+      versions: tool.versions,
+      label: tool.label
+    }
+    await loadSharedApi({ type: 'tool', systemType: props.apiType })
+      .addStoreTool(tool.id, obj, addLoading)
+      .then(() => {
+        return user.profile()
+      })
+    emit('refresh')
+    MsgSuccess(t('common.addSuccess'))
+    dialogVisible.value = false
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+function radioChange() {
+  getList()
 }
 
 defineExpose({ open })

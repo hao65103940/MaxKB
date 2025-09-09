@@ -176,6 +176,14 @@
                   </el-avatar>
                   <ToolIcon v-else :size="32" :type="item?.tool_type" />
                 </template>
+                <template #title>
+                  <div>
+                    {{ item.name }}
+                    <el-tag v-if="item.version" class="ml-4">
+                      {{ item.version }}
+                    </el-tag>
+                  </div>
+                </template>
                 <template #subTitle>
                   <el-text class="color-secondary lighter" size="small">
                     {{ $t('common.creator') }}: {{ item.nick_name }}
@@ -185,6 +193,12 @@
                   <el-tag v-if="isShared" type="info" class="info-tag">
                     {{ t('views.shared.title') }}
                   </el-tag>
+                  <el-button text @click.stop v-if="
+                    showUpdateStoreTool(item) && !isShared && permissionPrecise.edit(item.id)
+                    " @click="updateStoreTool(item)"
+                  >
+                    <el-icon><Refresh /></el-icon>
+                  </el-button>
                 </template>
 
                 <template #footer>
@@ -353,6 +367,7 @@ import { loadSharedApi } from '@/utils/dynamics-api/shared-api'
 import permissionMap from '@/permission'
 import useStore from '@/stores'
 import { t } from '@/locales'
+import ToolStoreApi from "@/api/tool/store.ts";
 const route = useRoute()
 const { folder, user, tool } = useStore()
 onBeforeRouteLeave((to, from) => {
@@ -626,6 +641,57 @@ function confirmAddInternalTool(data?: any, isEdit?: boolean) {
   }
 }
 
+const storeTools = ref<any[]>([])
+function getStoreToolList() {
+  ToolStoreApi.getStoreToolList({ name: '' }, loading)
+    .then((res: any) => {
+      storeTools.value = res.data.apps
+    })
+}
+
+function showUpdateStoreTool(item: any) {
+  for (const tool of storeTools.value) {
+    if (tool.id === item.template_id && tool.version !== item.version) {
+      item.downloadUrl = tool.downloadUrl
+      item.downloadCallbackUrl = tool.downloadCallbackUrl
+      item.icon = tool.icon
+      item.versions = tool.versions
+      item.label = tool.label
+      return true
+    }
+  }
+}
+
+function updateStoreTool(item: any) {
+  MsgConfirm(t('views.tool.toolStore.confirmTip') + item.name,
+    t('views.tool.toolStore.updateStoreToolMessage'), {
+      cancelButtonText: t('common.cancel'),
+      confirmButtonText: t('common.confirm'),
+    })
+    .then(() => {
+      const obj = {
+        download_url: item.downloadUrl,
+        download_callback_url: item.downloadCallbackUrl,
+        icon: item.icon,
+        versions: item.versions,
+        label: item.label
+      }
+      loadSharedApi({type: 'tool', systemType: apiType.value})
+        .updateStoreTool(item.id, obj, loading)
+        .then(async (res: any) => {
+          if (res?.data) {
+            tool.setToolList([])
+            return user.profile()
+          }
+        })
+        .then(() => {
+          getList()
+        })
+    })
+    .catch(() => {
+    })
+}
+
 const elUploadRef = ref()
 function importTool(file: any) {
   const formData = new FormData()
@@ -745,6 +811,7 @@ onMounted(() => {
     .then((res: any) => {
       user_options.value = res.data
     })
+  getStoreToolList()
 })
 </script>
 

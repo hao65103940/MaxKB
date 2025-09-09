@@ -20,6 +20,8 @@ export default {
     developer: 'Developer',
     communication: 'Communication',
     searchResult: '{count} search results for',
+    confirmTip: 'Are you sure to update tool: ',
+    updateStoreToolMessage: 'Updating tools may affect resources in use, so proceed with caution.',
   },
   searchBar: {
     placeholder: 'Search by tool name',

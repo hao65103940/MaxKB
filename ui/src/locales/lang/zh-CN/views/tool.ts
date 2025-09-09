@@ -20,6 +20,8 @@ export default {
     developer: '开发者',
     communication: '通信',
     searchResult: '的搜索结果 {count} 个',
+    confirmTip: '是否更新工具：',
+    updateStoreToolMessage: '更新工具可能会影响正在使用的资源，请谨慎操作。',
   },
   delete: {
     confirmTitle: '是否刪除工具',

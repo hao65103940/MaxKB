@@ -20,6 +20,8 @@ export default {
     developer: '開發者',
     communication: '通信',
     searchResult: '的搜索結果 {count} 個',
+    confirmTip: '是否更新工具：',
+    updateStoreToolMessage: '更新工具可能會影響正在使用的資源，請謹慎操作。',
   },
   searchBar: {
     placeholder: '按工具名稱搜尋',
