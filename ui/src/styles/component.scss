@@ -236,6 +236,13 @@
   }
 }
 
+.dot-success {
+  height: 8px;
+  width: 8px;
+  background-color: var(--el-color-success);
+  border-radius: 50%;
+}
+
 // checkbox 一行一个样式
 .checkbox-group-block {
   .el-checkbox {
