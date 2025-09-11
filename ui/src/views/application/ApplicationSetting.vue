@@ -789,11 +789,15 @@ const openParamSettingDialog = () => {
 }
 
 function removeTool(id: any) {
-  applicationForm.value.tool_ids = applicationForm.value.tool_ids.filter((v: any) => v !== id)
+  if (applicationForm.value.tool_ids) {
+    applicationForm.value.tool_ids = applicationForm.value.tool_ids.filter((v: any) => v !== id)
+  }
 }
 
 function removeMcpTool(id: any) {
-  applicationForm.value.mcp_tool_ids = applicationForm.value.mcp_tool_ids.filter((v: any) => v !== id)
+  if (applicationForm.value.mcp_tool_ids) {
+    applicationForm.value.mcp_tool_ids = applicationForm.value.mcp_tool_ids.filter((v: any) => v !== id)
+  }
 }
 
 const mcpServersDialogRef = ref()
@@ -828,7 +832,7 @@ function getToolSelectOptions() {
       ? {
           scope: 'WORKSPACE',
           tool_type: 'CUSTOM',
-          workspace_id: application.value?.workspace_id,
+          workspace_id: applicationForm.value?.workspace_id,
         }
       : {
           scope: 'WORKSPACE',
@@ -851,7 +855,7 @@ function getMcpToolSelectOptions() {
       ? {
           scope: 'WORKSPACE',
           tool_type: 'MCP',
-          workspace_id: application.value?.workspace_id,
+          workspace_id: applicationForm.value?.workspace_id,
         }
       : {
           scope: 'WORKSPACE',
