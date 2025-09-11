@@ -54,6 +54,19 @@
         </el-form-item>
 
         <el-form-item :label="$t('views.application.form.roleSettings.label')">
+          <template #label>
+            <div class="flex-between">
+              <span>{{ $t('views.application.form.roleSettings.label') }}</span>
+              <el-button
+                type="primary"
+                link
+                @click="openGeneratePromptDialog(chat_data.model_id)"
+                :disabled="!chat_data.model_id"
+              >
+                <AppIcon iconName="app-generate-star"></AppIcon>
+              </el-button>
+            </div>
+          </template>
           <MdEditorMagnify
             :title="$t('views.application.form.roleSettings.label')"
             v-model="chat_data.system"
@@ -134,11 +147,14 @@
         <div
           class="w-full mb-16"
           v-if="
-            chat_data.mcp_tool_ids?.length > 0 || (chat_data.mcp_servers && chat_data.mcp_servers.length > 0)
+            chat_data.mcp_tool_ids?.length > 0 ||
+            (chat_data.mcp_servers && chat_data.mcp_servers.length > 0)
           "
         >
           <template v-for="(item, index) in chat_data.mcp_tool_ids" :key="index">
-            <div class="flex-between border border-r-6 white-bg mb-4" style="padding: 5px 8px"
+            <div
+              class="flex-between border border-r-6 white-bg mb-4"
+              style="padding: 5px 8px"
               v-if="relatedObject(mcpToolSelectOptions, item, 'id')"
             >
               <div class="flex align-center" style="line-height: 20px">
@@ -149,7 +165,10 @@
                   style="background: none"
                   class="mr-8"
                 >
-                  <img :src="resetUrl(relatedObject(mcpToolSelectOptions, item, 'id')?.icon)" alt="" />
+                  <img
+                    :src="resetUrl(relatedObject(mcpToolSelectOptions, item, 'id')?.icon)"
+                    alt=""
+                  />
                 </el-avatar>
                 <ToolIcon v-else type="MCP" class="mr-8" :size="20" />
 
@@ -218,11 +237,7 @@
                 {{ $t('views.application.form.mcp_output_enable') }}
               </span>
               <div class="flex">
-                <el-switch
-                  class="ml-8"
-                  size="small"
-                  v-model="chat_data.mcp_output_enable"
-                />
+                <el-switch class="ml-8" size="small" v-model="chat_data.mcp_output_enable" />
               </div>
             </div>
           </template>
@@ -274,6 +289,7 @@
     </el-card>
 
     <AIModeParamSettingDialog ref="AIModeParamSettingDialogRef" @refresh="refreshParam" />
+    <GeneratePromptDialog @replace="replace" ref="GeneratePromptDialogRef" />
     <ReasoningParamSettingDialog
       ref="ReasoningParamSettingDialogRef"
       @refresh="submitReasoningDialog"
@@ -289,6 +305,7 @@ import type { FormInstance } from 'element-plus'
 import { ref, computed, onMounted, inject } from 'vue'
 import { isLastNode } from '@/workflow/common/data'
 import AIModeParamSettingDialog from '@/views/application/component/AIModeParamSettingDialog.vue'
+import GeneratePromptDialog from '@/views/application/component/GeneratePromptDialog.vue'
 import { t } from '@/locales'
 import ReasoningParamSettingDialog from '@/views/application/component/ReasoningParamSettingDialog.vue'
 import ToolDialog from '@/views/application/component/ToolDialog.vue'
@@ -419,6 +436,15 @@ const openAIParamSettingDialog = (modelId: string) => {
   }
 }
 
+const GeneratePromptDialogRef = ref<InstanceType<typeof GeneratePromptDialog>>()
+const openGeneratePromptDialog = (modelId: string) => {
+  if (modelId) {
+    GeneratePromptDialogRef.value?.open(modelId)
+  }
+}
+const replace = (v: any) => {
+  set(props.nodeModel.properties.node_data.model_setting, 'system', v)
+}
 const openReasoningParamSettingDialog = () => {
   ReasoningParamSettingDialogRef.value?.open(chat_data.value.model_setting)
 }
@@ -528,11 +554,13 @@ onMounted(() => {
   }
 
   if (props.nodeModel.properties.node_data?.mcp_tool_id) {
-   set(props.nodeModel.properties.node_data, 'mcp_tool_ids', [props.nodeModel.properties.node_data?.mcp_tool_id])
-   set(props.nodeModel.properties.node_data, 'mcp_tool_id', undefined)
+    set(props.nodeModel.properties.node_data, 'mcp_tool_ids', [
+      props.nodeModel.properties.node_data?.mcp_tool_id,
+    ])
+    set(props.nodeModel.properties.node_data, 'mcp_tool_id', undefined)
   }
   if (props.nodeModel.properties.node_data?.mcp_output_enable === undefined) {
-   set(props.nodeModel.properties.node_data, 'mcp_output_enable', true)
+    set(props.nodeModel.properties.node_data, 'mcp_output_enable', true)
   }
 
   getToolSelectOptions()

@@ -111,6 +111,9 @@
   }
   .el-dialog__header {
     padding: 16px 24px;
+    .el-dialog__headerbtn {
+      top: 8px;
+    }
   }
   .el-dialog__body {
     border-top: 1px solid var(--el-border-color);

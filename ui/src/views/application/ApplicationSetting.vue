@@ -104,12 +104,13 @@
                     <div class="flex-between">
                       <span>{{ $t('views.application.form.roleSettings.label') }}</span>
                       <el-button
-                      type="primary"
-                      link
-                      @click="handleGeneratePromptClick(applicationForm.model_id as string)"
-                      :disabled="!applicationForm.model_id"
+                        type="primary"
+                        link
+                        @click="openGeneratePromptDialog"
+                        :disabled="!applicationForm.model_id"
                       >
-                        生成
+                        <AppIcon iconName="app-generate-star" class="mr-4"></AppIcon>
+                        {{ $t('views.application.generateDialog.label') }}
                       </el-button>
                     </div>
                   </template>
@@ -308,12 +309,15 @@
                 </el-form-item>
                 <div
                   class="w-full mb-16"
-                  v-if="applicationForm.mcp_tool_ids &&
-                    applicationForm.mcp_tool_ids.length > 0 || (applicationForm.mcp_servers && applicationForm.mcp_servers.length > 0)
+                  v-if="
+                    (applicationForm.mcp_tool_ids && applicationForm.mcp_tool_ids.length > 0) ||
+                    (applicationForm.mcp_servers && applicationForm.mcp_servers.length > 0)
                   "
                 >
                   <template v-for="(item, index) in applicationForm.mcp_tool_ids" :key="index">
-                    <div class="flex-between border border-r-6 white-bg mb-4" style="padding: 5px 8px"
+                    <div
+                      class="flex-between border border-r-6 white-bg mb-4"
+                      style="padding: 5px 8px"
                       v-if="relatedObject(mcpToolSelectOptions, item, 'id')"
                     >
                       <div class="flex align-center" style="line-height: 20px">
@@ -324,7 +328,10 @@
                           style="background: none"
                           class="mr-8"
                         >
-                          <img :src="resetUrl(relatedObject(mcpToolSelectOptions, item, 'id')?.icon)" alt="" />
+                          <img
+                            :src="resetUrl(relatedObject(mcpToolSelectOptions, item, 'id')?.icon)"
+                            alt=""
+                          />
                         </el-avatar>
                         <ToolIcon v-else type="MCP" class="mr-8" :size="20" />
 
@@ -361,14 +368,24 @@
                         >
                           <AppIcon iconName="app-setting"></AppIcon>
                         </el-button>
-                        <el-switch class="ml-8" size="small" v-model="applicationForm.tool_enable" />
+                        <el-switch
+                          class="ml-8"
+                          size="small"
+                          v-model="applicationForm.tool_enable"
+                        />
+                      </div>
                     </div>
-                  </div>
                   </template>
                 </el-form-item>
-                <div class="w-full mb-16" v-if="applicationForm.tool_ids && applicationForm.tool_ids.length > 0">
+                <div
+                  class="w-full mb-16"
+                  v-if="applicationForm.tool_ids && applicationForm.tool_ids.length > 0"
+                >
                   <template v-for="(item, index) in applicationForm.tool_ids" :key="index">
-                    <div class="flex-between border border-r-6 white-bg mb-4" style="padding: 5px 8px">
+                    <div
+                      class="flex-between border border-r-6 white-bg mb-4"
+                      style="padding: 5px 8px"
+                    >
                       <div class="flex align-center" style="line-height: 20px">
                         <el-avatar
                           v-if="relatedObject(toolSelectOptions, item, 'id')?.icon"
@@ -377,11 +394,17 @@
                           style="background: none"
                           class="mr-8"
                         >
-                          <img :src="resetUrl(relatedObject(toolSelectOptions, item, 'id')?.icon)" alt="" />
+                          <img
+                            :src="resetUrl(relatedObject(toolSelectOptions, item, 'id')?.icon)"
+                            alt=""
+                          />
                         </el-avatar>
                         <ToolIcon v-else class="mr-8" :size="20" />
 
-                        <div class="ellipsis" :title="relatedObject(toolSelectOptions, item, 'id')?.name">
+                        <div
+                          class="ellipsis"
+                          :title="relatedObject(toolSelectOptions, item, 'id')?.name"
+                        >
                           {{ relatedObject(toolSelectOptions, item, 'id')?.name }}
                         </div>
                       </div>
@@ -558,7 +581,7 @@
     </el-card>
 
     <AIModeParamSettingDialog ref="AIModeParamSettingDialogRef" @refresh="refreshForm" />
-    <GeneratePromptDialog @replace="replace " ref="GeneratePromptDialogRef"   />
+    <GeneratePromptDialog @replace="replace" ref="GeneratePromptDialogRef" />
     <TTSModeParamSettingDialog ref="TTSModeParamSettingDialogRef" @refresh="refreshTTSForm" />
     <ParamSettingDialog ref="ParamSettingDialogRef" @refresh="refreshParam" />
     <AddKnowledgeDialog
@@ -580,7 +603,7 @@ import { reactive, ref, onMounted, computed, onBeforeMount } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { groupBy, set } from 'lodash'
 import AIModeParamSettingDialog from './component/AIModeParamSettingDialog.vue'
-import GeneratePromptDialog from './component/GeneratePrompt.vue'
+import GeneratePromptDialog from './component/GeneratePromptDialog.vue'
 import ParamSettingDialog from './component/ParamSettingDialog.vue'
 import AddKnowledgeDialog from './component/AddKnowledgeDialog.vue'
 import type { FormInstance, FormRules } from 'element-plus'
@@ -594,17 +617,15 @@ import permissionMap from '@/permission'
 import { EditionConst } from '@/utils/permission/data'
 import { hasPermission } from '@/utils/permission/index'
 import { loadSharedApi } from '@/utils/dynamics-api/shared-api'
-import { resetUrl } from "@/utils/common.ts";
-import McpServersDialog from "@/views/application/component/McpServersDialog.vue";
-import ToolDialog from "@/views/application/component/ToolDialog.vue";
+import { resetUrl } from '@/utils/common.ts'
+import McpServersDialog from '@/views/application/component/McpServersDialog.vue'
+import ToolDialog from '@/views/application/component/ToolDialog.vue'
 const route = useRoute()
 const router = useRouter()
 const {
   params: { id },
 } = route as any
-const replace = (v: any) => {
-  applicationForm.value.model_setting.system=v
-}
+
 const apiType = computed(() => {
   if (route.path.includes('resource-management')) {
     return 'systemManage'
@@ -761,14 +782,15 @@ const openAIParamSettingDialog = () => {
   }
 }
 
-const openGeneratePromptDialog = (modelId: string) => {
-  GeneratePromptDialogRef.value?.open(modelId)
+const openGeneratePromptDialog = () => {
+  if (applicationForm.value.model_id) {
+    GeneratePromptDialogRef.value?.open(applicationForm.value.model_id)
+  }
 }
 
-const handleGeneratePromptClick = (model_id:string) => {
-  openGeneratePromptDialog(model_id)
+const replace = (v: any) => {
+  applicationForm.value.model_setting.system = v
 }
-
 
 const openReasoningParamSettingDialog = () => {
   ReasoningParamSettingDialogRef.value?.open(applicationForm.value.model_setting)

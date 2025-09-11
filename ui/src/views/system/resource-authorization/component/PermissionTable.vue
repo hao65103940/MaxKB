@@ -94,7 +94,7 @@
             </el-space>
           </template>
         </el-table-column>
-        <el-table-column :label="$t('common.operation')" align="left">
+        <el-table-column :label="$t('views.model.modelForm.permissionType.label')" align="left">
           <template #default="{ row }">
             <el-radio-group
               v-model="row.permission"
@@ -154,7 +154,7 @@ const props = defineProps<{
 }>()
 const emit = defineEmits(['submitPermissions'])
 
-const permissionOptions = computed(() => { 
+const permissionOptions = computed(() => {
   return getPermissionOptions()
 })
 const permissionObj = ref<any>({

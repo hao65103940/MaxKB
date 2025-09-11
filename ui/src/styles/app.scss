@@ -315,14 +315,12 @@ h5 {
 .border-b-light {
   border-bottom: 1px solid var(--el-border-color-lighter);
 }
-.border-r-4 {
-  border-radius: var(--app-border-radius-small);
-}
+
 .border-r-6 {
-  border-radius: var(--app-border-radius-base);
+  border-radius: var();
 }
 .border-r-8 {
-  border-radius: var(--app-border-radius-large);
+  border-radius: var(--app-border-radius-base);
 }
 
 .border-t-dashed {

@@ -209,12 +209,13 @@
 .el-dialog {
   --el-dialog-padding-primary: 24px;
   --el-dialog-border-radius: 8px;
+  --el-dialog-title-font-size: 16px;
   .el-dialog__body {
     color: var(--el-text-color-primary);
   }
 }
 .el-dialog__headerbtn {
-  top: 8px;
+  top: 12px;
   right: 8px;
   .el-dialog__close {
     font-size: 20px;
