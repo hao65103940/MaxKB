@@ -277,6 +277,18 @@ export default {
       label: 'Custom Tool',
       text: 'Execute custom scripts to achieve data processing',
     },
+    intentNode: {
+      label: 'IntentNode',
+      other: 'other',
+      placeholder: 'Please choose a classification option',
+      classify: {
+        label: 'Intent classify',
+        placeholder: 'Please input',
+      },
+      input: {
+        label: 'Input',
+      },
+    },
     applicationNode: {
       label: 'APP Node',
     },

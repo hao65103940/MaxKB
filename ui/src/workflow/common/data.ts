@@ -360,11 +360,33 @@ export const toolNode = {
     },
   },
 }
+export const intentNode = {
+  type: WorkflowType.IntentNode,
+  text: t('views.applicationWorkflow.nodes.intentNode.label'),
+  label: t('views.applicationWorkflow.nodes.intentNode.label'),
+  height: 260,
+  properties: {
+    stepName: t('views.applicationWorkflow.nodes.intentNode.label'),
+    config: {
+      fields: [
+        {
+          label: t('common.classify'),
+          value: 'category',
+        },
+         {
+          label: t('common.reason'),
+          value: 'reason',
+        },
+      ],
+    },
+  },
+}
 export const menuNodes = [
   {
     label: t('views.applicationWorkflow.nodes.classify.aiCapability'),
     list: [
       aiChatNode,
+      intentNode,
       questionNode,
       imageGenerateNode,
       imageUnderstandNode,
@@ -423,6 +445,9 @@ export const applicationNode = {
   },
 }
 
+
+
+
 export const compareList = [
   { value: 'is_null', label: t('views.applicationWorkflow.compare.is_null') },
   { value: 'is_not_null', label: t('views.applicationWorkflow.compare.is_not_null') },
@@ -462,6 +487,7 @@ export const nodeDict: any = {
   [WorkflowType.ImageGenerateNode]: imageGenerateNode,
   [WorkflowType.VariableAssignNode]: variableAssignNode,
   [WorkflowType.McpNode]: mcpNode,
+  [WorkflowType.IntentNode]: intentNode,
 }
 export function isWorkFlow(type: string | undefined) {
   return type === 'WORK_FLOW'

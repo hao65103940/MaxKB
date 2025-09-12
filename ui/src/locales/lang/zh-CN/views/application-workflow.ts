@@ -282,6 +282,18 @@ export default {
       label: '自定义工具',
       text: '通过执行自定义脚本，实现数据处理',
     },
+    intentNode: {
+      label: '意图识别',
+      other: '其他',
+      placeholder: '请选择分类项',
+      classify: {
+        label: '意图分类',
+        placeholder: '请输入',
+      },
+      input: {
+        label: '输入',
+      },
+    },
     applicationNode: {
       label: '应用节点',
     },

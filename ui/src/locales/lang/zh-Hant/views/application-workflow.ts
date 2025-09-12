@@ -276,6 +276,18 @@ export default {
       label: '自定義工具',
       text: '通過執行自定義腳本，實現數據處理',
     },
+    intentNode: {
+      label: '意圖識別',
+      other: '其他',
+      placeholder: '請選擇分類項',
+      classify: {
+        label: '意圖分類',
+        placeholder: '請輸入',
+      },
+      input: {
+        label: '輸入',
+      },
+    },
     applicationNode: {
       label: '應用節點',
     },

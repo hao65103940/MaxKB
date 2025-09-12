@@ -24,13 +24,14 @@ from .text_to_speech_step_node.impl.base_text_to_speech_node import BaseTextToSp
 from .tool_lib_node import *
 from .tool_node import *
 from .variable_assign_node import BaseVariableAssignNode
+from .intent_node import *
 
 node_list = [BaseStartStepNode, BaseChatNode, BaseSearchKnowledgeNode, BaseQuestionNode,
              BaseConditionNode, BaseReplyNode,
              BaseToolNodeNode, BaseToolLibNodeNode, BaseRerankerNode, BaseApplicationNode,
              BaseDocumentExtractNode,
              BaseImageUnderstandNode, BaseFormNode, BaseSpeechToTextNode, BaseTextToSpeechNode,
-             BaseImageGenerateNode, BaseVariableAssignNode, BaseMcpNode]
+             BaseImageGenerateNode, BaseVariableAssignNode, BaseMcpNode,BaseIntentNode]
 
 
 def get_node(node_type):

@@ -24,4 +24,5 @@ export enum WorkflowType {
   SpeechToTextNode = 'speech-to-text-node',
   ImageGenerateNode = 'image-generate-node',
   McpNode = 'mcp-node',
+  IntentNode = 'intent-node',
 }
