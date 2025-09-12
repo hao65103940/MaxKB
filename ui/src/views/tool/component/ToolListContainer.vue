@@ -179,7 +179,7 @@
                 <template #title>
                   <div>
                     {{ item.name }}
-                    <el-tag v-if="item.version" class="ml-4">
+                    <el-tag v-if="item.version" class="ml-4" type="info" effect="plain">
                       {{ item.version }}
                     </el-tag>
                   </div>

@@ -290,6 +290,11 @@
   height: 20px;
   font-weight: 400;
 }
+.el-tag--plain.el-tag--info {
+  color: var(--app-text-color-secondary);
+  font-weight: 500;
+  border-color: var(--app-text-color-light-1);
+}
 
 // el-select
 .el-select__selected-item {

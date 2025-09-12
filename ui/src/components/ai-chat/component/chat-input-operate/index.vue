@@ -3,8 +3,10 @@
     <div class="text-center mb-8" v-if="loading">
       <el-button class="border-primary video-stop-button" @click="stopChat">
         <app-icon iconName="app-video-stop" class="mr-8"></app-icon>
-        {{ $t('chat.operation.stopChat') }}</el-button>
+        {{ $t('chat.operation.stopChat') }}</el-button
+      >
     </div>
+
     <div class="operate-textarea">
       <el-scrollbar max-height="136">
         <div
@@ -332,7 +334,7 @@ const props = withDefaults(
     available: true,
   },
 )
-const emit = defineEmits(['update:chatId', 'update:loading', 'update:showUserInput'])
+const emit = defineEmits(['update:chatId', 'update:loading', 'update:showUserInput', 'backBottom'])
 const chartOpenId = ref<string>()
 const chatId_context = computed({
   get: () => {

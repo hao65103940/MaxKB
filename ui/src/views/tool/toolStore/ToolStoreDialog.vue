@@ -1,19 +1,34 @@
 <template>
-  <el-dialog v-model="dialogVisible" width="1000" append-to-body class="tool-store-dialog" align-center
-    :close-on-click-modal="false" :close-on-press-escape="false">
+  <el-dialog
+    v-model="dialogVisible"
+    width="1000"
+    append-to-body
+    class="tool-store-dialog"
+    align-center
+    :close-on-click-modal="false"
+    :close-on-press-escape="false"
+  >
     <template #header="{ titleId }">
       <div class="dialog-header flex-between mb-8">
         <h4 :id="titleId" class="medium">
           {{ $t('views.tool.toolStore.title') }}
         </h4>
         <el-radio-group v-model="toolType" @change="radioChange" class="app-radio-button-group">
-          <el-radio-button value="INTERNAL">{{ $t('views.tool.toolStore.internal') }}</el-radio-button>
+          <el-radio-button value="INTERNAL">{{
+            $t('views.tool.toolStore.internal')
+          }}</el-radio-button>
           <el-radio-button value="APPSTORE">{{ $t('views.tool.toolStore.title') }}</el-radio-button>
         </el-radio-group>
 
-        <div class="flex align-center" style="margin-right: 28px;">
-          <el-input v-model="searchValue" :placeholder="$t('common.search')" prefix-icon="Search" class="w-240 mr-8"
-            clearable @change="getList" />
+        <div class="flex align-center" style="margin-right: 28px">
+          <el-input
+            v-model="searchValue"
+            :placeholder="$t('common.search')"
+            prefix-icon="Search"
+            class="w-240 mr-8"
+            clearable
+            @change="getList"
+          />
           <el-divider direction="vertical" />
         </div>
       </div>
@@ -21,23 +36,40 @@
 
     <LayoutContainer v-loading="loading">
       <template #left>
-        <el-anchor direction="vertical" :offset="130" type="default" container=".category-scrollbar"
-          @click="handleClick">
-          <el-anchor-link v-for="category in categories" :key="category.id" :href="`#category-${category.id}`"
-            :title="category.title" />
+        <el-anchor
+          direction="vertical"
+          :offset="130"
+          type="default"
+          container=".category-scrollbar"
+          @click="handleClick"
+        >
+          <el-anchor-link
+            v-for="category in categories"
+            :key="category.id"
+            :href="`#category-${category.id}`"
+            :title="category.title"
+          />
         </el-anchor>
       </template>
 
       <el-scrollbar class="layout-bg" wrap-class="p-16-24 category-scrollbar">
         <template v-if="filterList === null">
           <div v-for="category in categories" :key="category.id">
-            <h4 class="title-decoration-1 mb-16 mt-8 color-text-primary" :id="`category-${category.id}`">
+            <h4
+              class="title-decoration-1 mb-16 mt-8 color-text-primary"
+              :id="`category-${category.id}`"
+            >
               {{ category.title }}
             </h4>
             <el-row :gutter="16">
               <el-col v-for="tool in category.tools" :key="tool.id" :span="12" class="mb-16">
-                <ToolCard :tool="tool" :addLoading="addLoading" :get-sub-title="getSubTitle"
-                  @handleAdd="handleOpenAdd(tool)" @handleDetail="handleDetail(tool)" />
+                <ToolCard
+                  :tool="tool"
+                  :addLoading="addLoading"
+                  :get-sub-title="getSubTitle"
+                  @handleAdd="handleOpenAdd(tool)"
+                  @handleDetail="handleDetail(tool)"
+                />
               </el-col>
             </el-row>
           </div>
@@ -49,8 +81,13 @@
           </h4>
           <el-row :gutter="16" v-if="filterList.length">
             <el-col v-for="tool in filterList" :key="tool.id" :span="12" class="mb-16">
-              <ToolCard :tool="tool" :addLoading="addLoading" :get-sub-title="getSubTitle"
-                @handleAdd="handleOpenAdd(tool)" @handleDetail="handleDetail(tool)" />
+              <ToolCard
+                :tool="tool"
+                :addLoading="addLoading"
+                :get-sub-title="getSubTitle"
+                @handleAdd="handleOpenAdd(tool)"
+                @handleDetail="handleDetail(tool)"
+              />
             </el-col>
           </el-row>
           <el-empty v-else :description="$t('common.noData')" />
@@ -70,7 +107,7 @@ import ToolCard from './ToolCard.vue'
 import { MsgSuccess } from '@/utils/message'
 import InternalDescDrawer from './InternalDescDrawer.vue'
 import AddInternalToolDialog from './AddInternalToolDialog.vue'
-import { loadSharedApi } from "@/utils/dynamics-api/shared-api.ts";
+import { loadSharedApi } from '@/utils/dynamics-api/shared-api.ts'
 import useStore from '@/stores'
 const { user } = useStore()
 interface ToolCategory {
@@ -81,7 +118,7 @@ interface ToolCategory {
 const props = defineProps({
   apiType: {
     type: String as () => 'workspace' | 'systemShare' | 'systemManage',
-    default: 'workspace'
+    default: 'workspace',
   },
 })
 const emit = defineEmits(['refresh'])
@@ -102,12 +139,12 @@ const categories = ref<ToolCategory[]>([
   {
     id: 'web_search',
     title: t('views.tool.toolStore.webSearch'),
-    tools: []
+    tools: [],
   },
   {
     id: 'database_search',
     title: t('views.tool.toolStore.databaseQuery'),
-    tools: []
+    tools: [],
   },
   // {
   //   id: 'image',
@@ -128,7 +165,7 @@ const categories = ref<ToolCategory[]>([
 const filterList = ref<any>(null)
 
 function getSubTitle(tool: any) {
-  return categories.value.find(i => i.id === tool.label)?.title ?? ''
+  return categories.value.find((i) => i.id === tool.label)?.title ?? ''
 }
 
 function open(id: string) {
@@ -156,7 +193,7 @@ async function getInternalToolList() {
       filterList.value = res.data
     } else {
       filterList.value = null
-      categories.value.forEach(category => {
+      categories.value.forEach((category) => {
         // if (category.id === 'recommend') {
         //   category.tools = res.data
         // } else {
@@ -183,7 +220,7 @@ async function getStoreToolList() {
     categories.value = tags.map((tag: any) => ({
       id: tag.key,
       title: tag.name, // 国际化
-      tools: storeTools.filter((tool: any) => tool.label === tag.key)
+      tools: storeTools.filter((tool: any) => tool.label === tag.key),
     }))
   } catch (error) {
     console.error(error)
@@ -244,7 +281,7 @@ async function handleStoreAdd(tool: any) {
       download_callback_url: tool.downloadCallbackUrl,
       icon: tool.icon,
       versions: tool.versions,
-      label: tool.label
+      label: tool.label,
     }
     await loadSharedApi({ type: 'tool', systemType: props.apiType })
       .addStoreTool(tool.id, obj, addLoading)
@@ -268,6 +305,9 @@ defineExpose({ open })
 <style lang="scss">
 .tool-store-dialog {
   padding: 0;
+  .el-dialog__headerbtn {
+    top: 7px;
+  }
 
   .el-dialog__header {
     padding: 12px 20px 4px 24px;
@@ -314,7 +354,6 @@ defineExpose({ open })
         }
       }
     }
-
   }
 
   .category-scrollbar {
