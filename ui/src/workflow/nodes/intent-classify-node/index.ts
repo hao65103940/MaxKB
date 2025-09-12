@@ -6,8 +6,8 @@ class IntentNode extends AppNode {
   }
 }
 
-const get_up_index_height = (branch_lsit: Array<any>, index: number) => {
-    return branch_lsit
+const get_up_index_height = (branch_list: Array<any>, index: number) => {
+    return branch_list
         .filter((item, i) => i < index)
         .map((item) => item.height + 8)
         .reduce((x,y) => x+y, 0)

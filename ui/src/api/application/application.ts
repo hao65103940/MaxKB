@@ -206,16 +206,21 @@ const open: (application_id: string, loading?: Ref<boolean>) => Promise<Result<s
 }
 
 /**
- * 生成优化提示词
- * 
+ * 生成提示词
+ * @param workspace_id 
+ * @param model_id 
+ * @param application_id 
+ * @param data 
+ * @returns 
  */
-const generate_prompt: (workspace_id:string ,model_id:string, data: any) => Promise<any> = (
+const generate_prompt: (workspace_id:string ,model_id:string, application_id:string,data: any) => Promise<any> = (
   workspace_id,
   model_id,
+  application_id,
   data
 ) => {
   const prefix = (window.MaxKB?.prefix ? window.MaxKB?.prefix : '/admin') + '/api'
-  return postStream(`${prefix}/workspace/${workspace_id}/application/model/${model_id}/prompt_generate`, data)
+  return postStream(`${prefix}/workspace/${workspace_id}/application/${application_id}/model/${model_id}/prompt_generate`, data)
 }
 
 

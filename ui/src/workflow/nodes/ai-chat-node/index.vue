@@ -439,7 +439,7 @@ const openAIParamSettingDialog = (modelId: string) => {
 const GeneratePromptDialogRef = ref<InstanceType<typeof GeneratePromptDialog>>()
 const openGeneratePromptDialog = (modelId: string) => {
   if (modelId) {
-    GeneratePromptDialogRef.value?.open(modelId)
+    GeneratePromptDialogRef.value?.open(modelId, id)
   }
 }
 const replace = (v: any) => {

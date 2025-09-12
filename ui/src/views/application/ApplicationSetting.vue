@@ -784,7 +784,7 @@ const openAIParamSettingDialog = () => {
 
 const openGeneratePromptDialog = () => {
   if (applicationForm.value.model_id) {
-    GeneratePromptDialogRef.value?.open(applicationForm.value.model_id)
+    GeneratePromptDialogRef.value?.open(applicationForm.value.model_id, id)
   }
 }
 

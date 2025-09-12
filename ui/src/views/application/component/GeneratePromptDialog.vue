@@ -85,6 +85,7 @@ const chatMessages = ref<Array<any>>([])
 // 原始输入
 const originalUserInput = ref<string>('')
 const modelID = ref('')
+const applicationID = ref('')
 const dialogVisible = ref(false)
 const inputValue = ref<string>('')
 const loading = ref<boolean>(false)
@@ -97,8 +98,8 @@ const promptTemplates = {
 
 请按以下格式生成：
 
-# 角色: 角色名称
-角色概述和主要职责的一句话描述
+# 角色: 
+
 
 ## 目标：
 角色的工作目标,如果有多目标可以分点列出,但建议更聚焦1-2个目标
@@ -118,9 +119,12 @@ const promptTemplates = {
 
 
 ## 限制：
-描述角色在互动过程中需要遵循的限制条件1
-描述角色在互动过程中需要遵循的限制条件2
-描述角色在互动过程中需要遵循的限制条件3
+1. **严格限制回答范围**：仅回答与角色设定相关的问题。  
+   - 如果用户提问与角色无关，必须使用以下固定格式回复：  
+     “对不起，我只能回答与【角色设定】相关的问题，您的问题不在服务范围内。”  
+   - 不得提供任何与角色设定无关的回答。  
+2. 描述角色在互动过程中需要遵循的限制条件2
+3. 描述角色在互动过程中需要遵循的限制条件3
   `,
 }
 
@@ -200,7 +204,7 @@ function generatePrompt(inputValue: any) {
     messages: chatMessages.value,
     prompt: promptTemplates.INIT_TEMPLATE,
   }
-  generatePromptAPI.generate_prompt(workspaceId, modelID.value, requestData).then((response) => {
+  generatePromptAPI.generate_prompt(workspaceId, modelID.value, applicationID.value,requestData).then((response) => {
     const reader = response.body.getReader()
     reader.read().then(getWrite(reader))
   })
@@ -226,8 +230,9 @@ const stopChat = () => {
   chatMessages.value = []
 }
 
-const open = (modelId: string) => {
+const open = (modelId: string, applicationId: string) => {
   modelID.value = modelId
+  applicationID.value = applicationId
   dialogVisible.value = true
   originalUserInput.value = ''
   chatMessages.value = []
