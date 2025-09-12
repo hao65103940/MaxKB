@@ -523,7 +523,7 @@ export const nodeDict: any = {
   [WorkflowType.VariableAssignNode]: variableAssignNode,
   [WorkflowType.McpNode]: mcpNode,
   [WorkflowType.TextToVideoGenerateNode]: textToVideoNode,
-  [WorkflowType.ImageToVideoGenerateNode]: imageToVideoNode
+  [WorkflowType.ImageToVideoGenerateNode]: imageToVideoNode,
   [WorkflowType.IntentNode]: intentNode,
 }
 export function isWorkFlow(type: string | undefined) {

@@ -61,6 +61,7 @@ class CreateUserSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True, label=_('Email'))
     nick_name = serializers.CharField(required=False, label=_('Nick name'))
     phone = serializers.CharField(required=False, label=_('Phone'))
+    source = serializers.CharField(required=False, label=_('Source'), default='LOCAL')
 
 
 def is_workspace_manage(user_id: str, workspace_id: str):
@@ -172,6 +173,13 @@ class UserManageSerializer(serializers.Serializer):
             allow_null=True,
             allow_blank=True
         )
+        source = serializers.CharField(
+            required=False,
+            label=_("Source"),
+            max_length=20,
+            default="LOCAL"
+        )
+
 
         def is_valid(self, *, raise_exception=True):
             super().is_valid(raise_exception=True)
@@ -332,7 +340,7 @@ class UserManageSerializer(serializers.Serializer):
             username=instance.get('username'),
             password=password_encrypt(instance.get('password')),
             role=RoleConstants.USER.name,
-            source="LOCAL",
+            source=instance.get('source', 'LOCAL'),
             is_active=True
         )
         update_user_role(instance, user, user_id)
