@@ -144,6 +144,7 @@ class DebugChatSerializers(serializers.Serializer):
 class PromptGenerateSerializer(serializers.Serializer):
     workspace_id = serializers.CharField(required=False, label=_('Workspace ID'))
     model_id = serializers.CharField(required=False, allow_blank=True, allow_null=True, label=_("Model"))
+    application_id = serializers.CharField(required=False, allow_blank=True, allow_null=True, label=_("Application"))
 
     def generate_prompt(self, instance: dict, with_valid=True):
         if with_valid:

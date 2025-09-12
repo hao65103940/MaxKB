@@ -7,6 +7,7 @@
     @desc:
 """
 import uuid_utils.compat as uuid
+from django.db.models import QuerySet
 
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
@@ -15,7 +16,7 @@ from rest_framework.views import APIView
 
 from application.api.application_chat import ApplicationChatQueryAPI, ApplicationChatQueryPageAPI, \
     ApplicationChatExportAPI
-from application.models import ChatUserType
+from application.models import ChatUserType, Application
 from application.serializers.application_chat import ApplicationChatQuerySerializers
 from chat.api.chat_api import ChatAPI, PromptGenerateAPI
 from chat.api.chat_authentication_api import ChatOpenAPI
@@ -23,9 +24,17 @@ from chat.serializers.chat import OpenChatSerializers, ChatSerializers, DebugCha
 from common.auth import TokenAuth
 from common.auth.authentication import has_permissions
 from common.constants.permission_constants import PermissionConstants, RoleConstants, ViewPermission, CompareConstants
+from common.log.log import log
 from common.result import result
 from common.utils.common import query_params_to_single_dict
 
+def get_application_operation_object(application_id):
+    application_model = QuerySet(model=Application).filter(id=application_id).first()
+    if application_model is not None:
+        return {
+            'name': application_model.name
+        }
+    return {}
 
 class ApplicationChat(APIView):
     authentication_classes = [TokenAuth]
@@ -146,6 +155,7 @@ class ChatView(APIView):
         return DebugChatSerializers(data={'chat_id': chat_id}).chat(request.data)
 
 class PromptGenerateView(APIView):
+    authentication_classes = [TokenAuth]
 
     @extend_schema(
         methods=['POST'],
@@ -157,5 +167,13 @@ class PromptGenerateView(APIView):
         responses=None,
         tags=[_('Application')]  # type: ignore
     )
-    def post(self, request: Request, workspace_id: str, model_id:str):
-        return PromptGenerateSerializer(data={'workspace_id': workspace_id, 'model_id': model_id}).generate_prompt(instance=request.data)
+    @has_permissions(PermissionConstants.APPLICATION_EDIT.get_workspace_application_permission(),
+                     PermissionConstants.APPLICATION_EDIT.get_workspace_permission_workspace_manage_role(),
+                     ViewPermission([RoleConstants.USER.get_workspace_role()],
+                                    [PermissionConstants.APPLICATION.get_workspace_application_permission()],
+                                    CompareConstants.AND),
+                     RoleConstants.WORKSPACE_MANAGE.get_workspace_role())
+    @log(menu='Application', operate='Generate prompt',
+         get_operation_object=lambda r, k: get_application_operation_object(k.get('application_id')))
+    def post(self, request: Request, workspace_id: str, model_id:str, application_id: str):
+        return PromptGenerateSerializer(data={'workspace_id': workspace_id, 'model_id': model_id, 'application_id': application_id}).generate_prompt(instance=request.data)

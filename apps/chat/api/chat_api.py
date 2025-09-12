@@ -31,7 +31,15 @@ class PromptGenerateAPI(APIMixin):
                 description="模型id",
                 type=OpenApiTypes.STR,
                 location='path',
-                required=True,)
+                required=True,
+        ),
+            OpenApiParameter(
+                name="application_id",
+                description="应用id",
+                type=OpenApiTypes.STR,
+                location='path',
+                required=True,
+            ),
         ]
 
     @staticmethod
