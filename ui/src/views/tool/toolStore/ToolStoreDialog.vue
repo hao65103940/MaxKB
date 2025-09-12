@@ -175,6 +175,11 @@ async function getStoreToolList() {
     const tags = res.data.additionalProperties.tags
     const storeTools = res.data.apps
 
+    if (storeTools.length === 0) {
+      filterList.value = []
+      return
+    }
+
     categories.value = tags.map((tag: any) => ({
       id: tag.key,
       title: tag.name, // 国际化

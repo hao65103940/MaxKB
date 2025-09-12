@@ -766,7 +766,7 @@ class ToolSerializer(serializers.Serializer):
                     os.unlink(temp_zip_path)
             except requests.RequestException as e:
                 maxkb_logger.error(f"fetch appstore tools error: {e}")
-                return []
+                return {'apps': [], 'additionalProperties': {'tags': []}}
 
     class AddStoreTool(serializers.Serializer):
         user_id = serializers.UUIDField(required=True, label=_("User ID"))
