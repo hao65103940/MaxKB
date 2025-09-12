@@ -252,6 +252,50 @@ export default {
           'Please describe content you do not want to generate, such as color, bloody content',
       },
     },
+    textToVideoGenerate: {
+      label: 'Text-to-Video',
+      text: 'Generate video based on provided text content',
+      answer: 'AI Response Content',
+      model: {
+        label: 'Text-to-Video Model',
+        requiredMessage: 'Please select a text-to-video model',
+      },
+      prompt: {
+        label: 'Prompt (Positive)',
+        tooltip: 'Positive prompt, used to describe elements and visual features expected in the generated video',
+      },
+      negative_prompt: {
+        label: 'Prompt (Negative)',
+        tooltip: 'Negative prompt, used to describe content you don\'t want to see in the video, which can restrict the video generation',
+        placeholder: 'Please describe video content you don\'t want to generate, such as: colors, bloody content',
+      },
+    },
+    imageToVideoGenerate: {
+      label: 'Image-to-Video',
+      text: 'Generate video based on provided images',
+      answer: 'AI Response Content',
+      model: {
+        label: 'Image-to-Video Model',
+        requiredMessage: 'Please select an image-to-video model',
+      },
+      prompt: {
+        label: 'Prompt (Positive)',
+        tooltip: 'Positive prompt, used to describe elements and visual features expected in the generated video',
+      },
+      negative_prompt: {
+        label: 'Prompt (Negative)',
+        tooltip: 'Negative prompt, used to describe content you don\'t want to see in the video, which can restrict the video generation',
+        placeholder: 'Please describe video content you don\'t want to generate, such as: colors, bloody content',
+      },
+      first_frame: {
+        label: 'First Frame Image',
+        requiredMessage: 'Please select the first frame image',
+      },
+      last_frame: {
+        label: 'Last Frame Image',
+        requiredMessage: 'Please select the last frame image',
+      },
+    },
     speechToTextNode: {
       label: 'Speech2Text',
       text: 'Convert audio to text through speech recognition model',

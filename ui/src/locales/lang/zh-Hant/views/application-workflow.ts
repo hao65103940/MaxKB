@@ -251,6 +251,50 @@ export default {
         placeholder: '請描述不想生成的圖片內容，比如：顏色、血腥內容',
       },
     },
+    textToVideoGenerate: {
+      label: '文生影片',
+      text: '根據提供的文字內容生成影片',
+      answer: 'AI 回答內容',
+      model: {
+        label: '文生影片模型',
+        requiredMessage: '請選擇文生影片模型',
+      },
+      prompt: {
+        label: '提示詞(正向)',
+        tooltip: '正向提示詞，用來描述生成影片中期望包含的元素和視覺特點',
+      },
+      negative_prompt: {
+        label: '提示詞(負向)',
+        tooltip: '反向提示詞，用來描述不希望在影片中看到的內容，可以對影片進行限制。',
+        placeholder: '請描述不想生成的影片內容，例如：顏色、血腥內容',
+      },
+    },
+    imageToVideoGenerate: {
+      label: '圖生影片',
+      text: '根據提供的圖片生成影片',
+      answer: 'AI 回答內容',
+      model: {
+        label: '圖生影片模型',
+        requiredMessage: '請選擇圖生影片模型',
+      },
+      prompt: {
+        label: '提示詞(正向)',
+        tooltip: '正向提示詞，用來描述生成影片中期望包含的元素和視覺特點',
+      },
+      negative_prompt: {
+        label: '提示詞(負向)',
+        tooltip: '反向提示詞，用來描述不希望在影片中看到的內容，可以對影片進行限制。',
+        placeholder: '請描述不想生成的影片內容，例如：顏色、血腥內容',
+      },
+      first_frame: {
+        label: '首幀圖片',
+        requiredMessage: '請選擇首幀圖片',
+      },
+      last_frame: {
+        label: '尾幀圖片',
+        requiredMessage: '請選擇尾幀圖片',
+      },
+    },
     speechToTextNode: {
       label: '語音轉文本',
       text: '將音頻通過語音識別模型轉換為文本',

@@ -174,7 +174,7 @@ export const replyNode = {
   },
 }
 export const rerankerNode = {
-  type: WorkflowType.RrerankerNode,
+  type: WorkflowType.RerankerNode,
   text: t('views.applicationWorkflow.nodes.rerankerNode.text'),
   label: t('views.applicationWorkflow.nodes.rerankerNode.label'),
   height: 252,
@@ -381,6 +381,42 @@ export const intentNode = {
     },
   },
 }
+
+export const imageToVideoNode = {
+  type: WorkflowType.ImageToVideoGenerateNode,
+  text: t('views.applicationWorkflow.nodes.imageToVideoGenerate.text'),
+  label: t('views.applicationWorkflow.nodes.imageToVideoGenerate.label'),
+  height: 252,
+  properties: {
+    stepName: t('views.applicationWorkflow.nodes.imageToVideoGenerate.label'),
+    config: {
+      fields: [
+        {
+          label: t('common.fileUpload.video'),
+          value: 'video',
+        },
+      ],
+    },
+  },
+}
+
+export const textToVideoNode = {
+  type: WorkflowType.TextToVideoGenerateNode,
+  text: t('views.applicationWorkflow.nodes.textToVideoGenerate.text'),
+  label: t('views.applicationWorkflow.nodes.textToVideoGenerate.label'),
+  height: 252,
+  properties: {
+    stepName: t('views.applicationWorkflow.nodes.textToVideoGenerate.label'),
+    config: {
+      fields: [
+        {
+          label: t('common.fileUpload.video'),
+          value: 'video',
+        },
+      ],
+    },
+  },
+}
 export const menuNodes = [
   {
     label: t('views.applicationWorkflow.nodes.classify.aiCapability'),
@@ -392,6 +428,8 @@ export const menuNodes = [
       imageUnderstandNode,
       textToSpeechNode,
       speechToTextNode,
+      textToVideoNode,
+      imageToVideoNode
     ],
   },
   { label: t('views.knowledge.title'), list: [searchKnowledgeNode, rerankerNode] },
@@ -445,9 +483,6 @@ export const applicationNode = {
   },
 }
 
-
-
-
 export const compareList = [
   { value: 'is_null', label: t('views.applicationWorkflow.compare.is_null') },
   { value: 'is_not_null', label: t('views.applicationWorkflow.compare.is_not_null') },
@@ -477,7 +512,7 @@ export const nodeDict: any = {
   [WorkflowType.Reply]: replyNode,
   [WorkflowType.ToolLib]: toolNode,
   [WorkflowType.ToolLibCustom]: toolNode,
-  [WorkflowType.RrerankerNode]: rerankerNode,
+  [WorkflowType.RerankerNode]: rerankerNode,
   [WorkflowType.FormNode]: formNode,
   [WorkflowType.Application]: applicationNode,
   [WorkflowType.DocumentExtractNode]: documentExtractNode,
@@ -487,6 +522,8 @@ export const nodeDict: any = {
   [WorkflowType.ImageGenerateNode]: imageGenerateNode,
   [WorkflowType.VariableAssignNode]: variableAssignNode,
   [WorkflowType.McpNode]: mcpNode,
+  [WorkflowType.TextToVideoGenerateNode]: textToVideoNode,
+  [WorkflowType.ImageToVideoGenerateNode]: imageToVideoNode
   [WorkflowType.IntentNode]: intentNode,
 }
 export function isWorkFlow(type: string | undefined) {

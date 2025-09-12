@@ -8674,6 +8674,12 @@ msgstr ""
 msgid "This folder contains resources that you dont have permission"
 msgstr ""
 
+msgid "Text to Video"
+msgstr ""
+
+msgid "Image to Video"
+msgstr ""
+
 msgid "Authentication failed. Please verify that the parameters are correct"
 msgstr ""
 
@@ -8684,4 +8690,14 @@ msgid "Prompt template"
 msgstr ""
 
 msgid "generate prompt"
+msgstr ""
+
+
+msgid "Watermark"
+msgstr ""
+
+msgid "Whether to add watermark"
+msgstr ""
+
+msgid "Resolution"
 msgstr ""
