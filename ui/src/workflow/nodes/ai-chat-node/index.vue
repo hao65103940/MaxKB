@@ -230,7 +230,7 @@
             </div>
           </template>
         </div>
-        <el-form-item @click.prevent>
+        <el-form-item @click.prevent v-if="chat_data.mcp_enable || chat_data.tool_enable">
           <template #label>
             <div class="flex-between">
               <span class="mr-4">

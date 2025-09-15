@@ -414,7 +414,7 @@
                     </div>
                   </template>
                 </div>
-                <el-form-item @click.prevent>
+                <el-form-item @click.prevent v-if="applicationForm.mcp_enable || applicationForm.tool_enable">
                   <template #label>
                     <div class="flex-between">
                       <span class="mr-4">
