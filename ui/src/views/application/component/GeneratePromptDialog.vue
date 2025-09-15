@@ -5,13 +5,20 @@
     v-model="dialogVisible"
     style="width: 600px"
     append-to-body
+    :close-on-click-modal="false"
+    :close-on-press-escape="false"
   >
     <div class="generate-prompt-dialog-bg border-r-8">
       <div class="scrollbar-height">
         <!-- 生成内容 -->
         <div class="p-16 pb-0 lighter">
-          <el-scrollbar>
-            <div v-if="answer" class="pre-wrap lighter" style="max-height: calc(100vh - 400px)">
+          <el-scrollbar ref="scrollDiv">
+            <div
+              ref="dialogScrollbar"
+              v-if="answer"
+              class="pre-wrap lighter"
+              style="max-height: calc(100vh - 400px)"
+            >
               {{ answer }}
             </div>
             <p v-else-if="loading" shadow="always" style="margin: 0.5rem 0">
@@ -38,7 +45,7 @@
           <div class="text-center mb-8" v-if="loading">
             <el-button class="border-primary video-stop-button" @click="stopChat">
               <app-icon iconName="app-video-stop" class="mr-8"></app-icon>
-              {{ $t('chat.operation.stopChat') }}
+              停止生成
             </el-button>
           </div>
 
@@ -51,6 +58,7 @@
               :placeholder="$t('views.application.generateDialog.placeholder')"
               :maxlength="100000"
               class="chat-operate-textarea"
+              @keydown.enter="handleSubmit($event)"
             />
 
             <div class="operate">
@@ -74,7 +82,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, ref } from 'vue'
+import { computed, reactive, ref, nextTick, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import systemGeneratePromptAPI from '@/api/system-resource-management/application'
 import generatePromptAPI from '@/api/application/application'
@@ -108,7 +116,7 @@ const promptTemplates = {
 
 请按以下格式生成：
 
-# 角色: 
+# 角色:
 
 
 ## 目标：
@@ -129,10 +137,10 @@ const promptTemplates = {
 
 
 ## 限制：
-1. **严格限制回答范围**：仅回答与角色设定相关的问题。  
-   - 如果用户提问与角色无关，必须使用以下固定格式回复：  
-     “对不起，我只能回答与【角色设定】相关的问题，您的问题不在服务范围内。”  
-   - 不得提供任何与角色设定无关的回答。  
+1. **严格限制回答范围**：仅回答与角色设定相关的问题。
+   - 如果用户提问与角色无关，必须使用以下固定格式回复：
+     “对不起，我只能回答与【角色设定】相关的问题，您的问题不在服务范围内。”
+   - 不得提供任何与角色设定无关的回答。
 2. 描述角色在互动过程中需要遵循的限制条件2
 3. 描述角色在互动过程中需要遵循的限制条件3
   `,
@@ -215,20 +223,33 @@ function generatePrompt(inputValue: any) {
     prompt: promptTemplates.INIT_TEMPLATE,
   }
   if (apiType.value === 'workspace') {
-        generatePromptAPI.generate_prompt(workspaceId, modelID.value, applicationID.value,requestData)
-  .then((response) => {
-    const reader = response.body.getReader()
-    reader.read().then(getWrite(reader))
-  })
+    generatePromptAPI
+      .generate_prompt(workspaceId, modelID.value, applicationID.value, requestData)
+      .then((response) => {
+        nextTick(() => {
+          if (dialogScrollbar.value) {
+            // 将滚动条滚动到最下面
+            scrollDiv.value.setScrollTop(getMaxHeight())
+          }
+        })
+        const reader = response.body.getReader()
+        reader.read().then(getWrite(reader))
+      })
   } else if (apiType.value === 'systemManage') {
     console.log(apiType.value)
-    systemGeneratePromptAPI.generate_prompt(applicationID.value, modelID.value, requestData)
-    .then((response) => {
-    const reader = response.body.getReader()
-    reader.read().then(getWrite(reader))
-  })
+    systemGeneratePromptAPI
+      .generate_prompt(applicationID.value, modelID.value, requestData)
+      .then((response) => {
+        nextTick(() => {
+          if (dialogScrollbar.value) {
+            // 将滚动条滚动到最下面
+            scrollDiv.value.setScrollTop(getMaxHeight())
+          }
+        })
+        const reader = response.body.getReader()
+        reader.read().then(getWrite(reader))
+      })
   }
-  
 }
 
 // 重新生成点击
@@ -238,12 +259,35 @@ const reAnswerClick = () => {
   }
 }
 
-const handleSubmit = () => {
-  if (!originalUserInput.value) {
-    originalUserInput.value = inputValue.value
+const quickInputRef = ref()
+
+const handleSubmit = (event?: any) => {
+  if (!event?.ctrlKey && !event?.shiftKey && !event?.altKey && !event?.metaKey) {
+    // 如果没有按下组合键，则会阻止默认事件
+    event?.preventDefault()
+    if (!originalUserInput.value) {
+      originalUserInput.value = inputValue.value
+    }
+    generatePrompt(inputValue.value)
+    inputValue.value = ''
+  } else {
+    // 如果同时按下ctrl/shift/cmd/opt +enter，则会换行
+    insertNewlineAtCursor(event)
   }
-  generatePrompt(inputValue.value)
-  inputValue.value = ''
+}
+const insertNewlineAtCursor = (event?: any) => {
+  const textarea = quickInputRef.value.$el.querySelector(
+    '.el-textarea__inner',
+  ) as HTMLTextAreaElement
+  const startPos = textarea.selectionStart
+  const endPos = textarea.selectionEnd
+  // 阻止默认行为（避免额外的换行符）
+  event.preventDefault()
+  // 在光标处插入换行符
+  inputValue.value = inputValue.value.slice(0, startPos) + '\n' + inputValue.value.slice(endPos)
+  nextTick(() => {
+    textarea.setSelectionRange(startPos + 1, startPos + 1) // 光标定位到换行后位置
+  })
 }
 
 const stopChat = () => {
@@ -258,6 +302,34 @@ const open = (modelId: string, applicationId: string) => {
   originalUserInput.value = ''
   chatMessages.value = []
 }
+
+const scrollDiv = ref()
+const dialogScrollbar = ref()
+
+const getMaxHeight = () => {
+  return dialogScrollbar.value!.scrollHeight
+}
+
+/**
+ * 处理跟随滚动条
+ */
+const handleScroll = () => {
+  if (scrollDiv.value) {
+    // 内部高度小于外部高度 就需要出滚动条
+    if (scrollDiv.value.wrapRef.offsetHeight < dialogScrollbar.value?.scrollHeight) {
+      // 如果当前滚动条距离最下面的距离在 规定距离 滚动条就跟随
+      scrollDiv.value.setScrollTop(getMaxHeight())
+    }
+  }
+}
+
+watch(
+  answer,
+  () => {
+    handleScroll()
+  },
+  { deep: true, immediate: true },
+)
 
 defineExpose({
   open,
