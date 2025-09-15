@@ -146,6 +146,15 @@ class PromptGenerateSerializer(serializers.Serializer):
     model_id = serializers.CharField(required=False, allow_blank=True, allow_null=True, label=_("Model"))
     application_id = serializers.CharField(required=False, allow_blank=True, allow_null=True, label=_("Application"))
 
+    def is_valid(self, *, raise_exception=False):
+        super().is_valid(raise_exception=True)
+        workspace_id = self.data.get('workspace_id')
+        query_set = QuerySet(Application).filter(id=self.data.get('application_id'))
+        if workspace_id:
+            query_set = query_set.filter(workspace_id=workspace_id)
+        if not query_set.exists():
+            raise AppApiException(500, _('Application id does not exist'))
+
     def generate_prompt(self, instance: dict, with_valid=True):
         if with_valid:
             self.is_valid(raise_exception=True)
