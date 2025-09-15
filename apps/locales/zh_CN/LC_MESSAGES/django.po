@@ -8827,3 +8827,12 @@ msgstr "是否添加水印"
 
 msgid "Resolution"
 msgstr "分辨率"
+
+msgid "Ratio"
+msgstr "比例"
+
+msgid "Duration"
+msgstr "时长"
+
+msgid "Failed to generate video"
+msgstr "生成视频失败"

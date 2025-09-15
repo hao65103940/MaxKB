@@ -8701,3 +8701,12 @@ msgstr ""
 
 msgid "Resolution"
 msgstr ""
+
+msgid "Ratio"
+msgstr ""
+
+msgid "Duration"
+msgstr ""
+
+msgid "Failed to generate video"
+msgstr ""

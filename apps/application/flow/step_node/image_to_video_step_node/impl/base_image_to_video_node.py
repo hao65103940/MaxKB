@@ -13,7 +13,7 @@ from common.utils.common import bytes_to_uploaded_file
 from knowledge.models import FileSourceType, File
 from oss.serializers.file import FileSerializer, mime_types
 from models_provider.tools import get_model_instance_by_model_workspace_id
-
+from django.utils.translation import gettext
 
 class BaseImageToVideoNode(IImageToVideoNode):
     def save_context(self, details, workflow_manage):
@@ -48,7 +48,7 @@ class BaseImageToVideoNode(IImageToVideoNode):
         video_urls = ttv_model.generate_video(question, negative_prompt, first_frame_url, last_frame_url)
         # 保存图片
         if video_urls is None:
-            return NodeResult({'answer': '生成视频失败'}, {})
+            return NodeResult({'answer': gettext('Failed to generate video')}, {})
         file_name = 'generated_video.mp4'
         if isinstance(video_urls, str) and video_urls.startswith('http'):
             video_urls = requests.get(video_urls).content
