@@ -75,13 +75,23 @@
 
 <script setup lang="ts">
 import { computed, reactive, ref } from 'vue'
+import { useRoute } from 'vue-router'
+import systemGeneratePromptAPI from '@/api/system-resource-management/application'
 import generatePromptAPI from '@/api/application/application'
 import useStore from '@/stores'
 const emit = defineEmits(['replace'])
 const { user } = useStore()
+const route = useRoute()
 
 const chatMessages = ref<Array<any>>([])
 
+const apiType = computed(() => {
+  if (route.path.includes('resource-management')) {
+    return 'systemManage'
+  } else {
+    return 'workspace'
+  }
+})
 // 原始输入
 const originalUserInput = ref<string>('')
 const modelID = ref('')
@@ -204,10 +214,21 @@ function generatePrompt(inputValue: any) {
     messages: chatMessages.value,
     prompt: promptTemplates.INIT_TEMPLATE,
   }
-  generatePromptAPI.generate_prompt(workspaceId, modelID.value, applicationID.value,requestData).then((response) => {
+  if (apiType.value === 'workspace') {
+        generatePromptAPI.generate_prompt(workspaceId, modelID.value, applicationID.value,requestData)
+  .then((response) => {
     const reader = response.body.getReader()
     reader.read().then(getWrite(reader))
   })
+  } else if (apiType.value === 'systemManage') {
+    console.log(apiType.value)
+    systemGeneratePromptAPI.generate_prompt(applicationID.value, modelID.value, requestData)
+    .then((response) => {
+    const reader = response.body.getReader()
+    reader.read().then(getWrite(reader))
+  })
+  }
+  
 }
 
 // 重新生成点击
