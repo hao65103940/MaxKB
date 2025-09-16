@@ -443,7 +443,8 @@ const openGeneratePromptDialog = (modelId: string) => {
   }
 }
 const replace = (v: any) => {
-  set(props.nodeModel.properties.node_data.model_setting, 'system', v)
+  console.log(props.nodeModel.properties.node_data.model_setting)
+  set(props.nodeModel.properties.node_data, 'system', v)
 }
 const openReasoningParamSettingDialog = () => {
   ReasoningParamSettingDialogRef.value?.open(chat_data.value.model_setting)

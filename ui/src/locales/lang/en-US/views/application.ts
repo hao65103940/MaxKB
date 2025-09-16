@@ -135,6 +135,12 @@ export default {
     label: 'Generate',
     generatePrompt: 'Generate Prompt',
     placeholder: 'Please enter the prompt topic',
+    title: 'The prompt is displayed here',
+    remake: 'Regenerate',
+    stop: 'Stop Generating',
+    continue: 'Continue Generating',
+    replace: 'Replace',
+    exit: 'Are you sure you want to exit and discard the AI-generated content?',
   },
   dialog: {
     addKnowledge: 'Add Related Knowledge',

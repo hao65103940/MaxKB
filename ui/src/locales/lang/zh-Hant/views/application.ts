@@ -126,6 +126,12 @@ export default {
     label: '生成',
     generatePrompt: '生成提示詞',
     placeholder: '請輸入提示詞主題',
+    title: '提示詞顯示在這裡',
+    remake: '重新生成',
+    stop: '停止生成',
+    continue: '繼續生成',
+    replace: '替換',
+    exit: '確認退出並捨棄 AI 生成的內容嗎？',
   },
   dialog: {
     addKnowledge: '新增關聯知識庫',

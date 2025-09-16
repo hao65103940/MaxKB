@@ -5,8 +5,9 @@
     v-model="dialogVisible"
     style="width: 600px"
     append-to-body
-    :close-on-click-modal="false"
-    :close-on-press-escape="false"
+    :close-on-click-modal="true"
+    :close-on-press-escape="true"
+    :before-close="handleDialogClose"
   >
     <div class="generate-prompt-dialog-bg border-r-8">
       <div class="scrollbar-height">
@@ -28,13 +29,13 @@
             </p>
             <p v-else class="flex align-center">
               <AppIcon iconName="app-generate-star" class="color-primary mr-4"></AppIcon>
-              提示词显示在这里
+              {{ $t('views.application.generateDialog.title') }}
             </p>
           </el-scrollbar>
-          <div v-if="answer && !loading">
-            <el-button type="primary" @click="() => emit('replace', answer)"> 替换 </el-button>
+          <div v-if="answer && !loading && !isStreaming && !showContinueButton">
+            <el-button type="primary" @click="() => emit('replace', answer)"> {{ $t('views.application.generateDialog.replace') }} </el-button>
             <el-button @click="reAnswerClick" :disabled="!answer || loading" :loading="loading">
-              重新生成
+              {{ $t('views.application.generateDialog.remake') }}
             </el-button>
           </div>
         </div>
@@ -42,13 +43,18 @@
         <!-- 文本输入框 -->
 
         <div class="generate-prompt-operate p-16">
-          <div class="text-center mb-8" v-if="loading">
-            <el-button class="border-primary video-stop-button" @click="stopChat">
+          <div v-if="showStopButton" class="text-center mb-8">
+            <el-button class="border-primary video-stop-button" @click="pauseStreaming">
               <app-icon iconName="app-video-stop" class="mr-8"></app-icon>
-              停止生成
+              {{ $t('views.application.generateDialog.stop') }}
             </el-button>
           </div>
-
+          <div v-if="showContinueButton" class="text-center mb-8">
+            <el-button class="border-primary video-stop-button" @click="continueStreaming">
+              <app-icon iconName="app-video-stop" class="mr-8"></app-icon>
+              {{ $t('views.application.generateDialog.continue') }}
+            </el-button>
+          </div>
           <div class="operate-textarea">
             <el-input
               ref="quickInputRef"
@@ -66,11 +72,11 @@
                 <el-button
                   text
                   class="sent-button"
-                  :disabled="!inputValue.trim() || loading"
+                  :disabled="!inputValue.trim() || loading || isStreaming"
                   @click="handleSubmit"
                 >
-                  <img v-show="!inputValue.trim() || loading" src="@/assets/icon_send.svg" alt="" />
-                  <SendIcon v-show="inputValue.trim() && !loading" />
+                  <img v-show="!inputValue.trim() || loading || isStreaming" src="@/assets/icon_send.svg" alt="" />
+                  <SendIcon v-show="inputValue.trim() && !loading && !isStreaming" />
                 </el-button>
               </div>
             </div>
@@ -82,8 +88,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed, reactive, ref, nextTick, watch } from 'vue'
+import { computed, onUnmounted,reactive, ref, nextTick, watch } from 'vue'
 import { useRoute } from 'vue-router'
+import { MsgConfirm } from '@/utils/message'
+import { t } from '@/locales'
 import systemGeneratePromptAPI from '@/api/system-resource-management/application'
 import generatePromptAPI from '@/api/application/application'
 import useStore from '@/stores'
@@ -146,6 +154,71 @@ const promptTemplates = {
   `,
 }
 
+const isStreaming = ref<boolean>(false) // 是否正在流式输出
+const isPaused = ref<boolean>(false) // 是否暂停
+const fullContent = ref<string>('') // 完整内容缓存
+const currentDisplayIndex = ref<number>(0) // 当前显示到的字符位置
+let streamTimer: number | null = null // 定时器引用
+const isOutputComplete = ref<boolean>(false)
+
+
+// 模拟流式输出的定时器函数
+const startStreamingOutput = () => {
+  if (streamTimer) {
+    clearInterval(streamTimer)
+  }
+
+  isStreaming.value = true
+  isPaused.value = false
+
+  streamTimer = setInterval(() => {
+    if (!isPaused.value && currentDisplayIndex.value < fullContent.value.length) {
+      // 每次输出1-3个字符，模拟真实的流式输出
+      const step = Math.min(3, fullContent.value.length - currentDisplayIndex.value)
+      currentDisplayIndex.value += step
+
+      // 更新显示内容
+      const currentAnswer = chatMessages.value[chatMessages.value.length - 1]
+      if (currentAnswer && currentAnswer.role === 'ai') {
+        currentAnswer.content = fullContent.value.substring(0, currentDisplayIndex.value)
+      }
+    }  else if (loading.value === false && currentDisplayIndex.value >= fullContent.value.length) {
+    stopStreaming()
+  }
+  }, 50) // 每50ms输出一次
+}
+
+// 停止流式输出
+const stopStreaming = () => {
+  if (streamTimer) {
+    clearInterval(streamTimer)
+    streamTimer = null
+  }
+  isStreaming.value = false
+  isPaused.value = false  
+  loading.value = false
+  isOutputComplete.value = true
+}
+
+const showStopButton = computed(() => {
+  return isStreaming.value
+})
+
+
+// 暂停流式输出
+const pauseStreaming = () => {
+  isPaused.value = true
+  isStreaming.value = false
+}
+
+// 继续流式输出
+const continueStreaming = () => {
+  if (currentDisplayIndex.value < fullContent.value.length) {
+    startStreamingOutput()
+  }
+}
+
+
 /**
  * 获取一个递归函数,处理流式数据
  * @param chat    每一条对话记录
@@ -154,8 +227,16 @@ const promptTemplates = {
  */
 const getWrite = (reader: any) => {
   let tempResult = ''
-  const answer = reactive({ content: '', role: 'ai' })
-  chatMessages.value.push(answer)
+  const middleAnswer  = reactive({ content: '', role: 'ai' })
+  chatMessages.value.push(middleAnswer )
+
+  // 初始化状态并
+  fullContent.value = ''
+  currentDisplayIndex.value = 0
+  isOutputComplete.value = false
+
+  let streamingStarted = false
+
   /**
    *
    * @param done  是否结束
@@ -164,8 +245,8 @@ const getWrite = (reader: any) => {
   const write_stream = ({ done, value }: { done: boolean; value: any }) => {
     try {
       if (done) {
+         // 流数据接收完成，但定时器继续运行直到显示完所有内容
         loading.value = false
-        // console.log('结束')
         return
       }
       const decoder = new TextDecoder('utf-8')
@@ -185,11 +266,15 @@ const getWrite = (reader: any) => {
           for (const index in split) {
             const chunk = JSON?.parse(split[index].replace('data:', ''))
             if (!chunk.is_end) {
-              answer.content += chunk.content
+              // 实时将新接收的内容添加到完整内容中
+              fullContent.value += chunk.content
+              if (!streamingStarted) {
+                streamingStarted = true
+                startStreamingOutput()
+              }
             }
             if (chunk.is_end) {
-              // 流处理成功 返回成功回调
-              loading.value = false
+              isApiComplete.value = true
               return Promise.resolve()
             }
           }
@@ -197,6 +282,7 @@ const getWrite = (reader: any) => {
       }
     } catch (e) {
       loading.value = false
+      stopStreaming()
       return Promise.reject(e)
     }
     return reader.read().then(write_stream)
@@ -204,7 +290,7 @@ const getWrite = (reader: any) => {
 
   return write_stream
 }
-
+const isApiComplete = ref<boolean>(false)
 const answer = computed(() => {
   const result = chatMessages.value[chatMessages.value.length - 1]
 
@@ -213,6 +299,12 @@ const answer = computed(() => {
   }
   return ''
 })
+
+// 按钮状态计算
+const showContinueButton = computed(() => {
+  return !isStreaming.value && isPaused.value && currentDisplayIndex.value < fullContent.value.length
+})
+
 
 function generatePrompt(inputValue: any) {
   loading.value = true
@@ -268,8 +360,12 @@ const handleSubmit = (event?: any) => {
     if (!originalUserInput.value) {
       originalUserInput.value = inputValue.value
     }
-    generatePrompt(inputValue.value)
+    if (inputValue.value) { 
+      generatePrompt(inputValue.value)
     inputValue.value = ''
+    }
+  
+  
   } else {
     // 如果同时按下ctrl/shift/cmd/opt +enter，则会换行
     insertNewlineAtCursor(event)
@@ -288,11 +384,6 @@ const insertNewlineAtCursor = (event?: any) => {
   nextTick(() => {
     textarea.setSelectionRange(startPos + 1, startPos + 1) // 光标定位到换行后位置
   })
-}
-
-const stopChat = () => {
-  loading.value = false
-  chatMessages.value = []
 }
 
 const open = (modelId: string, applicationId: string) => {
@@ -322,6 +413,38 @@ const handleScroll = () => {
     }
   }
 }
+
+const handleDialogClose = (done: () => void) => {
+  
+  // 弹出 消息
+  MsgConfirm(
+    t('common.tip'),
+    t('views.application.generateDialog.exit'),
+    {
+      confirmButtonText: t('common.confirm'),
+      cancelButtonText: t('common.cancel'),
+      distinguishCancelAndClose: true,
+    }
+  )
+    .then(() => {
+      // 点击确认，清除状态
+      stopStreaming()
+      chatMessages.value = []
+      fullContent.value = ''
+      currentDisplayIndex.value = 0
+      isOutputComplete.value = false
+      done() // 真正关闭
+    })
+    .catch(() => {
+      // 点击取消
+    }
+  )
+}
+
+// 组件卸载时清理定时器
+onUnmounted(() => {
+  stopStreaming()
+})
 
 watch(
   answer,
