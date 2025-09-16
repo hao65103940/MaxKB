@@ -13,7 +13,7 @@
             @drag.prevent
             @dragover.prevent
             @dragend.prevent
-            style="width: 70%"
+            style="width: 69%"
           >
             <component
               :is="iconComponent(`${nodeModel.type}-icon`)"

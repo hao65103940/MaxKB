@@ -156,7 +156,7 @@
               base_form_data.model_type !== 'TTI'
             "
           >
-            <AppIcon iconName="Plus" class="add-icon" />{{ $t('common.add') }}
+            <AppIcon iconName="app-add-outlined" class="mr-4"/> {{ $t('common.add') }}
           </el-button>
         </div>
         <el-table
