@@ -130,4 +130,9 @@ export default {
     type: 'Type',
     management: 'management',
   },
+    default_login: 'Default Login Method',
+  display_code: 'Display verification code when login fails',
+  display_codeTip: 'When the value is -1, the verification code is not displayed',
+  time: 'Times',
+  setting: 'Login Setting',
 }

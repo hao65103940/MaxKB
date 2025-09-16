@@ -131,4 +131,9 @@ export default {
     type: '类型',
     management: '管理',
   },
+  default_login: '默认登录方式',
+  display_code: '登录失败显示验证码',
+  display_codeTip: '值为-1时，不显示验证码',
+  time: '次',
+  setting: '登录设置',
 }

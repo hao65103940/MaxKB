@@ -16,6 +16,7 @@
                 size="large"
                 class="input-item"
                 v-model="loginForm.username"
+                @blur="handleUsernameBlur(loginForm.username)"
                 :placeholder="$t('views.login.loginForm.username.placeholder')"
               >
               </el-input>
@@ -34,7 +35,7 @@
               </el-input>
             </el-form-item>
           </div>
-          <div class="mb-24" v-if="loginMode !== 'LDAP'">
+          <div class="mb-24" v-if="loginMode !== 'LDAP' && showCaptcha">
             <el-form-item prop="captcha">
               <div class="flex-between w-full">
                 <el-input
@@ -50,7 +51,7 @@
                   alt=""
                   height="38"
                   class="ml-8 cursor border border-r-6"
-                  @click="makeCode"
+                  @click="makeCode(loginForm.username)"
                 />
               </div>
             </el-form-item>
@@ -79,7 +80,7 @@
         </div>
       </div>
       <div v-if="showQrCodeTab">
-        <QrCodeTab :tabs="orgOptions" />
+        <QrCodeTab :tabs="orgOptions" :default-tab="defaultQrTab"/>
       </div>
       <div class="login-gradient-divider lighter mt-24" v-if="modeList.length > 1">
         <span>{{ $t('views.login.moreMethod') }}</span>
@@ -98,7 +99,7 @@
                 'font-size': item === 'OAUTH2' ? '8px' : '10px',
                 color: theme.themeInfo?.theme,
               }"
-              >{{ item }}</span
+            >{{ item }}</span
             >
           </el-button>
           <el-button
@@ -108,7 +109,7 @@
             class="login-button-circle color-secondary"
             @click="changeMode('QR_CODE')"
           >
-            <img src="@/assets/icon_qr_outlined.svg" width="25px" />
+            <img src="@/assets/icon_qr_outlined.svg" width="25px"/>
           </el-button>
           <el-button
             v-if="item === '' && loginMode !== ''"
@@ -125,30 +126,31 @@
   </login-layout>
 </template>
 <script setup lang="ts">
-import { onMounted, ref, onBeforeMount, computed } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import type { FormInstance, FormRules } from 'element-plus'
-import type { LoginRequest } from '@/api/type/login'
+import {onMounted, ref, onBeforeMount, computed} from 'vue'
+import {useRoute, useRouter} from 'vue-router'
+import type {FormInstance, FormRules} from 'element-plus'
+import type {LoginRequest} from '@/api/type/login'
 import LoginContainer from '@/layout/login-layout/LoginContainer.vue'
 import LoginLayout from '@/layout/login-layout/LoginLayout.vue'
 import loginApi from '@/api/user/login'
 import authApi from '@/api/system-settings/auth-setting'
-import { t, getBrowserLang } from '@/locales'
+import {t, getBrowserLang} from '@/locales'
 import useStore from '@/stores'
-import { useI18n } from 'vue-i18n'
+import {useI18n} from 'vue-i18n'
 import QrCodeTab from '@/views/login/scanCompinents/QrCodeTab.vue'
-import { MsgConfirm, MsgError } from '@/utils/message.ts'
+import {MsgConfirm, MsgError} from '@/utils/message.ts'
 import * as dd from 'dingtalk-jsapi'
-import { loadScript } from '@/utils/common'
+import {loadScript} from '@/utils/common'
 
 const router = useRouter()
-const { login, user, theme } = useStore()
-const { locale } = useI18n({ useScope: 'global' })
+const {login, user, theme} = useStore()
+const {locale} = useI18n({useScope: 'global'})
 const loading = ref<boolean>(false)
-
+const route = useRoute()
 const identifyCode = ref<string>('')
-
 const loginFormRef = ref<FormInstance>()
+const authSetting = ref<any>(null)
+const defaultQrTab = ref<string>('')
 const loginForm = ref<LoginRequest>({
   username: '',
   password: '',
@@ -172,7 +174,7 @@ const rules = ref<FormRules<LoginRequest>>({
   ],
   captcha: [
     {
-      required: true,
+      required: false,
       message: t('views.login.loginForm.captcha.requiredMessage'),
       trigger: 'blur',
     },
@@ -191,7 +193,7 @@ const loginHandle = () => {
           .asyncLdapLogin(loginForm.value)
           .then(() => {
             locale.value = localStorage.getItem('MaxKB-locale') || getBrowserLang() || 'en-US'
-            router.push({ name: 'home' })
+            router.push({name: 'home'})
           })
           .catch(() => {
             loading.value = false
@@ -202,24 +204,109 @@ const loginHandle = () => {
           .then(() => {
             locale.value = localStorage.getItem('MaxKB-locale') || getBrowserLang() || 'en-US'
             localStorage.setItem('workspace_id', 'default')
-            router.push({ name: 'home' })
+            localStorage.removeItem(loginForm.value.username)
+            router.push({name: 'home'})
           })
           .catch(() => {
+            const username = loginForm.value.username
+            localStorage.setItem(username, String(Number(localStorage.getItem(username) || '0') + 1))
             loading.value = false
+            loginForm.value.username = ''
+            loginForm.value.password = ''
+            const timestampKey = `${username}_first_fail_timestamp`
+            if (!localStorage.getItem(timestampKey)) {
+              localStorage.setItem(timestampKey, Date.now().toString())
+            }
           })
       }
     }
   })
 }
 
-function makeCode() {
-  loginApi.getCaptcha().then((res: any) => {
-    identifyCode.value = res.data.captcha
+const showCaptcha = computed<boolean>(() => {
+  if (!authSetting.value) return true
+
+  const maxAttempts = authSetting.value.max_attempts
+
+  // -1 表示一直不显示
+  if (maxAttempts === -1) {
+    return false
+  }
+
+  // 0 表示一直显示
+  if (maxAttempts === 0) {
+    return true
+  }
+
+  // 大于 0，根据登录失败次数决定
+  const username = loginForm.value.username?.trim()
+  if (!username) {
+    return false // 没有输入用户名时不显示
+  }
+
+  const timestampKey = `${username}_first_fail_timestamp`
+  const firstFailTimestamp = localStorage.getItem(timestampKey)
+
+  if (firstFailTimestamp) {
+    const expirationTime = 10 * 60 * 1000 // 10分钟毫秒数
+    if (Date.now() - parseInt(firstFailTimestamp) > expirationTime) {
+      // 过期则清除记录
+      localStorage.removeItem(username)
+      localStorage.removeItem(timestampKey)
+      return false
+    }
+  } else {
+    // 如果没有时间戳但有失败次数，可能是旧数据，清除失败次数
+    const failCount = Number(localStorage.getItem(username) || '0')
+    if (failCount > 0) {
+      localStorage.removeItem(username)
+      return false
+    }
+  }
+
+  const failCount = Number(localStorage.getItem(username) || '0')
+  console.log('failCount', failCount)
+
+  return failCount >= maxAttempts
+})
+
+function makeCode(username?: string) {
+  loginApi.getCaptcha(username).then((res: any) => {
+    if (res && res.data && res.data.captcha) {
+      identifyCode.value = res.data.captcha
+    }
+  }).catch((error) => {
+    console.error('Failed to get captcha:', error)
   })
 }
 
+function handleUsernameBlur(username: string) {
+  if (showCaptcha.value) {
+    makeCode(username)
+  }
+}
+
 onBeforeMount(() => {
-  makeCode()
+  authApi.getLoginAuthSetting().then((res) => {
+    if (Object.keys(res.data).length > 0) {
+      authSetting.value = res.data;
+    } else {
+      authSetting.value = {
+        max_attempts: 1,
+        default_value: 'password',
+      }
+    }
+    const params = route.query
+    if (params.login_mode !== 'manual') {
+      const defaultMode = authSetting.value.default_value
+      if (['lark', 'wecom', 'dingtalk'].includes(defaultMode)) {
+        changeMode('QR_CODE', false)
+        defaultQrTab.value = defaultMode
+      } else {
+        changeMode(defaultMode, false)
+      }
+    }
+  })
 })
 
 const modeList = ref<string[]>([''])
@@ -241,6 +328,7 @@ function uuidv4() {
     return v.toString(16)
   })
 }
+
 const newDefaultSlogan = computed(() => {
   const default_login = '强大易用的企业级智能体平台'
   if (!theme.themeInfo?.slogan || default_login == theme.themeInfo?.slogan) {
@@ -249,58 +337,60 @@ const newDefaultSlogan = computed(() => {
     return theme.themeInfo?.slogan
   }
 })
-function redirectAuth(authType: string) {
+
+function redirectAuth(authType: string, needMessage: boolean = true) {
   if (authType === 'LDAP' || authType === '') {
     return
   }
   authApi.getAuthSetting(authType, loading).then((res: any) => {
-    if (!res.data) {
+    if (!res.data || !res.data.config) {
       return
     }
-    MsgConfirm(t('views.login.jump_tip'), '', {
-      confirmButtonText: t('views.login.jump'),
-      cancelButtonText: t('common.cancel'),
-      confirmButtonClass: '',
-    })
-      .then(() => {
-        if (!res.data.config) {
-          return
-        }
-        const config = res.data.config
-        const redirectUrl = eval(`\`${config.redirectUrl}\``)
-        let url
-        if (authType === 'CAS') {
-          url = config.ldpUri
-          if (url.indexOf('?') !== -1) {
-            url = `${config.ldpUri}&service=${encodeURIComponent(redirectUrl)}`
-          } else {
-            url = `${config.ldpUri}?service=${encodeURIComponent(redirectUrl)}`
-          }
-        }
-        if (authType === 'OIDC') {
-          const scope = config.scope || 'openid+profile+email'
-          url = `${config.authEndpoint}?client_id=${config.clientId}&redirect_uri=${redirectUrl}&response_type=code&scope=${scope}`
-          if (config.state) {
-            url += `&state=${config.state}`
-          }
-        }
-        if (authType === 'OAuth2') {
-          url =
-            `${config.authEndpoint}?client_id=${config.clientId}&response_type=code` +
-            `&redirect_uri=${redirectUrl}&state=${uuidv4()}`
-          if (config.scope) {
-            url += `&scope=${config.scope}`
-          }
-        }
-        if (url) {
-          window.location.href = url
-        }
+
+    const config = res.data.config
+    // 构造带查询参数的redirectUrl
+    const redirectUrl = `${config.redirectUrl}`
+    let url
+    if (authType === 'CAS') {
+      url = config.ldpUri
+      url +=
+        url.indexOf('?') !== -1
+          ? `&service=${encodeURIComponent(redirectUrl)}`
+          : `?service=${encodeURIComponent(redirectUrl)}`
+    } else if (authType === 'OIDC') {
+      const scope = config.scope || 'openid+profile+email'
+      url = `${config.authEndpoint}?client_id=${config.clientId}&redirect_uri=${redirectUrl}&response_type=code&scope=${scope}`
+      if (config.state) {
+        url += `&state=${config.state}`
+      }
+    } else if (authType === 'OAuth2') {
+      url = `${config.authEndpoint}?client_id=${config.clientId}&response_type=code&redirect_uri=${redirectUrl}&state=${uuidv4()}`
+      if (config.scope) {
+        url += `&scope=${config.scope}`
+      }
+    }
+    if (!url) {
+      return
+    }
+    if (needMessage) {
+      MsgConfirm(t('views.login.jump_tip'), '', {
+        confirmButtonText: t('views.login.jump'),
+        cancelButtonText: t('common.cancel'),
+        confirmButtonClass: '',
       })
-      .catch(() => {})
+        .then(() => {
+          window.location.href = url
+        })
+        .catch(() => {
+        })
+    } else {
+      console.log('url', url)
+      window.location.href = url
+    }
   })
 }
 
-function changeMode(val: string) {
+function changeMode(val: string, needMessage: boolean = true) {
   loginMode.value = val === 'LDAP' ? val : ''
   if (val === 'QR_CODE') {
     loginMode.value = val
@@ -313,7 +403,7 @@ function changeMode(val: string) {
     password: '',
     captcha: '',
   }
-  redirectAuth(val)
+  redirectAuth(val, needMessage)
   loginFormRef.value?.clearValidate()
 }
 
@@ -362,7 +452,6 @@ onBeforeMount(() => {
 declare const window: any
 
 onMounted(() => {
-  makeCode()
   const route = useRoute()
   const currentUrl = ref(route.fullPath)
   const params = new URLSearchParams(currentUrl.value.split('?')[1])
@@ -371,10 +460,10 @@ onMounted(() => {
   const handleDingTalk = () => {
     const code = params.get('corpId')
     if (code) {
-      dd.runtime.permission.requestAuthCode({ corpId: code }).then((res) => {
+      dd.runtime.permission.requestAuthCode({corpId: code}).then((res) => {
         console.log('DingTalk client request success:', res)
         login.dingOauth2Callback(res.code).then(() => {
-          router.push({ name: 'home' })
+          router.push({name: 'home'})
         })
       })
     }
@@ -387,7 +476,7 @@ onMounted(() => {
         appId: appId,
         success: (res: any) => {
           login.larkCallback(res.code).then(() => {
-            router.push({ name: 'home' })
+            router.push({name: 'home'})
           })
         },
         fail: (error: any) => {
@@ -407,11 +496,11 @@ onMounted(() => {
             scopeList: [],
             success: (res: any) => {
               login.larkCallback(res.code).then(() => {
-                router.push({ name: 'home' })
+                router.push({name: 'home'})
               })
             },
             fail: (error: any) => {
-              const { errno } = error
+              const {errno} = error
               if (errno === 103) {
                 callRequestAuthCode()
               }

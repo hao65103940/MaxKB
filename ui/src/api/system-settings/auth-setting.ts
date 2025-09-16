@@ -30,9 +30,31 @@ const putAuthSetting: (auth_type: string, data: any, loading?: Ref<boolean>) => 
 ) => {
   return put(`${prefix}/${auth_type}/info`, data, undefined, loading)
 }
+/**
+ * 登录设置
+ */
+const putLoginSetting: (data: any, loading?: Ref<boolean>) => Promise<Result<any>> = (
+  data,
+  loading
+) => {
+  return put(`${prefix}/setting`, data, undefined, loading)
+}
+/**
+ * 获取登录设置
+ */
+const getLoginSetting: (loading?: Ref<boolean>) => Promise<Result<any>> = (loading) => {
+  return get(`${prefix}/setting`, undefined, loading)
+}
+
+const getLoginAuthSetting: (loading?: Ref<boolean>) => Promise<Result<any>> = (loading) => {
+  return get(`login/auth/setting`, undefined, loading)
+}
 
 export default {
   getAuthSetting,
   postAuthSetting,
-  putAuthSetting
+  putAuthSetting,
+  putLoginSetting,
+  getLoginSetting,
+  getLoginAuthSetting
 }

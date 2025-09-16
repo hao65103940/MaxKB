@@ -229,7 +229,7 @@ const rules = ref<FormRules<LoginRequest>>({
   ],
   captcha: [
     {
-      required: true,
+      required: false,
       message: t('views.login.loginForm.captcha.requiredMessage'),
       trigger: 'blur',
     },
@@ -258,8 +258,8 @@ const loginHandle = () => {
   })
 }
 
-function makeCode() {
-  loginApi.getCaptcha().then((res: any) => {
+function makeCode(userrname?: string) {
+  loginApi.getCaptcha(userrname).then((res: any) => {
     identifyCode.value = res.data.captcha
   })
 }
