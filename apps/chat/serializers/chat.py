@@ -168,7 +168,7 @@ class PromptGenerateSerializer(serializers.Serializer):
         q = prompt.replace("{userInput}", message)
         messages[-1]['content'] = q
 
-        model_exist = QuerySet(Model).filter(workspace_id=workspace_id,
+        model_exist = QuerySet(Model).filter(
                                              id=model_id,
                                              model_type = "LLM"
                                              ).exists()
