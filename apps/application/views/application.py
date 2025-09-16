@@ -16,7 +16,6 @@ from rest_framework.views import APIView
 
 from application.api.application_api import ApplicationCreateAPI, ApplicationQueryAPI, ApplicationImportAPI, \
     ApplicationExportAPI, ApplicationOperateAPI, ApplicationEditAPI, TextToSpeechAPI, SpeechToTextAPI, PlayDemoTextAPI
-from application.flow.step_node.condition_node.compare import Compare
 from application.models import Application
 from application.serializers.application import ApplicationSerializer, Query, ApplicationOperateSerializer
 from common import result

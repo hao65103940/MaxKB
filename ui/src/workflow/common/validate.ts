@@ -10,9 +10,11 @@ const end_nodes: Array<string> = [
   WorkflowType.Application,
   WorkflowType.SpeechToTextNode,
   WorkflowType.TextToSpeechNode,
-    WorkflowType.ImageGenerateNode,
+  WorkflowType.ImageGenerateNode,
   WorkflowType.ImageToVideoGenerateNode,
   WorkflowType.TextToVideoGenerateNode,
+  WorkflowType.ImageGenerateNode,
+  WorkflowType.LoopBodyNode,
 ]
 export class WorkFlowInstance {
   nodes

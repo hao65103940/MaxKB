@@ -18,7 +18,6 @@ const getNodeName = (nodes: Array<any>, baseName: string) => {
   while (true) {
     if (index > 0) {
       name = baseName + index
-      console.log(name)
     }
     if (!nodes.some((node: any) => node.properties.stepName === name.trim())) {
       return name
@@ -85,7 +84,7 @@ class AppNode extends HtmlResize.view {
     if (!this.up_node_field_dict || !use_cache) {
       const up_node_list = this.props.graphModel.getNodeIncomingNode(this.props.model.id)
       this.up_node_field_dict = up_node_list
-        .filter((node) => node.id != 'start-node')
+        .filter((node) => node.id != 'start-node' && node.id != 'loop-start-node')
         .map((node) => node.get_up_node_field_dict(true, use_cache))
         .reduce((pre, next) => ({ ...pre, ...next }), {})
     }
@@ -103,9 +102,10 @@ class AppNode extends HtmlResize.view {
       (pre, next) => [...pre, ...next],
       [],
     )
-    const start_node_field_list = this.props.graphModel
-      .getNodeModelById('start-node')
-      .get_node_field_list()
+    const start_node_field_list = (
+      this.props.graphModel.getNodeModelById('start-node') ||
+      this.props.graphModel.getNodeModelById('loop-start-node')
+    ).get_node_field_list()
     return [...start_node_field_list, ...result]
   }
 
@@ -219,7 +219,15 @@ class AppNode extends HtmlResize.view {
 
     if (root) {
       if (isActive()) {
-        connect(this.targetId(), this.component, root, model, graphModel)
+        connect(
+          this.targetId(),
+          this.component,
+          root,
+          model,
+          graphModel,
+          undefined,
+          this.props.graphModel.get_provide,
+        )
       } else {
         this.r = h(this.component, {
           properties: this.props.model.properties,
@@ -395,7 +403,7 @@ class AppNodeModel extends HtmlResize.model {
     const anchors: any = []
 
     if (this.type !== WorkflowType.Base) {
-      if (this.type !== WorkflowType.Start) {
+      if (![WorkflowType.Start, WorkflowType.LoopStartNode.toString()].includes(this.type)) {
         anchors.push({
           x: x - width / 2 + 10,
           y: showNode ? y : y - 15,

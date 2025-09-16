@@ -187,6 +187,8 @@ class WorkflowManage:
                     is_result = False
                     if n.type == 'application-node':
                         is_result = True
+                    if n.type == 'loop-node':
+                        is_result = True
                     return {**n.properties.get('node_data'), 'form_data': start_node_data, 'node_data': start_node_data,
                             'child_node': self.child_node, 'is_result': is_result}
 
@@ -194,6 +196,12 @@ class WorkflowManage:
                                                           get_node_params=get_node_params)
                 self.start_node.valid_args(
                     {**self.start_node.node_params, 'form_data': start_node_data}, self.start_node.workflow_params)
+                if self.start_node.type == 'loop-node':
+                    loop_node_data = node_details.get('loop_node_data', {})
+                    self.start_node.context['loop_node_data'] = loop_node_data
+                    self.start_node.context['current_index'] = node_details.get('current_index')
+                    self.start_node.context['current_item'] = node_details.get('current_item')
+                    self.start_node.context['loop_answer_data'] = node_details.get('loop_answer_data', {})
                 if self.start_node.type == 'application-node':
                     application_node_dict = node_details.get('application_node_dict', {})
                     self.start_node.context['application_node_dict'] = application_node_dict
@@ -395,7 +403,8 @@ class WorkflowManage:
                                                                                 'child_node': child_node,
                                                                                 'node_is_end': node_is_end,
                                                                                 'real_node_id': real_node_id,
-                                                                                'reasoning_content': reasoning_content})
+                                                                                'reasoning_content': reasoning_content,
+                                                                                'node_status': "SUCCESS"})
                         current_node.node_chunk.add_chunk(chunk)
                     chunk = (self.base_to_response
                              .to_stream_chunk_response(self.params['chat_id'],
@@ -408,7 +417,8 @@ class WorkflowManage:
                                                                          'view_type': view_type,
                                                                          'child_node': child_node,
                                                                          'real_node_id': real_node_id,
-                                                                         'reasoning_content': ''}))
+                                                                         'reasoning_content': '',
+                                                                         'node_status': "SUCCESS"}))
                     current_node.node_chunk.add_chunk(chunk)
                 else:
                     list(result)
@@ -426,7 +436,8 @@ class WorkflowManage:
                                                                     'node_type': current_node.type,
                                                                     'view_type': current_node.view_type,
                                                                     'child_node': {},
-                                                                    'real_node_id': real_node_id})
+                                                                    'real_node_id': real_node_id,
+                                                                    'node_status': 'ERROR'})
             current_node.node_chunk.add_chunk(chunk)
             current_node.get_write_error_context(e)
             self.status = 500
@@ -500,6 +511,10 @@ class WorkflowManage:
             details_result[node.runtime_node_id] = details
         return details_result
 
+    def get_record_answer_list(self):
+        answer_text_list = self.get_answer_text_list()
+        return reduce(lambda pre, _n: [*pre, *_n], answer_text_list, [])
+
     def get_answer_text_list(self):
         result = []
         answer_list = reduce(lambda x, y: [*x, *y],
@@ -545,10 +560,6 @@ class WorkflowManage:
         up_node_id_list = [edge.sourceNodeId for edge in self.flow.edges if edge.targetNodeId == node_id]
         return all([any([self.dependent_node(up_node_id, node) for node in self.node_context]) for up_node_id in
                     up_node_id_list])
-
-    def get_up_node_id_list(self, node_id):
-        up_node_id_list = [edge.sourceNodeId for edge in self.flow.edges if edge.targetNodeId == node_id]
-        return up_node_id_list
 
     def get_next_node_list(self, current_node, current_node_result):
         """
@@ -634,6 +645,7 @@ class WorkflowManage:
             chatLabel = f"chat.{field.get('value')}"
             chatValue = f"context.get('chat').get('{field.get('value', '')}','')"
             prompt = prompt.replace(chatLabel, chatValue)
+
         return prompt
 
     def generate_prompt(self, prompt: str):

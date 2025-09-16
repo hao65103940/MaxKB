@@ -334,7 +334,9 @@ const nodeFields = computed(() => {
 })
 
 function showOperate(type: string) {
-  return type !== WorkflowType.Base && type !== WorkflowType.Start
+  return ![WorkflowType.Start, WorkflowType.Base, WorkflowType.LoopStartNode.toString()].includes(
+    type,
+  )
 }
 const openNodeMenu = (anchorValue: any) => {
   showAnchor.value = true

@@ -58,6 +58,7 @@ export default {
     ReferencingError: '引用变量错误',
     NoReferencing: '不存在的引用变量',
     placeholder: '请选择变量',
+    loop: '循环变量',
   },
   condition: {
     title: '执行条件',
