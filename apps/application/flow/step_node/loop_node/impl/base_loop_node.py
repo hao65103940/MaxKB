@@ -159,8 +159,8 @@ def loop(workflow_manage_new_instance, node: INode, generate_loop):
                 'runtime_node_id': runtime_node_id,
                 'chat_record_id': chat_record_id,
                 'child_node': child_node}
-            content_chunk = chunk.get('content', '')
-            reasoning_content_chunk = chunk.get('reasoning_content', '')
+            content_chunk = (chunk.get('content', '') or '')
+            reasoning_content_chunk = (chunk.get('reasoning_content', '') or '')
             reasoning_content += reasoning_content_chunk
             answer += content_chunk
             yield chunk

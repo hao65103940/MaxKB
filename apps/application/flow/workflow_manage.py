@@ -381,6 +381,7 @@ class WorkflowManage:
                         child_node = {}
                         node_is_end = False
                         view_type = current_node.view_type
+                        node_type = current_node.type
                         if isinstance(r, dict):
                             content = r.get('content')
                             child_node = {'runtime_node_id': r.get('runtime_node_id'),
@@ -390,6 +391,8 @@ class WorkflowManage:
                                 real_node_id = r.get('real_node_id')
                             if r.__contains__('node_is_end'):
                                 node_is_end = r.get('node_is_end')
+                            if r.__contains__('node_type'):
+                                node_type = r.get("node_type")
                             view_type = r.get('view_type')
                             reasoning_content = r.get('reasoning_content')
                         chunk = self.base_to_response.to_stream_chunk_response(self.params['chat_id'],
@@ -397,7 +400,7 @@ class WorkflowManage:
                                                                                current_node.id,
                                                                                current_node.up_node_id_list,
                                                                                content, False, 0, 0,
-                                                                               {'node_type': current_node.type,
+                                                                               {'node_type': node_type,
                                                                                 'runtime_node_id': runtime_node_id,
                                                                                 'view_type': view_type,
                                                                                 'child_node': child_node,

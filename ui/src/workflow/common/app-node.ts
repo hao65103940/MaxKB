@@ -383,6 +383,9 @@ class AppNodeModel extends HtmlResize.model {
     this.sourceRules.push({
       message: t('views.applicationWorkflow.tip.notRecyclable'),
       validate: (sourceNode: any, targetNode: any, sourceAnchor: any, targetAnchor: any) => {
+        if (targetNode.id == sourceNode.id) {
+          return false
+        }
         const up_node_list = this.graphModel.getNodeIncomingNode(targetNode.id)
         const is_c = up_node_list.find((up_node) => up_node.id == sourceNode.id)
         return !is_c && !isLoop(sourceNode.id, targetNode.id)

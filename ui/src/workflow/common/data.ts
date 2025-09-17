@@ -466,9 +466,9 @@ export const loopBodyNode = {
   type: WorkflowType.LoopBodyNode,
   text: t('views.applicationWorkflow.nodes.loopBodyNode.text', '循环体'),
   label: t('views.applicationWorkflow.nodes.loopBodyNode.label', '循环体'),
-  height: 600,
+  height: 1080,
   properties: {
-    width: 1800,
+    width: 1920,
     stepName: t('views.applicationWorkflow.nodes.loopBodyNode.label', '循环体'),
     config: {
       fields: [],
@@ -550,11 +550,14 @@ export const applicationLoopMenuNodes = [
     label: t('views.applicationWorkflow.nodes.classify.aiCapability'),
     list: [
       aiChatNode,
+      intentNode,
       questionNode,
       imageGenerateNode,
       imageUnderstandNode,
       textToSpeechNode,
       speechToTextNode,
+      textToVideoNode,
+      imageToVideoNode,
     ],
   },
   { label: t('views.knowledge.title'), list: [searchKnowledgeNode, rerankerNode] },

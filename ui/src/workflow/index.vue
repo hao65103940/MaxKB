@@ -85,6 +85,7 @@ const renderGraphData = (data?: any) => {
       AppEdge,
       loopEdge,
     ])
+
     lf.value.setDefaultEdgeType('app-edge')
 
     lf.value.render(data ? data : {})

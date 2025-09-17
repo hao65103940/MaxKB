@@ -7,7 +7,7 @@
     >
       <div v-resize="resizeStepContainer">
         <div class="flex-between">
-          <div class="flex align-center" style="width: 600px">
+          <div class="flex align-center">
             <component
               :is="iconComponent(`${nodeModel.type}-icon`)"
               class="mr-8"
