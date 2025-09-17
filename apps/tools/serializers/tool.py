@@ -840,7 +840,6 @@ class ToolSerializer(serializers.Serializer):
             )
             res = requests.get(self.data.get('download_url'), timeout=5)
             tool_data = RestrictedUnpickler(io.BytesIO(res.content)).load().tool
-            tool.name = tool_data.get('name')
             tool.desc = tool_data.get('desc')
             tool.code = tool_data.get('code')
             tool.input_field_list = tool_data.get('input_field_list', [])
