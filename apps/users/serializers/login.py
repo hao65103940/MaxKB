@@ -43,7 +43,7 @@ class LoginResponse(serializers.Serializer):
     token = serializers.CharField(required=True, label=_("token"))
 
 
-def record_login_fail(username: str, expire: int = 3600):
+def record_login_fail(username: str, expire: int = 600):
     """记录登录失败次数"""
     if not username:
         return
