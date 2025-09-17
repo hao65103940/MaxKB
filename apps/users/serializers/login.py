@@ -99,7 +99,7 @@ class LoginSerializer(serializers.Serializer):
             if captcha_cache is None or captcha.lower() != captcha_cache:
                 raise AppApiException(1005, _("Captcha code error or expiration"))
 
-        user = QuerySet(User).filter(username=username, password=password_encrypt(password)).first()
+        user = QuerySet(User).filter(username=username, password=password).first()
         if user is None:
             record_login_fail(username)
             raise AppApiException(500, _('The username or password is incorrect'))
