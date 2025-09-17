@@ -287,245 +287,254 @@ function handleUsernameBlur(username: string) {
 }
 
 onBeforeMount(() => {
-  authApi.getLoginAuthSetting().then((res) => {
-    if (Object.keys(res.data).length > 0) {
-      authSetting.value = res.data;
+  user.asyncGetProfile().then((res) => {
+    // 企业版和专业版：第三方登录
+    if (user.isPE() || user.isEE()) {
+      authApi.getLoginAuthSetting().then((res) => {
+        if (Object.keys(res.data).length > 0) {
+          authSetting.value = res.data;
+        } else {
+          authSetting.value = {
+            max_attempts: 1,
+            default_value: 'password',
+          }
+        }
+        const params = route.query
+        if (params.login_mode !== 'manual') {
+          const defaultMode = authSetting.value.default_value
+          if (['lark', 'wecom', 'dingtalk'].includes(defaultMode)) {
+            changeMode('QR_CODE', false)
+            defaultQrTab.value = defaultMode
+          } else {
+            changeMode(defaultMode, false)
+          }
+        }
+      })
     } else {
       authSetting.value = {
         max_attempts: 1,
         default_value: 'password',
       }
     }
-    const params = route.query
-    if (params.login_mode !== 'manual') {
-      const defaultMode = authSetting.value.default_value
-      if (['lark', 'wecom', 'dingtalk'].includes(defaultMode)) {
-        changeMode('QR_CODE', false)
-        defaultQrTab.value = defaultMode
+  })
+
+  const modeList = ref<string[]>([''])
+  const QrList = ref<any[]>([''])
+  const loginMode = ref('')
+  const showQrCodeTab = ref(false)
+
+  interface qrOption {
+    key: string
+    value: string
+  }
+
+  const orgOptions = ref<qrOption[]>([])
+
+  function uuidv4() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+      const r = (Math.random() * 16) | 0
+      const v = c === 'x' ? r : (r & 0x3) | 0x8
+      return v.toString(16)
+    })
+  }
+
+  const newDefaultSlogan = computed(() => {
+    const default_login = '强大易用的企业级智能体平台'
+    if (!theme.themeInfo?.slogan || default_login == theme.themeInfo?.slogan) {
+      return t('theme.defaultSlogan')
+    } else {
+      return theme.themeInfo?.slogan
+    }
+  })
+
+  function redirectAuth(authType: string, needMessage: boolean = true) {
+    if (authType === 'LDAP' || authType === '') {
+      return
+    }
+    authApi.getLoginViewAuthSetting(authType, loading).then((res: any) => {
+      if (!res.data || !res.data.config) {
+        return
+      }
+
+      const config = res.data.config
+      // 构造带查询参数的redirectUrl
+      const redirectUrl = `${config.redirectUrl}`
+      let url
+      if (authType === 'CAS') {
+        url = config.ldpUri
+        url +=
+          url.indexOf('?') !== -1
+            ? `&service=${encodeURIComponent(redirectUrl)}`
+            : `?service=${encodeURIComponent(redirectUrl)}`
+      } else if (authType === 'OIDC') {
+        const scope = config.scope || 'openid+profile+email'
+        url = `${config.authEndpoint}?client_id=${config.clientId}&redirect_uri=${redirectUrl}&response_type=code&scope=${scope}`
+        if (config.state) {
+          url += `&state=${config.state}`
+        }
+      } else if (authType === 'OAuth2') {
+        url = `${config.authEndpoint}?client_id=${config.clientId}&response_type=code&redirect_uri=${redirectUrl}&state=${uuidv4()}`
+        if (config.scope) {
+          url += `&scope=${config.scope}`
+        }
+      }
+      if (!url) {
+        return
+      }
+      if (needMessage) {
+        MsgConfirm(t('views.login.jump_tip'), '', {
+          confirmButtonText: t('views.login.jump'),
+          cancelButtonText: t('common.cancel'),
+          confirmButtonClass: '',
+        })
+          .then(() => {
+            window.location.href = url
+          })
+          .catch(() => {
+          })
       } else {
-        changeMode(defaultMode, false)
+        console.log('url', url)
+        window.location.href = url
       }
-    }
-  })
-})
-
-const modeList = ref<string[]>([''])
-const QrList = ref<any[]>([''])
-const loginMode = ref('')
-const showQrCodeTab = ref(false)
-
-interface qrOption {
-  key: string
-  value: string
-}
-
-const orgOptions = ref<qrOption[]>([])
-
-function uuidv4() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-    const r = (Math.random() * 16) | 0
-    const v = c === 'x' ? r : (r & 0x3) | 0x8
-    return v.toString(16)
-  })
-}
-
-const newDefaultSlogan = computed(() => {
-  const default_login = '强大易用的企业级智能体平台'
-  if (!theme.themeInfo?.slogan || default_login == theme.themeInfo?.slogan) {
-    return t('theme.defaultSlogan')
-  } else {
-    return theme.themeInfo?.slogan
+    })
   }
-})
 
-function redirectAuth(authType: string, needMessage: boolean = true) {
-  if (authType === 'LDAP' || authType === '') {
-    return
-  }
-  authApi.getAuthSetting(authType, loading).then((res: any) => {
-    if (!res.data || !res.data.config) {
+  function changeMode(val: string, needMessage: boolean = true) {
+    loginMode.value = val === 'LDAP' ? val : ''
+    if (val === 'QR_CODE') {
+      loginMode.value = val
+      showQrCodeTab.value = true
       return
     }
-
-    const config = res.data.config
-    // 构造带查询参数的redirectUrl
-    const redirectUrl = `${config.redirectUrl}`
-    let url
-    if (authType === 'CAS') {
-      url = config.ldpUri
-      url +=
-        url.indexOf('?') !== -1
-          ? `&service=${encodeURIComponent(redirectUrl)}`
-          : `?service=${encodeURIComponent(redirectUrl)}`
-    } else if (authType === 'OIDC') {
-      const scope = config.scope || 'openid+profile+email'
-      url = `${config.authEndpoint}?client_id=${config.clientId}&redirect_uri=${redirectUrl}&response_type=code&scope=${scope}`
-      if (config.state) {
-        url += `&state=${config.state}`
-      }
-    } else if (authType === 'OAuth2') {
-      url = `${config.authEndpoint}?client_id=${config.clientId}&response_type=code&redirect_uri=${redirectUrl}&state=${uuidv4()}`
-      if (config.scope) {
-        url += `&scope=${config.scope}`
-      }
+    showQrCodeTab.value = false
+    loginForm.value = {
+      username: '',
+      password: '',
+      captcha: '',
     }
-    if (!url) {
-      return
-    }
-    if (needMessage) {
-      MsgConfirm(t('views.login.jump_tip'), '', {
-        confirmButtonText: t('views.login.jump'),
-        cancelButtonText: t('common.cancel'),
-        confirmButtonClass: '',
-      })
-        .then(() => {
-          window.location.href = url
-        })
-        .catch(() => {
-        })
-    } else {
-      console.log('url', url)
-      window.location.href = url
-    }
-  })
-}
-
-function changeMode(val: string, needMessage: boolean = true) {
-  loginMode.value = val === 'LDAP' ? val : ''
-  if (val === 'QR_CODE') {
-    loginMode.value = val
-    showQrCodeTab.value = true
-    return
+    redirectAuth(val, needMessage)
+    loginFormRef.value?.clearValidate()
   }
-  showQrCodeTab.value = false
-  loginForm.value = {
-    username: '',
-    password: '',
-    captcha: '',
-  }
-  redirectAuth(val, needMessage)
-  loginFormRef.value?.clearValidate()
-}
 
-onBeforeMount(() => {
-  loading.value = true
-  user.asyncGetProfile().then((res) => {
-    // 企业版和专业版：第三方登录
-    if (user.isPE() || user.isEE()) {
-      login
-        .getAuthType()
-        .then((res) => {
-          //如果结果包含LDAP，把LDAP放在第一个
-          const ldapIndex = res.indexOf('LDAP')
-          if (ldapIndex !== -1) {
-            const [ldap] = res.splice(ldapIndex, 1)
-            res.unshift(ldap)
-          }
-          modeList.value = [...modeList.value, ...res]
-        })
-        .finally(() => (loading.value = false))
-      login
-        .getQrType()
-        .then((res) => {
-          if (res.length > 0) {
-            modeList.value = ['QR_CODE', ...modeList.value]
-            QrList.value = res
-            QrList.value.forEach((item) => {
-              orgOptions.value.push({
-                key: item,
-                value:
-                  item === 'wecom'
-                    ? t('views.system.authentication.scanTheQRCode.wecom')
-                    : item === 'dingtalk'
-                      ? t('views.system.authentication.scanTheQRCode.dingtalk')
-                      : t('views.system.authentication.scanTheQRCode.lark'),
+  onBeforeMount(() => {
+    loading.value = true
+    user.asyncGetProfile().then((res) => {
+      // 企业版和专业版：第三方登录
+      if (user.isPE() || user.isEE()) {
+        login
+          .getAuthType()
+          .then((res) => {
+            //如果结果包含LDAP，把LDAP放在第一个
+            const ldapIndex = res.indexOf('LDAP')
+            if (ldapIndex !== -1) {
+              const [ldap] = res.splice(ldapIndex, 1)
+              res.unshift(ldap)
+            }
+            modeList.value = [...modeList.value, ...res]
+          })
+          .finally(() => (loading.value = false))
+        login
+          .getQrType()
+          .then((res) => {
+            if (res.length > 0) {
+              modeList.value = ['QR_CODE', ...modeList.value]
+              QrList.value = res
+              QrList.value.forEach((item) => {
+                orgOptions.value.push({
+                  key: item,
+                  value:
+                    item === 'wecom'
+                      ? t('views.system.authentication.scanTheQRCode.wecom')
+                      : item === 'dingtalk'
+                        ? t('views.system.authentication.scanTheQRCode.dingtalk')
+                        : t('views.system.authentication.scanTheQRCode.lark'),
+                })
               })
-            })
-          }
-        })
-        .finally(() => (loading.value = false))
-    } else {
-      loading.value = false
-    }
+            }
+          })
+          .finally(() => (loading.value = false))
+      } else {
+        loading.value = false
+      }
+    })
   })
-})
-declare const window: any
+  declare const window: any
 
-onMounted(() => {
-  const route = useRoute()
-  const currentUrl = ref(route.fullPath)
-  const params = new URLSearchParams(currentUrl.value.split('?')[1])
-  const client = params.get('client')
+  onMounted(() => {
+    const route = useRoute()
+    const currentUrl = ref(route.fullPath)
+    const params = new URLSearchParams(currentUrl.value.split('?')[1])
+    const client = params.get('client')
 
-  const handleDingTalk = () => {
-    const code = params.get('corpId')
-    if (code) {
-      dd.runtime.permission.requestAuthCode({corpId: code}).then((res) => {
-        console.log('DingTalk client request success:', res)
-        login.dingOauth2Callback(res.code).then(() => {
-          router.push({name: 'home'})
-        })
-      })
-    }
-  }
-
-  const handleLark = () => {
-    const appId = params.get('appId')
-    const callRequestAuthCode = () => {
-      window.tt?.requestAuthCode({
-        appId: appId,
-        success: (res: any) => {
-          login.larkCallback(res.code).then(() => {
+    const handleDingTalk = () => {
+      const code = params.get('corpId')
+      if (code) {
+        dd.runtime.permission.requestAuthCode({corpId: code}).then((res) => {
+          console.log('DingTalk client request success:', res)
+          login.dingOauth2Callback(res.code).then(() => {
             router.push({name: 'home'})
           })
-        },
-        fail: (error: any) => {
-          MsgError(error)
-        },
-      })
+        })
+      }
     }
 
-    loadScript('https://lf-scm-cn.feishucdn.com/lark/op/h5-js-sdk-1.5.35.js', {
-      jsId: 'lark-sdk',
-      forceReload: true,
-    })
-      .then(() => {
-        if (window.tt) {
-          window.tt.requestAccess({
-            appID: appId,
-            scopeList: [],
-            success: (res: any) => {
-              login.larkCallback(res.code).then(() => {
-                router.push({name: 'home'})
-              })
-            },
-            fail: (error: any) => {
-              const {errno} = error
-              if (errno === 103) {
-                callRequestAuthCode()
-              }
-            },
-          })
-        } else {
-          callRequestAuthCode()
-        }
-      })
-      .catch((error) => {
-        console.error('SDK 加载失败:', error)
-      })
-  }
+    const handleLark = () => {
+      const appId = params.get('appId')
+      const callRequestAuthCode = () => {
+        window.tt?.requestAuthCode({
+          appId: appId,
+          success: (res: any) => {
+            login.larkCallback(res.code).then(() => {
+              router.push({name: 'home'})
+            })
+          },
+          fail: (error: any) => {
+            MsgError(error)
+          },
+        })
+      }
 
-  switch (client) {
-    case 'dingtalk':
-      handleDingTalk()
-      break
-    case 'lark':
-      handleLark()
-      break
-    default:
-      break
-  }
-})
+      loadScript('https://lf-scm-cn.feishucdn.com/lark/op/h5-js-sdk-1.5.35.js', {
+        jsId: 'lark-sdk',
+        forceReload: true,
+      })
+        .then(() => {
+          if (window.tt) {
+            window.tt.requestAccess({
+              appID: appId,
+              scopeList: [],
+              success: (res: any) => {
+                login.larkCallback(res.code).then(() => {
+                  router.push({name: 'home'})
+                })
+              },
+              fail: (error: any) => {
+                const {errno} = error
+                if (errno === 103) {
+                  callRequestAuthCode()
+                }
+              },
+            })
+          } else {
+            callRequestAuthCode()
+          }
+        })
+        .catch((error) => {
+          console.error('SDK 加载失败:', error)
+        })
+    }
+
+    switch (client) {
+      case 'dingtalk':
+        handleDingTalk()
+        break
+      case 'lark':
+        handleLark()
+        break
+      default:
+        break
+    }
+  })
 </script>
 <style lang="scss" scoped>
 .login-gradient-divider {
