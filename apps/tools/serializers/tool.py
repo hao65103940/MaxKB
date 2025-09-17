@@ -789,7 +789,7 @@ class ToolSerializer(serializers.Serializer):
             tool_id = uuid.uuid7()
             tool = Tool(
                 id=tool_id,
-                name=tool_data.get('name'),
+                name=instance.get('name'),
                 desc=tool_data.get('desc'),
                 code=tool_data.get('code'),
                 user_id=self.data.get('user_id'),
