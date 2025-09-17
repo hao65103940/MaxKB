@@ -69,6 +69,7 @@ class AuthProfileSerializer(serializers.Serializer):
             application_setting = QuerySet(application_setting_model).filter(application_id=application_id).first()
             types = QuerySet(chat_platform).filter(is_active=True, is_valid=True).values_list('auth_type', flat=True)
             login_value = application_access_token.authentication_value.get('login_value', [])
+            max_attempts = application_access_token.authentication_value.get('max_attempts', 1)
             final_login_value = list(set(login_value) & set(types))
             if 'LOCAL' in login_value:
                 final_login_value.insert(0, 'LOCAL')
@@ -80,6 +81,7 @@ class AuthProfileSerializer(serializers.Serializer):
                     'authentication': application_access_token.authentication,
                     'authentication_type': application_access_token.authentication_value.get(
                         'type', 'password'),
+                    'max_attempts': max_attempts,
                     'login_value': final_login_value
                 }
         return profile
