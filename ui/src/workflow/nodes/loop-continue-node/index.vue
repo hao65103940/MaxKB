@@ -1,105 +1,107 @@
 <template>
   <NodeContainer :nodeModel="nodeModel">
-    <el-form
-      :model="form_data"
-      label-position="top"
-      require-asterisk-position="right"
-      label-width="auto"
-      ref="ContinueFromRef"
-      @submit.prevent
-    >
-      <div class="handle flex-between lighter">
-        <div class="info" v-if="form_data.condition_list.length > 1">
-          <span>{{ $t('views.applicationWorkflow.nodes.conditionNode.conditions.info') }}</span>
-          <el-select
-            :teleported="false"
-            v-model="form_data.condition"
-            size="small"
-            style="width: 60px; margin: 0 8px"
-          >
-            <el-option :label="$t('views.applicationWorkflow.condition.AND')" value="and" />
-            <el-option :label="$t('views.applicationWorkflow.condition.OR')" value="or" />
-          </el-select>
-          <span>{{ $t('views.applicationWorkflow.nodes.conditionNode.conditions.label') }}</span>
+    <el-card shadow="never" class="card-never" style="--el-card-padding: 12px">
+      <el-form
+        :model="form_data"
+        label-position="top"
+        require-asterisk-position="right"
+        label-width="auto"
+        ref="ContinueFromRef"
+        @submit.prevent
+      >
+        <div class="handle flex-between lighter mb-8">
+          <div class="info" v-if="form_data.condition_list.length > 1">
+            <span>{{ $t('views.applicationWorkflow.nodes.conditionNode.conditions.info') }}</span>
+            <el-select
+              :teleported="false"
+              v-model="form_data.condition"
+              size="small"
+              style="width: 60px; margin: 0 8px"
+            >
+              <el-option :label="$t('views.applicationWorkflow.condition.AND')" value="and" />
+              <el-option :label="$t('views.applicationWorkflow.condition.OR')" value="or" />
+            </el-select>
+            <span>{{ $t('views.applicationWorkflow.nodes.conditionNode.conditions.label') }}</span>
+          </div>
         </div>
-      </div>
-      <template v-for="(condition, index) in form_data.condition_list" :key="index">
-        <el-row :gutter="8">
-          <el-col :span="11">
-            <el-form-item
-              :prop="'condition_list.' + index + '.field'"
-              :rules="{
-                type: 'array',
-                required: true,
-                message: $t('views.applicationWorkflow.variable.placeholder'),
-                trigger: 'change',
-              }"
-            >
-              <NodeCascader
-                ref="nodeCascaderRef"
-                :nodeModel="nodeModel"
-                class="w-full"
-                :placeholder="$t('views.applicationWorkflow.variable.placeholder')"
-                v-model="condition.field"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item
-              :prop="'condition_list.' + index + '.compare'"
-              :rules="{
-                required: true,
-                message: $t(
-                  'views.applicationWorkflow.nodes.conditionNode.conditions.requiredMessage',
-                ),
-                trigger: 'change',
-              }"
-            >
-              <el-select
-                @wheel="wheel"
-                :teleported="false"
-                v-model="condition.compare"
-                :placeholder="
-                  $t('views.applicationWorkflow.nodes.conditionNode.conditions.requiredMessage')
-                "
-                clearable
+        <template v-for="(condition, index) in form_data.condition_list" :key="index">
+          <el-row :gutter="8">
+            <el-col :span="11">
+              <el-form-item
+                :prop="'condition_list.' + index + '.field'"
+                :rules="{
+                  type: 'array',
+                  required: true,
+                  message: $t('views.applicationWorkflow.variable.placeholder'),
+                  trigger: 'change',
+                }"
               >
-                <template v-for="(item, index) in compareList" :key="index">
-                  <el-option :label="item.label" :value="item.value" />
-                </template>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item
-              v-if="
-                !['is_null', 'is_not_null', 'is_true', 'is_not_true'].includes(condition.compare)
-              "
-              :prop="'condition_list.' + index + '.value'"
-              :rules="{
-                required: true,
-                message: $t('views.applicationWorkflow.nodes.conditionNode.valueMessage'),
-                trigger: 'blur',
-              }"
-            >
-              <el-input
-                v-model="condition.value"
-                :placeholder="$t('views.applicationWorkflow.nodes.conditionNode.valueMessage')"
-              />
-            </el-form-item>
-          </el-col>
-          <el-col :span="1">
-            <el-button link type="info" class="mt-4" @click="deleteCondition(index)">
-              <AppIcon iconName="app-delete"></AppIcon>
-            </el-button>
-          </el-col>
-        </el-row> </template
-    ></el-form>
+                <NodeCascader
+                  ref="nodeCascaderRef"
+                  :nodeModel="nodeModel"
+                  class="w-full"
+                  :placeholder="$t('views.applicationWorkflow.variable.placeholder')"
+                  v-model="condition.field"
+                />
+              </el-form-item>
+            </el-col>
+            <el-col :span="6">
+              <el-form-item
+                :prop="'condition_list.' + index + '.compare'"
+                :rules="{
+                  required: true,
+                  message: $t(
+                    'views.applicationWorkflow.nodes.conditionNode.conditions.requiredMessage',
+                  ),
+                  trigger: 'change',
+                }"
+              >
+                <el-select
+                  @wheel="wheel"
+                  :teleported="false"
+                  v-model="condition.compare"
+                  :placeholder="
+                    $t('views.applicationWorkflow.nodes.conditionNode.conditions.requiredMessage')
+                  "
+                  clearable
+                >
+                  <template v-for="(item, index) in compareList" :key="index">
+                    <el-option :label="item.label" :value="item.value" />
+                  </template>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="6">
+              <el-form-item
+                v-if="
+                  !['is_null', 'is_not_null', 'is_true', 'is_not_true'].includes(condition.compare)
+                "
+                :prop="'condition_list.' + index + '.value'"
+                :rules="{
+                  required: true,
+                  message: $t('views.applicationWorkflow.nodes.conditionNode.valueMessage'),
+                  trigger: 'blur',
+                }"
+              >
+                <el-input
+                  v-model="condition.value"
+                  :placeholder="$t('views.applicationWorkflow.nodes.conditionNode.valueMessage')"
+                />
+              </el-form-item>
+            </el-col>
+            <el-col :span="1">
+              <el-button link type="info" class="mt-4" @click="deleteCondition(index)">
+                <AppIcon iconName="app-delete"></AppIcon>
+              </el-button>
+            </el-col>
+          </el-row> </template
+      ></el-form>
 
-    <el-button link type="primary" @click="addCondition()">
-      <AppIcon iconName="app-add-outlined" class="mr-4"></AppIcon>
-      {{ $t('views.applicationWorkflow.nodes.conditionNode.addCondition') }}
-    </el-button>
+      <el-button link type="primary" @click="addCondition()">
+        <AppIcon iconName="app-add-outlined" class="mr-4"></AppIcon>
+        {{ $t('views.applicationWorkflow.nodes.conditionNode.addCondition') }}
+      </el-button>
+    </el-card>
   </NodeContainer>
 </template>
 

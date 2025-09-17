@@ -10,44 +10,37 @@
         ref="replyNodeFormRef"
       >
         <el-form-item
-          :label="$t('views.applicationWorkflow.nodes.loopNode.loopType.label', '循环类型')"
+          :label="$t('views.applicationWorkflow.nodes.loopNode.loopType.label')"
           @click.prevent
+          prop="loop_type"
+          :rules="{
+            message: $t('views.applicationWorkflow.nodes.loopNode.loopType.requiredMessage'),
+            trigger: 'change',
+            required: true,
+          }"
         >
-          <template #label>
-            <div class="flex align-center">
-              <div class="mr-4">
-                <span
-                  >{{ $t('views.applicationWorkflow.nodes.loopNode.loopType.label', '循环类型')
-                  }}<span class="danger">*</span></span
-                >
-              </div>
-            </div>
-          </template>
           <el-select v-model="form_data.loop_type" type="small">
             <el-option
-              :label="$t('views.applicationWorkflow.nodes.loopNode.array', '数组循环')"
+              :label="$t('views.applicationWorkflow.nodes.loopNode.loopType.arrayLoop')"
               value="ARRAY"
             />
             <el-option
-              :label="$t('views.applicationWorkflow.nodes.loopNode.number', '指定次数循环')"
+              :label="$t('views.applicationWorkflow.nodes.loopNode.loopType.numberLoop')"
               value="NUMBER"
             />
             <el-option
-              :label="$t('views.applicationWorkflow.nodes.loopNode.loop', '无限循环')"
+              :label="$t('views.applicationWorkflow.nodes.loopNode.loopType.infiniteLoop')"
               value="LOOP"
             />
           </el-select>
         </el-form-item>
         <el-form-item
           v-if="form_data.loop_type == 'ARRAY'"
-          :label="$t('views.applicationWorkflow.nodes.loopNode.loopType.label', '循环数组')"
+          :label="$t('views.applicationWorkflow.nodes.loopNode.loopArray.label')"
           @click.prevent
           prop="array"
           :rules="{
-            message: $t(
-              'views.applicationWorkflow.nodes.loopNode.array.requiredMessage',
-              '循环数组必填',
-            ),
+            message: $t('views.applicationWorkflow.nodes.loopNode.loopArray.requiredMessage'),
             trigger: 'blur',
             required: true,
           }"
@@ -56,22 +49,17 @@
             ref="nodeCascaderRef"
             :nodeModel="nodeModel"
             class="w-full"
-            :placeholder="
-              $t('views.applicationWorkflow.nodes.loopNode.array.placeholder', '请选择循环数组')
-            "
+            :placeholder="$t('views.applicationWorkflow.nodes.loopNode.loopArray.placeholder')"
             v-model="form_data.array"
           />
         </el-form-item>
         <el-form-item
           v-else-if="form_data.loop_type == 'NUMBER'"
-          :label="$t('views.applicationWorkflow.nodes.loopNode.loopType.label', '循环数组')"
+          :label="$t('views.applicationWorkflow.nodes.loopNode.loopArray.label')"
           @click.prevent
           prop="number"
           :rules="{
-            message: $t(
-              'views.applicationWorkflow.nodes.loopNode.array.requiredMessage',
-              '循环数组必填',
-            ),
+            message: $t('views.applicationWorkflow.nodes.loopNode.loopArray.requiredMessage'),
             trigger: 'blur',
             required: true,
           }"

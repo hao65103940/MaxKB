@@ -48,7 +48,6 @@ export const baseNode = {
     node_data: {
       name: '',
       desc: '',
-      // @ts-ignore
       prologue: t('views.application.form.defaultPrologue'),
       tts_type: 'BROWSER',
     },
@@ -390,15 +389,15 @@ export const loopStartNode = {
   y: 3340,
   properties: {
     height: 364,
-    stepName: t('views.applicationWorkflow.nodes.loopStartNode.label', '循环开始'),
+    stepName: t('views.applicationWorkflow.nodes.loopStartNode.label'),
     config: {
       fields: [
         {
-          label: t('views.applicationWorkflow.nodes.startNode.index', '下标'),
+          label: t('views.applicationWorkflow.nodes.loopStartNode.loopIndex'),
           value: 'index',
         },
         {
-          label: t('views.applicationWorkflow.nodes.startNode.item', '循环元素'),
+          label: t('views.applicationWorkflow.nodes.loopStartNode.loopItem'),
           value: 'item',
         },
       ],
@@ -411,11 +410,11 @@ export const loopStartNode = {
 export const loopNode = {
   type: WorkflowType.LoopNode,
   visible: false,
-  text: t('views.applicationWorkflow.nodes.loopNode.text', '循环节点'),
-  label: t('views.applicationWorkflow.nodes.loopNode.label', '循环节点'),
+  text: t('views.applicationWorkflow.nodes.loopNode.text'),
+  label: t('views.applicationWorkflow.nodes.loopNode.label'),
   height: 252,
   properties: {
-    stepName: t('views.applicationWorkflow.nodes.loopNode.label', '循环节点'),
+    stepName: t('views.applicationWorkflow.nodes.loopNode.label'),
     workflow: {
       edges: [],
       nodes: [
@@ -464,12 +463,12 @@ export const imageToVideoNode = {
 
 export const loopBodyNode = {
   type: WorkflowType.LoopBodyNode,
-  text: t('views.applicationWorkflow.nodes.loopBodyNode.text', '循环体'),
-  label: t('views.applicationWorkflow.nodes.loopBodyNode.label', '循环体'),
+  text: t('views.applicationWorkflow.nodes.loopBodyNode.text'),
+  label: t('views.applicationWorkflow.nodes.loopBodyNode.label'),
   height: 1080,
   properties: {
     width: 1920,
-    stepName: t('views.applicationWorkflow.nodes.loopBodyNode.label', '循环体'),
+    stepName: t('views.applicationWorkflow.nodes.loopBodyNode.label'),
     config: {
       fields: [],
     },
@@ -477,12 +476,12 @@ export const loopBodyNode = {
 }
 export const loopContinueNode = {
   type: WorkflowType.LoopContinueNode,
-  text: t('views.applicationWorkflow.nodes.continueNode.text', '跳过'),
-  label: t('views.applicationWorkflow.nodes.continueNode.label', '跳过'),
+  text: t('views.applicationWorkflow.nodes.loopContinueNode.text'),
+  label: t('views.applicationWorkflow.nodes.loopContinueNode.label'),
   height: 600,
   properties: {
-    width: 500,
-    stepName: t('views.applicationWorkflow.nodes.continueNode.label', '跳过'),
+    width: 600,
+    stepName: t('views.applicationWorkflow.nodes.loopContinueNode.label'),
     config: {
       fields: [],
     },
@@ -509,11 +508,12 @@ export const textToVideoNode = {
 
 export const loopBreakNode = {
   type: WorkflowType.LoopBreakNode,
-  text: t('views.applicationWorkflow.nodes.breakNode.text', '退出循环'),
-  label: t('views.applicationWorkflow.nodes.breakNode.label', '退出循环'),
+  text: t('views.applicationWorkflow.nodes.loopBreakNode.text'),
+  label: t('views.applicationWorkflow.nodes.loopBreakNode.label'),
   height: 600,
   properties: {
-    stepName: t('views.applicationWorkflow.nodes.breakNode.label', '退出循环'),
+    width: 600,
+    stepName: t('views.applicationWorkflow.nodes.loopBreakNode.label'),
     config: {
       fields: [],
     },

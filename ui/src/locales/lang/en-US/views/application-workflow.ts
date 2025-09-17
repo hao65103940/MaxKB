@@ -262,12 +262,15 @@ export default {
       },
       prompt: {
         label: 'Prompt (Positive)',
-        tooltip: 'Positive prompt, used to describe elements and visual features expected in the generated video',
+        tooltip:
+          'Positive prompt, used to describe elements and visual features expected in the generated video',
       },
       negative_prompt: {
         label: 'Prompt (Negative)',
-        tooltip: 'Negative prompt, used to describe content you don\'t want to see in the video, which can restrict the video generation',
-        placeholder: 'Please describe video content you don\'t want to generate, such as: colors, bloody content',
+        tooltip:
+          "Negative prompt, used to describe content you don't want to see in the video, which can restrict the video generation",
+        placeholder:
+          "Please describe video content you don't want to generate, such as: colors, bloody content",
       },
     },
     imageToVideoGenerate: {
@@ -280,12 +283,15 @@ export default {
       },
       prompt: {
         label: 'Prompt (Positive)',
-        tooltip: 'Positive prompt, used to describe elements and visual features expected in the generated video',
+        tooltip:
+          'Positive prompt, used to describe elements and visual features expected in the generated video',
       },
       negative_prompt: {
         label: 'Prompt (Negative)',
-        tooltip: 'Negative prompt, used to describe content you don\'t want to see in the video, which can restrict the video generation',
-        placeholder: 'Please describe video content you don\'t want to generate, such as: colors, bloody content',
+        tooltip:
+          "Negative prompt, used to describe content you don't want to see in the video, which can restrict the video generation",
+        placeholder:
+          "Please describe video content you don't want to generate, such as: colors, bloody content",
       },
       first_frame: {
         label: 'First Frame Image',
@@ -335,6 +341,42 @@ export default {
     },
     applicationNode: {
       label: 'APP Node',
+    },
+    loopNode: {
+      label: 'Loop Node',
+      text: 'Repeat a series of tasks by setting the number of loops and logic',
+      loopType: {
+        label: 'Loop Type',
+        requiredMessage: 'Please select a loop type',
+        arrayLoop: 'Array Loop',
+        numberLoop: 'Loop for Specified Times',
+        infiniteLoop: 'Infinite Loop',
+      },
+      loopArray: {
+        label: 'Circular Array',
+        requiredMessage: 'Circular Array is required',
+        placeholder: 'Please select a circular array',
+      },
+      loopSetting: 'Loop Settings',
+      loopDetail: 'Loop Details',
+    },
+    loopStartNode: {
+      label: 'Loop Start',
+      loopIndex: 'Index',
+      loopItem: 'Loop Element',
+      loopVariable: 'Loop Variable',
+    },
+    loopBodyNode: {
+      label: 'Loop Body',
+      text: 'Loop Body',
+    },
+    loopContinueNode: {
+      label: 'Continue',
+      text: 'Used to terminate the current loop and proceed to the next one.',
+    },
+    loopBreakNode: {
+      label: 'Exit Loop',
+      text: 'Terminate the current loop and exit the loop body',
     },
   },
   compare: {

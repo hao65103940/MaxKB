@@ -3,7 +3,7 @@
     <LoopFieldTable :nodeModel="nodeModel"></LoopFieldTable>
     <template v-if="loop_input_fields?.length">
       <h5 class="title-decoration-1 mb-8">
-        {{ $t('views.applicationWorkflow.variable.loop', '循环变量') }}
+        {{ $t('views.applicationWorkflow.nodes.loopStartNode.loopVariable') }}
       </h5>
       <div
         v-for="(item, index) in loop_input_fields || []"

@@ -342,6 +342,42 @@ export default {
     applicationNode: {
       label: '应用节点',
     },
+    loopNode: {
+      label: '循环节点',
+      text: '通过设置循环次数和逻辑，重复执行一系列任务',
+      loopType: {
+        label: '循环类型',
+        requiredMessage: '请选择循环类型',
+        arrayLoop: '数组循环',
+        numberLoop: '指定次数循环',
+        infiniteLoop: '无限循环',
+      },
+      loopArray: {
+        label: '循环数组',
+        requiredMessage: '循环数组必填',
+        placeholder: '请选择循环数组',
+      },
+      loopSetting: '循环设置',
+      loopDetail: '循环详情',
+    },
+    loopStartNode: {
+      label: '循环开始',
+      loopIndex: '下标',
+      loopItem: '循环元素',
+      loopVariable: '循环变量',
+    },
+    loopBodyNode: {
+      label: '循环体',
+      text: '循环体',
+    },
+    loopContinueNode: {
+      label: '跳过',
+      text: '用于终止当前循环，执行下次循环',
+    },
+    loopBreakNode: {
+      label: '退出循环',
+      text: '终止当前循环，跳出循环体',
+    },
   },
   compare: {
     is_null: '为空',

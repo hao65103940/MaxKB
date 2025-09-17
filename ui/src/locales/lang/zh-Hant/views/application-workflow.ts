@@ -335,6 +335,33 @@ export default {
     applicationNode: {
       label: '應用節點',
     },
+    loopNode: {
+      label: '循環節點',
+      text: '通過設置循環次數和邏輯，重複執行一系列任務',
+      loopType: {
+        label: '循環類型',
+        requiredMessage: '請選擇循環類型',
+        arrayLoop: '數組循環',
+        numberLoop: '指定次數循環',
+        infiniteLoop: '無限循環',
+      },
+      loopArray: {
+        label: '循環數組',
+        requiredMessage: '循環數組必填',
+        placeholder: '請選擇循環數組',
+      },
+      loopSetting: '循環設置',
+      loopDetail: '循環詳情',
+    },
+    loopStartNode: {
+      label: '循環開始',
+      loopIndex: '下標',
+      loopItem: '循環元素',
+      loopVariable: '循環變量',
+    },
+    loopBodyNode: { label: '循環體', text: '循環體' },
+    loopContinueNode: { label: '跳過', text: '用於終止當前循環，執行下次循環' },
+    loopBreakNode: { label: '退出循環', text: '終止當前循環，跳出循環體' },
   },
   compare: {
     is_null: '為空',
