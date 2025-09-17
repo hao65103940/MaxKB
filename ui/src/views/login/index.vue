@@ -126,7 +126,7 @@
   </login-layout>
 </template>
 <script setup lang="ts">
-import {onMounted, ref, onBeforeMount, computed} from 'vue'
+import {computed, onBeforeMount, onMounted, ref} from 'vue'
 import {useRoute, useRouter} from 'vue-router'
 import type {FormInstance, FormRules} from 'element-plus'
 import type {LoginRequest} from '@/api/type/login'
@@ -134,13 +134,14 @@ import LoginContainer from '@/layout/login-layout/LoginContainer.vue'
 import LoginLayout from '@/layout/login-layout/LoginLayout.vue'
 import loginApi from '@/api/user/login'
 import authApi from '@/api/system-settings/auth-setting'
-import {t, getBrowserLang} from '@/locales'
+import {getBrowserLang, t} from '@/locales'
 import useStore from '@/stores'
 import {useI18n} from 'vue-i18n'
 import QrCodeTab from '@/views/login/scanCompinents/QrCodeTab.vue'
 import {MsgConfirm, MsgError} from '@/utils/message.ts'
 import * as dd from 'dingtalk-jsapi'
 import {loadScript} from '@/utils/common'
+import CryptoJS from 'crypto-js';
 
 const router = useRouter()
 const {login, user, theme} = useStore()
@@ -199,6 +200,7 @@ const loginHandle = () => {
             loading.value = false
           })
       } else {
+        loginForm.value.password = CryptoJS.MD5(loginForm.value.password.trim()).toString(CryptoJS.enc.Hex)
         login
           .asyncLogin(loginForm.value)
           .then(() => {

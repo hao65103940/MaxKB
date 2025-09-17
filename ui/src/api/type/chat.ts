@@ -11,6 +11,7 @@ interface ChatProfile {
   authentication_type?: 'password' | 'login'
   // 登录类型
   login_value?: Array<string>
+  max_attempts?: number
 }
 
 interface ChatUserProfile {
