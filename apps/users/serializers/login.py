@@ -76,12 +76,12 @@ class LoginSerializer(serializers.Serializer):
                 except Exception:
                     auth_setting = {}
 
-        max_attempts = auth_setting.get("max_attempts", 0)
+        max_attempts = auth_setting.get("max_attempts", 1)
         password = instance.get("password")
         captcha = instance.get("captcha", "")
 
         # 判断是否需要验证码
-        need_captcha = True
+        need_captcha = False
         if max_attempts == -1:
             need_captcha = False
         elif max_attempts > 0:
