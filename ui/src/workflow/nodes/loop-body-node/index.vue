@@ -65,6 +65,24 @@ const renderGraphData = (data?: any) => {
       },
     })
 
+    function HtmlPointToCanvasPoint(point: any) {
+      let scaleX = lf.value.graphModel.transformModel.SCALE_X as number
+      let scaleY = lf.value.graphModel.transformModel.SCALE_Y as number
+      let translateX = lf.value.graphModel.transformModel.TRANSLATE_X
+      let translateY = lf.value.graphModel.transformModel.TRANSLATE_Y
+      const [x, y] = point
+      props.nodeModel.graphModel.transformModel
+      scaleX *= props.nodeModel.graphModel.transformModel.SCALE_X
+      scaleY *= props.nodeModel.graphModel.transformModel.SCALE_Y
+      translateX *= props.nodeModel.graphModel.transformModel.SCALE_X
+      translateY *= props.nodeModel.graphModel.transformModel.SCALE_Y
+      return [(x - translateX) / scaleX, (y - translateY) / scaleY]
+    }
+
+    lf.value.graphModel.transformModel.HtmlPointToCanvasPoint = HtmlPointToCanvasPoint.bind(
+      lf.value.graphModel.transformModel,
+    )
+
     initDefaultShortcut(lf.value, lf.value.graphModel)
     lf.value.graphModel.get_provide = (node: any, graph: any) => {
       return {
