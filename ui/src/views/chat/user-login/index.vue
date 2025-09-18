@@ -304,7 +304,7 @@ function uuidv4() {
 }
 
 function redirectAuth(authType: string, needMessage: boolean = false) {
-  if (authType === 'LDAP' || authType === '') {
+  if (authType === 'LDAP' || authType === '' || authType === 'password') {
     return
   }
   loginApi.getAuthSetting(authType, loading).then((res: any) => {
