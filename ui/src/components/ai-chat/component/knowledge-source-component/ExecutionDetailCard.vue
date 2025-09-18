@@ -851,12 +851,9 @@ import { getImgUrl } from '@/utils/common'
 import { arraySort } from '@/utils/array'
 
 import { t } from '@/locales'
-const props = defineProps({
-  data: {
-    type: Object,
-    default: () => {},
-  },
-})
+const props = defineProps<{
+  data: any
+}>()
 const currentLoopNode = ref(0)
 </script>
 <style lang="scss" scoped></style>
