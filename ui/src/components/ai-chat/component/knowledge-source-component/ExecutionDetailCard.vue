@@ -173,7 +173,8 @@
             v-if="
               data.type == WorkflowType.AiChat ||
               data.type == WorkflowType.Question ||
-              data.type == WorkflowType.Application || data.type == WorkflowType.IntentNode
+              data.type == WorkflowType.Application ||
+              data.type == WorkflowType.IntentNode
             "
           >
             <div class="card-never border-r-6" v-if="data.type !== WorkflowType.Application">
@@ -807,7 +808,7 @@
                 <span class="color-secondary">
                   {{ $t('views.applicationWorkflow.nodes.loopNode.loopArray.label') }}:</span
                 >
-                {{ data.value || '-' }}
+                {{ data.loop_type === 'NUMBER' ? data.number : Object.keys(data.loop_node_data) || '-' }}
               </div>
             </div>
             <h5 class="p-8-12">
