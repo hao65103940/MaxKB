@@ -8710,3 +8710,7 @@ msgstr ""
 
 msgid "Failed to generate video"
 msgstr ""
+
+
+msgid "password"
+msgstr "Password login"
