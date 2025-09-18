@@ -84,7 +84,7 @@ const authFormRef = ref<FormInstance>();
 
 
 const form = ref<any>({
-  default_value: 'password',
+  default_value: 'LOCAL',
   max_attempts: 1,
 })
 

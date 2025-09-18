@@ -171,6 +171,7 @@
             :placeholder="
               $t('views.applicationWorkflow.nodes.imageToVideoGenerate.last_frame.requiredMessage')
             "
+            clearable
             v-model="form_data.last_frame_url"
           />
         </el-form-item>

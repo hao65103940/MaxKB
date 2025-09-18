@@ -141,7 +141,7 @@ import QrCodeTab from '@/views/login/scanCompinents/QrCodeTab.vue'
 import {MsgConfirm, MsgError} from '@/utils/message.ts'
 import * as dd from 'dingtalk-jsapi'
 import {loadScript} from '@/utils/common'
-import CryptoJS from 'crypto-js';
+import forge from 'node-forge';
 
 const router = useRouter()
 const {login, user, theme} = useStore()
@@ -200,9 +200,11 @@ const loginHandle = () => {
             loading.value = false
           })
       } else {
-        loginForm.value.password = CryptoJS.MD5(loginForm.value.password.trim()).toString(CryptoJS.enc.Hex)
+        const publicKey = forge.pki.publicKeyFromPem(user.rasKey);
+        const encrypted = publicKey.encrypt(JSON.stringify(loginForm.value), 'RSAES-PKCS1-V1_5');
+        const encryptedBase64 = forge.util.encode64(encrypted);
         login
-          .asyncLogin(loginForm.value)
+          .asyncLogin({encryptedData: encryptedBase64, username: loginForm.value.username})
           .then(() => {
             locale.value = localStorage.getItem('MaxKB-locale') || getBrowserLang() || 'en-US'
             localStorage.setItem('workspace_id', 'default')
@@ -298,7 +300,7 @@ onBeforeMount(() => {
         } else {
           authSetting.value = {
             max_attempts: 1,
-            default_value: 'password',
+            default_value: 'LOCAL',
           }
         }
         const params = route.query
@@ -315,7 +317,7 @@ onBeforeMount(() => {
     } else {
       authSetting.value = {
         max_attempts: 1,
-        default_value: 'password',
+        default_value: 'LOCAL',
       }
     }
   })
@@ -351,7 +353,7 @@ const newDefaultSlogan = computed(() => {
 })
 
 function redirectAuth(authType: string, needMessage: boolean = true) {
-  if (authType === 'LDAP' || authType === '' || authType === 'password') {
+  if (authType === 'LDAP' || authType === '' || authType === 'LOCAL') {
     return
   }
   authApi.getLoginViewAuthSetting(authType, loading).then((res: any) => {

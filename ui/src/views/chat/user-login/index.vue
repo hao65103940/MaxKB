@@ -180,7 +180,7 @@ import QrCodeTab from '@/views/chat/user-login/scanCompinents/QrCodeTab.vue'
 import {MsgConfirm, MsgError} from '@/utils/message.ts'
 import PasswordAuth from '@/views/chat/auth/component/password.vue'
 import {isAppIcon} from '@/utils/common'
-import CryptoJS from "crypto-js";
+import forge from "node-forge";
 
 useResize()
 const router = useRouter()
@@ -250,8 +250,13 @@ const loginHandle = () => {
         })
       })
     } else {
-      loginForm.value.password = CryptoJS.MD5(loginForm.value.password.trim()).toString(CryptoJS.enc.Hex)
-      chatUser.login(loginForm.value).then((ok) => {
+      const publicKey = forge.pki.publicKeyFromPem(chatUser?.chat_profile?.rasKey as any);
+      const encrypted = publicKey.encrypt(JSON.stringify(loginForm.value), 'RSAES-PKCS1-V1_5');
+      const encryptedBase64 = forge.util.encode64(encrypted);
+      chatUser.login({
+        encryptedData: encryptedBase64,
+        username: loginForm.value.username
+      }).then((ok) => {
         router.push({
           name: 'chat',
           params: {accessToken: chatUser.accessToken},
