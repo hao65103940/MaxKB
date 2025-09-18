@@ -351,7 +351,7 @@ const newDefaultSlogan = computed(() => {
 })
 
 function redirectAuth(authType: string, needMessage: boolean = true) {
-  if (authType === 'LDAP' || authType === '') {
+  if (authType === 'LDAP' || authType === '' || authType === 'password') {
     return
   }
   authApi.getLoginViewAuthSetting(authType, loading).then((res: any) => {

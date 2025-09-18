@@ -54,7 +54,7 @@ const getLoginAuthSetting: (loading?: Ref<boolean>) => Promise<Result<any>> = (l
  * 获取认证设置
  */
 const getLoginViewAuthSetting: (auth_type: string, loading?: Ref<boolean>) => Promise<Result<any>> = (auth_type, loading) => {
-  return get(`login/${prefix}/${auth_type}/detail`, undefined, loading)
+  return get(`login${prefix}/${auth_type}/detail`, undefined, loading)
 }
 
 export default {
