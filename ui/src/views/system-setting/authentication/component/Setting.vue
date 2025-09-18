@@ -88,20 +88,6 @@ const form = ref<any>({
   max_attempts: 1,
 })
 
-const fetchLoginMethods = () => {
-  // 模拟接口返回数据
-  loginMethods.value = [
-    {label: '密码登录', value: 'password'},
-    {label: 'LDAP', value: 'ldap'},
-    {label: 'OIDC', value: 'oidc'},
-    {label: 'CAS', value: 'cas'},
-    {label: 'OAuth2', value: 'oauth2'},
-    {label: '企业微信', value: 'wechat'},
-    {label: '钉钉', value: 'dingding'},
-    {label: '飞书', value: 'lark'},
-  ];
-};
-
 const submit = async (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   console.log(form)
@@ -118,10 +104,10 @@ const submit = async (formEl: FormInstance | undefined) => {
 
 
 onMounted(() => {
-  fetchLoginMethods();
   authApi.getLoginSetting().then((res) => {
     if (Object.keys(res.data).length > 0) {
       form.value = res.data;
+      loginMethods.value =res.data.auth_types
     }
   })
 });
