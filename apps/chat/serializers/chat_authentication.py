@@ -20,6 +20,7 @@ from common.constants.authentication_type import AuthenticationType
 from common.constants.cache_version import Cache_Version
 from common.database_model_manage.database_model_manage import DatabaseModelManage
 from common.exception.app_exception import NotFound404, AppUnauthorizedFailed
+from common.utils.rsa_util import get_key_pair_by_sql
 
 
 class AnonymousAuthenticationSerializer(serializers.Serializer):
@@ -82,7 +83,8 @@ class AuthProfileSerializer(serializers.Serializer):
                     'authentication_type': application_access_token.authentication_value.get(
                         'type', 'password'),
                     'max_attempts': max_attempts,
-                    'login_value': final_login_value
+                    'login_value': final_login_value,
+                    'rasKey' : get_key_pair_by_sql().get('key')
                 }
         return profile
 

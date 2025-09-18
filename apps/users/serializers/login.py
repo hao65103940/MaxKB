@@ -22,6 +22,7 @@ from common.constants.cache_version import Cache_Version
 from common.database_model_manage.database_model_manage import DatabaseModelManage
 from common.exception.app_exception import AppApiException
 from common.utils.common import password_encrypt, get_random_chars
+from common.utils.rsa_util import encrypt, decrypt
 from maxkb.const import CONFIG
 from users.models import User
 
@@ -31,6 +32,9 @@ class LoginRequest(serializers.Serializer):
     password = serializers.CharField(required=True, max_length=128, label=_("Password"))
     captcha = serializers.CharField(required=False, max_length=64, label=_('captcha'), allow_null=True,
                                     allow_blank=True)
+    encryptedData = serializers.CharField(required=False, label=_('encryptedData'), allow_null=True,
+                                        allow_blank=True)
+
 
 
 system_version, system_get_key = Cache_Version.SYSTEM.value
@@ -60,6 +64,10 @@ class LoginSerializer(serializers.Serializer):
     @staticmethod
     def login(instance):
         username = instance.get("username", "")
+        encryptedData = instance.get("encryptedData", "")
+        if encryptedData:
+            json_data = json.loads(decrypt(encryptedData))
+            instance.update(json_data)
         try:
             LoginRequest(data=instance).is_valid(raise_exception=True)
         except Exception as e:
@@ -99,7 +107,7 @@ class LoginSerializer(serializers.Serializer):
             if captcha_cache is None or captcha.lower() != captcha_cache:
                 raise AppApiException(1005, _("Captcha code error or expiration"))
 
-        user = QuerySet(User).filter(username=username, password=password).first()
+        user = QuerySet(User).filter(username=username, password=password_encrypt(password)).first()
         if user is None:
             record_login_fail(username)
             raise AppApiException(500, _('The username or password is incorrect'))
