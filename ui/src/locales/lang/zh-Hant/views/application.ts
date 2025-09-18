@@ -132,6 +132,7 @@ export default {
     continue: '繼續生成',
     replace: '替換',
     exit: '確認退出並捨棄 AI 生成的內容嗎？',
+    loading: '生成中...',
   },
   dialog: {
     addKnowledge: '新增關聯知識庫',

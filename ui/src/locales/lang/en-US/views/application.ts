@@ -141,6 +141,7 @@ export default {
     continue: 'Continue Generating',
     replace: 'Replace',
     exit: 'Are you sure you want to exit and discard the AI-generated content?',
+    loading: 'Generating...',
   },
   dialog: {
     addKnowledge: 'Add Related Knowledge',

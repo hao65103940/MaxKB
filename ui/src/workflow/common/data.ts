@@ -362,7 +362,7 @@ export const toolNode = {
 
 export const intentNode = {
   type: WorkflowType.IntentNode,
-  text: t('views.applicationWorkflow.nodes.intentNode.label'),
+  text: t('views.applicationWorkflow.nodes.intentNode.text'),
   label: t('views.applicationWorkflow.nodes.intentNode.label'),
   height: 260,
   properties: {

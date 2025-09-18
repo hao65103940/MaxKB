@@ -329,6 +329,7 @@ export default {
     },
     intentNode: {
       label: 'IntentNode',
+      text: 'Match user questions with user-defined intent classifications',
       other: 'other',
       placeholder: 'Please choose a classification option',
       classify: {

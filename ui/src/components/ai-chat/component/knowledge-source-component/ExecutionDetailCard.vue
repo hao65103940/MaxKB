@@ -173,7 +173,7 @@
             v-if="
               data.type == WorkflowType.AiChat ||
               data.type == WorkflowType.Question ||
-              data.type == WorkflowType.Application
+              data.type == WorkflowType.Application || data.type == WorkflowType.IntentNode
             "
           >
             <div class="card-never border-r-6" v-if="data.type !== WorkflowType.Application">

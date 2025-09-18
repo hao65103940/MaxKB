@@ -24,7 +24,7 @@
             </div>
             <p v-else-if="loading" shadow="always" style="margin: 0.5rem 0">
               <el-icon class="is-loading color-primary mr-4"><Loading /></el-icon>
-              {{ $t('chat.tip.answerLoading') }}
+               {{ $t('views.application.generateDialog.loading') }}
               <span class="dotting"></span>
             </p>
             <p v-else class="flex align-center">
@@ -33,9 +33,16 @@
             </p>
           </el-scrollbar>
           <div v-if="answer && !loading && !isStreaming && !showContinueButton">
-            <el-button type="primary" @click="() => emit('replace', answer)"> {{ $t('views.application.generateDialog.replace') }} </el-button>
+            <el-button type="primary" @click="() => emit('replace', answer)">
+              {{ $t('views.application.generateDialog.replace') }}
+            </el-button>
             <el-button @click="reAnswerClick" :disabled="!answer || loading" :loading="loading">
               {{ $t('views.application.generateDialog.remake') }}
+            </el-button>
+          </div>
+          <div class="mt-8" v-else>
+            <el-button type="primary" v-if="showContinueButton" @click="continueStreaming" link>
+              {{ $t('views.application.generateDialog.continue') }}
             </el-button>
           </div>
         </div>
@@ -49,12 +56,7 @@
               {{ $t('views.application.generateDialog.stop') }}
             </el-button>
           </div>
-          <div v-if="showContinueButton" class="text-center mb-8">
-            <el-button class="border-primary video-stop-button" @click="continueStreaming">
-              <app-icon iconName="app-video-stop" class="mr-8"></app-icon>
-              {{ $t('views.application.generateDialog.continue') }}
-            </el-button>
-          </div>
+
           <div class="operate-textarea">
             <el-input
               ref="quickInputRef"
@@ -75,7 +77,11 @@
                   :disabled="!inputValue.trim() || loading || isStreaming"
                   @click="handleSubmit"
                 >
-                  <img v-show="!inputValue.trim() || loading || isStreaming" src="@/assets/icon_send.svg" alt="" />
+                  <img
+                    v-show="!inputValue.trim() || loading || isStreaming"
+                    src="@/assets/icon_send.svg"
+                    alt=""
+                  />
                   <SendIcon v-show="inputValue.trim() && !loading && !isStreaming" />
                 </el-button>
               </div>
@@ -88,7 +94,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onUnmounted,reactive, ref, nextTick, watch } from 'vue'
+import { computed, onUnmounted, reactive, ref, nextTick, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { MsgConfirm } from '@/utils/message'
 import { t } from '@/locales'
@@ -161,7 +167,6 @@ const currentDisplayIndex = ref<number>(0) // 当前显示到的字符位置
 let streamTimer: number | null = null // 定时器引用
 const isOutputComplete = ref<boolean>(false)
 
-
 // 模拟流式输出的定时器函数
 const startStreamingOutput = () => {
   if (streamTimer) {
@@ -182,9 +187,9 @@ const startStreamingOutput = () => {
       if (currentAnswer && currentAnswer.role === 'ai') {
         currentAnswer.content = fullContent.value.substring(0, currentDisplayIndex.value)
       }
-    }  else if (loading.value === false && currentDisplayIndex.value >= fullContent.value.length) {
-    stopStreaming()
-  }
+    } else if (loading.value === false && currentDisplayIndex.value >= fullContent.value.length) {
+      stopStreaming()
+    }
   }, 50) // 每50ms输出一次
 }
 
@@ -195,7 +200,7 @@ const stopStreaming = () => {
     streamTimer = null
   }
   isStreaming.value = false
-  isPaused.value = false  
+  isPaused.value = false
   loading.value = false
   isOutputComplete.value = true
 }
@@ -203,7 +208,6 @@ const stopStreaming = () => {
 const showStopButton = computed(() => {
   return isStreaming.value
 })
-
 
 // 暂停流式输出
 const pauseStreaming = () => {
@@ -218,7 +222,6 @@ const continueStreaming = () => {
   }
 }
 
-
 /**
  * 获取一个递归函数,处理流式数据
  * @param chat    每一条对话记录
@@ -227,8 +230,8 @@ const continueStreaming = () => {
  */
 const getWrite = (reader: any) => {
   let tempResult = ''
-  const middleAnswer  = reactive({ content: '', role: 'ai' })
-  chatMessages.value.push(middleAnswer )
+  const middleAnswer = reactive({ content: '', role: 'ai' })
+  chatMessages.value.push(middleAnswer)
 
   // 初始化状态并
   fullContent.value = ''
@@ -245,7 +248,7 @@ const getWrite = (reader: any) => {
   const write_stream = ({ done, value }: { done: boolean; value: any }) => {
     try {
       if (done) {
-         // 流数据接收完成，但定时器继续运行直到显示完所有内容
+        // 流数据接收完成，但定时器继续运行直到显示完所有内容
         loading.value = false
         return
       }
@@ -302,9 +305,10 @@ const answer = computed(() => {
 
 // 按钮状态计算
 const showContinueButton = computed(() => {
-  return !isStreaming.value && isPaused.value && currentDisplayIndex.value < fullContent.value.length
+  return (
+    !isStreaming.value && isPaused.value && currentDisplayIndex.value < fullContent.value.length
+  )
 })
-
 
 function generatePrompt(inputValue: any) {
   loading.value = true
@@ -360,12 +364,10 @@ const handleSubmit = (event?: any) => {
     if (!originalUserInput.value) {
       originalUserInput.value = inputValue.value
     }
-    if (inputValue.value) { 
+    if (inputValue.value) {
       generatePrompt(inputValue.value)
-    inputValue.value = ''
+      inputValue.value = ''
     }
-  
-  
   } else {
     // 如果同时按下ctrl/shift/cmd/opt +enter，则会换行
     insertNewlineAtCursor(event)
@@ -415,17 +417,12 @@ const handleScroll = () => {
 }
 
 const handleDialogClose = (done: () => void) => {
-  
   // 弹出 消息
-  MsgConfirm(
-    t('common.tip'),
-    t('views.application.generateDialog.exit'),
-    {
-      confirmButtonText: t('common.confirm'),
-      cancelButtonText: t('common.cancel'),
-      distinguishCancelAndClose: true,
-    }
-  )
+  MsgConfirm(t('common.tip'), t('views.application.generateDialog.exit'), {
+    confirmButtonText: t('common.confirm'),
+    cancelButtonText: t('common.cancel'),
+    distinguishCancelAndClose: true,
+  })
     .then(() => {
       // 点击确认，清除状态
       stopStreaming()
@@ -437,8 +434,7 @@ const handleDialogClose = (done: () => void) => {
     })
     .catch(() => {
       // 点击取消
-    }
-  )
+    })
 }
 
 // 组件卸载时清理定时器
