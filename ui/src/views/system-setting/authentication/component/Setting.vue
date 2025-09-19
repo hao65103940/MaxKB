@@ -3,7 +3,7 @@
     <el-scrollbar>
       <div class="form-container p-24" v-loading="loading">
         <el-form ref="authFormRef" :model="form" label-position="top"
-                 require-asterisk-position="right">
+                 require-asterisk-position="right" @submit.prevent>
           <!-- 登录方式选择框 -->
           <el-form-item
             :label="$t('views.system.default_login')"
@@ -110,7 +110,7 @@ onMounted(() => {
   authApi.getLoginSetting().then((res) => {
     if (Object.keys(res.data).length > 0) {
       form.value = res.data;
-      loginMethods.value =res.data.auth_types
+      loginMethods.value = res.data.auth_types
     }
   })
 });
