@@ -69,6 +69,7 @@ class TencentSpeechToText(MaxKBBaseModel, BaseSpeechToText):
                 "SourceType": 1,
                 "VoiceFormat": "mp3",
                 "Data": _v.decode(),
+                **self.params
             }
             req.from_json_string(json.dumps(params))
 

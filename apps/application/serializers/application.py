@@ -700,6 +700,7 @@ class ApplicationOperateSerializer(serializers.Serializer):
             'user_id': 'user_id', 'model_id': 'model_id', 'knowledge_setting': 'knowledge_setting',
             'model_setting': 'model_setting', 'model_params_setting': 'model_params_setting',
             'tts_model_params_setting': 'tts_model_params_setting',
+            'stt_model_params_setting': 'stt_model_params_setting',
             'problem_optimization': 'problem_optimization', 'icon': 'icon', 'work_flow': 'work_flow',
             'problem_optimization_prompt': 'problem_optimization_prompt', 'tts_model_id': 'tts_model_id',
             'stt_model_id': 'stt_model_id', 'tts_model_enable': 'tts_model_enable',
@@ -785,6 +786,8 @@ class ApplicationOperateSerializer(serializers.Serializer):
                     instance['stt_autosend'] = node_data['stt_autosend']
                 if 'tts_model_params_setting' in node_data:
                     instance['tts_model_params_setting'] = node_data['tts_model_params_setting']
+                if 'stt_model_params_setting' in node_data:
+                    instance['stt_model_params_setting'] = node_data['stt_model_params_setting']
                 if 'file_upload_enable' in node_data:
                     instance['file_upload_enable'] = node_data['file_upload_enable']
                 if 'file_upload_setting' in node_data:
@@ -830,7 +833,7 @@ class ApplicationOperateSerializer(serializers.Serializer):
                        'knowledge_setting', 'model_setting', 'problem_optimization', 'dialogue_number',
                        'stt_model_id', 'tts_model_id', 'tts_model_enable', 'stt_model_enable', 'tts_type',
                        'tts_autoplay', 'stt_autosend', 'file_upload_enable', 'file_upload_setting',
-                       'api_key_is_active', 'icon', 'work_flow', 'model_params_setting', 'tts_model_params_setting',
+                       'api_key_is_active', 'icon', 'work_flow', 'model_params_setting', 'tts_model_params_setting', 'stt_model_params_setting',
                        'mcp_enable', 'mcp_tool_ids', 'mcp_servers', 'mcp_source', 'tool_enable', 'tool_ids', 'mcp_output_enable',
                        'problem_optimization_prompt', 'clean_time', 'folder_id']
         for update_key in update_keys:

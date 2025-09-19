@@ -482,14 +482,28 @@
                       </div>
                     </div>
                   </template>
-                  <ModelSelect
+                  <div class="flex-between w-full">
+                    <ModelSelect
                     v-show="applicationForm.stt_model_enable"
                     v-model="applicationForm.stt_model_id"
                     :placeholder="$t('views.application.form.voiceInput.placeholder')"
                     :options="sttModelOptions"
+                    @change="sttModelChange"
                     :model-type="'STT'"
-                  >
-                  </ModelSelect>
+                    >
+                    </ModelSelect>
+
+                    <el-button
+                      v-if="applicationForm.stt_model_enable"
+                      @click="openSTTParamSettingDialog"
+                      :disabled="!applicationForm.stt_model_id"
+                      class="ml-8"
+                    >
+                      <el-icon>
+                        <Operation />
+                      </el-icon>
+                    </el-button>
+                  </div>
                 </el-form-item>
                 <el-form-item
                   prop="tts_model_id"
@@ -583,6 +597,7 @@
     <AIModeParamSettingDialog ref="AIModeParamSettingDialogRef" @refresh="refreshForm" />
     <GeneratePromptDialog @replace="replace" ref="GeneratePromptDialogRef" />
     <TTSModeParamSettingDialog ref="TTSModeParamSettingDialogRef" @refresh="refreshTTSForm" />
+    <STTModeParamSettingDialog ref="STTModeParamSettingDialogRef" @refresh="refreshSTTForm" />
     <ParamSettingDialog ref="ParamSettingDialogRef" @refresh="refreshParam" />
     <AddKnowledgeDialog
       ref="AddKnowledgeDialogRef"
@@ -612,6 +627,7 @@ import { relatedObject } from '@/utils/array'
 import { MsgSuccess, MsgWarning } from '@/utils/message'
 import { t } from '@/locales'
 import TTSModeParamSettingDialog from './component/TTSModeParamSettingDialog.vue'
+import STTModeParamSettingDialog from './component/STTModelParamSettingDialog.vue'
 import ReasoningParamSettingDialog from './component/ReasoningParamSettingDialog.vue'
 import permissionMap from '@/permission'
 import { EditionConst } from '@/utils/permission/data'
@@ -652,6 +668,7 @@ const optimizationPrompt =
 const AIModeParamSettingDialogRef = ref<InstanceType<typeof AIModeParamSettingDialog>>()
 const ReasoningParamSettingDialogRef = ref<InstanceType<typeof ReasoningParamSettingDialog>>()
 const TTSModeParamSettingDialogRef = ref<InstanceType<typeof TTSModeParamSettingDialog>>()
+const STTModeParamSettingDialogRef = ref<InstanceType<typeof STTModeParamSettingDialog>>()  
 const ParamSettingDialogRef = ref<InstanceType<typeof ParamSettingDialog>>()
 const GeneratePromptDialogRef = ref<InstanceType<typeof GeneratePromptDialog>>()
 
@@ -756,6 +773,7 @@ const submit = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
   await formEl.validate((valid, fields) => {
     if (valid) {
+      console.log(applicationForm.value)
       loadSharedApi({ type: 'application', systemType: apiType.value })
         .putApplication(id, applicationForm.value, loading)
         .then(() => {
@@ -805,6 +823,17 @@ const openTTSParamSettingDialog = () => {
     )
   }
 }
+
+const openSTTParamSettingDialog = () => {
+  if (applicationForm.value.stt_model_id) {
+    STTModeParamSettingDialogRef.value?.open(
+      applicationForm.value.stt_model_id,
+      id,
+      applicationForm.value.stt_model_params_setting,
+    )
+  }
+}
+
 
 const openParamSettingDialog = () => {
   ParamSettingDialogRef.value?.open(applicationForm.value)
@@ -903,6 +932,10 @@ function refreshForm(data: any) {
 
 function refreshTTSForm(data: any) {
   applicationForm.value.tts_model_params_setting = data
+}
+
+function refreshSTTForm(data: any) {
+  applicationForm.value.stt_model_params_setting = data
 }
 
 function removeKnowledge(id: any) {
@@ -1019,6 +1052,14 @@ function ttsModelChange() {
     TTSModeParamSettingDialogRef.value?.reset_default(applicationForm.value.tts_model_id, id)
   } else {
     refreshTTSForm({})
+  }
+}
+
+function sttModelChange() {
+  if (applicationForm.value.stt_model_id) {
+    STTModeParamSettingDialogRef.value?.reset_default(applicationForm.value.stt_model_id, id)
+  } else {
+    refreshSTTForm({})
   }
 }
 
