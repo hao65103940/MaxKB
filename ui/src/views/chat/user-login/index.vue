@@ -269,6 +269,7 @@ const loginHandle = () => {
         loading.value = false
         loginForm.value.username = ''
         loginForm.value.password = ''
+        loginForm.value.captcha = ''
         const timestampKey = `${username}_chat_first_fail_timestamp`
         if (!localStorage.getItem(timestampKey)) {
           localStorage.setItem(timestampKey, Date.now().toString())
