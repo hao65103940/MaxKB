@@ -90,10 +90,13 @@ const form = ref<any>({
 
 const submit = async (formEl: FormInstance | undefined) => {
   if (!formEl) return;
-  console.log(form)
   await formEl.validate((valid, fields) => {
     if (valid) {
-      authApi.putLoginSetting(form.value, loading).then((res) => {
+      const params = {
+        default_value: form.value.default_value,
+        max_attempts: form.value.max_attempts,
+      };
+      authApi.putLoginSetting(params, loading).then((res) => {
         MsgSuccess(t('common.saveSuccess'))
       })
     } else {
