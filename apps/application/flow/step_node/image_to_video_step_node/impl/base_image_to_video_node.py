@@ -71,17 +71,22 @@ class BaseImageToVideoNode(IImageToVideoNode):
                            'history_message': history_message, 'question': question}, {})
 
     def get_file_base64(self, image_url):
-        if isinstance(image_url, list):
-            image_url = image_url[0].get('file_id')
-        if isinstance(image_url, str) and not image_url.startswith('http'):
-            file = QuerySet(File).filter(id=image_url).first()
-            file_bytes = file.get_bytes()
-            # 如果我不知道content_type 可以用 magic 库去检测
-            file_type = file.file_name.split(".")[-1].lower()
-            content_type = mime_types.get(file_type, 'application/octet-stream')
-            encoded_bytes = base64.b64encode(file_bytes)
-            return f'data:{content_type};base64,{encoded_bytes.decode()}'
-        return image_url
+        try :
+            if isinstance(image_url, list):
+                image_url = image_url[0].get('file_id')
+            if isinstance(image_url, str) and not image_url.startswith('http'):
+                file = QuerySet(File).filter(id=image_url).first()
+                file_bytes = file.get_bytes()
+                # 如果我不知道content_type 可以用 magic 库去检测
+                file_type = file.file_name.split(".")[-1].lower()
+                content_type = mime_types.get(file_type, 'application/octet-stream')
+                encoded_bytes = base64.b64encode(file_bytes)
+                return f'data:{content_type};base64,{encoded_bytes.decode()}'
+            return image_url
+        except Exception as e:
+            raise ValueError(
+                gettext("Failed to obtain the image"))
+
 
     def generate_history_ai_message(self, chat_record):
         for val in chat_record.details.values():
