@@ -92,7 +92,9 @@
                 (currentModel.model_type === 'TTS' ||
                   currentModel.model_type === 'LLM' ||
                   currentModel.model_type === 'IMAGE' ||
-                  currentModel.model_type === 'TTI') &&
+                  currentModel.model_type === 'TTI' ||
+                  currentModel.model_type === 'ITV' ||
+                  currentModel.model_type === 'TTV') &&
                 permissionPrecise.paramSetting(model.id)
               "
               @click.stop="openParamSetting"
