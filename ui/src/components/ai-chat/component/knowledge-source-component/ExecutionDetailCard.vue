@@ -21,7 +21,8 @@
             data.type === WorkflowType.AiChat ||
             data.type === WorkflowType.ImageUnderstandNode ||
             data.type === WorkflowType.ImageGenerateNode ||
-            data.type === WorkflowType.Application
+            data.type === WorkflowType.Application ||
+            data.type == WorkflowType.IntentNode
           "
           >{{ data?.message_tokens + data?.answer_tokens }} tokens</span
         >
@@ -168,7 +169,7 @@
               </div>
             </div>
           </template>
-          <!-- AI 对话 / 问题优化-->
+          <!-- AI 对话 / 问题优化 / 意图识别-->
           <template
             v-if="
               data.type == WorkflowType.AiChat ||
@@ -808,7 +809,11 @@
                 <span class="color-secondary">
                   {{ $t('views.applicationWorkflow.nodes.loopNode.loopArray.label') }}:</span
                 >
-                {{ data.loop_type === 'NUMBER' ? data.number : Object.keys(data.loop_node_data) || '-' }}
+                {{
+                  data.loop_type === 'NUMBER'
+                    ? data.number
+                    : Object.keys(data.loop_node_data) || '-'
+                }}
               </div>
             </div>
             <h5 class="p-8-12">
