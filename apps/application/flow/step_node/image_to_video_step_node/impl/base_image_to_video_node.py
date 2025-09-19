@@ -15,6 +15,7 @@ from oss.serializers.file import FileSerializer, mime_types
 from models_provider.tools import get_model_instance_by_model_workspace_id
 from django.utils.translation import gettext
 
+
 class BaseImageToVideoNode(IImageToVideoNode):
     def save_context(self, details, workflow_manage):
         self.context['answer'] = details.get('answer')
@@ -47,7 +48,7 @@ class BaseImageToVideoNode(IImageToVideoNode):
         last_frame_url = self.get_file_base64(last_frame_url)
         video_urls = ttv_model.generate_video(question, negative_prompt, first_frame_url, last_frame_url)
         # 保存图片
-        if video_urls is None:
+        if video_urls is None or video_urls == '':
             return NodeResult({'answer': gettext('Failed to generate video')}, {})
         file_name = 'generated_video.mp4'
         if isinstance(video_urls, str) and video_urls.startswith('http'):
@@ -71,7 +72,7 @@ class BaseImageToVideoNode(IImageToVideoNode):
                            'history_message': history_message, 'question': question}, {})
 
     def get_file_base64(self, image_url):
-        try :
+        try:
             if isinstance(image_url, list):
                 image_url = image_url[0].get('file_id')
             if isinstance(image_url, str) and not image_url.startswith('http'):
@@ -86,7 +87,6 @@ class BaseImageToVideoNode(IImageToVideoNode):
         except Exception as e:
             raise ValueError(
                 gettext("Failed to obtain the image"))
-
 
     def generate_history_ai_message(self, chat_record):
         for val in chat_record.details.values():
