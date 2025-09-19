@@ -8711,6 +8711,8 @@ msgstr ""
 msgid "Failed to generate video"
 msgstr ""
 
-
 msgid "password"
 msgstr "Password login"
+
+msgid "Failed to obtain the image"
+msgstr ""
