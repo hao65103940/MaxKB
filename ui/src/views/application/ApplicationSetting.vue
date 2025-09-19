@@ -383,6 +383,7 @@
                 >
                   <template v-for="(item, index) in applicationForm.tool_ids" :key="index">
                     <div
+                      v-if="relatedObject(toolSelectOptions, item, 'id')"
                       class="flex-between border border-r-6 white-bg mb-4"
                       style="padding: 5px 8px"
                     >
