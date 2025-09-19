@@ -526,19 +526,19 @@ export const menuNodes = [
     list: [
       aiChatNode,
       intentNode,
-      questionNode,
       imageGenerateNode,
       imageUnderstandNode,
       textToSpeechNode,
       speechToTextNode,
       textToVideoNode,
       imageToVideoNode,
+      questionNode,
     ],
   },
   { label: t('views.knowledge.title'), list: [searchKnowledgeNode, rerankerNode] },
   {
     label: t('views.applicationWorkflow.nodes.classify.businessLogic'),
-    list: [loopNode, conditionNode, formNode, variableAssignNode, replyNode],
+    list: [conditionNode, formNode, variableAssignNode, replyNode, loopNode],
   },
   {
     label: t('views.applicationWorkflow.nodes.classify.other'),
@@ -563,7 +563,7 @@ export const applicationLoopMenuNodes = [
   { label: t('views.knowledge.title'), list: [searchKnowledgeNode, rerankerNode] },
   {
     label: t('views.applicationWorkflow.nodes.classify.businessLogic'),
-    list: [loopBreakNode, loopContinueNode, conditionNode, formNode, variableAssignNode, replyNode],
+    list: [conditionNode, formNode, variableAssignNode, replyNode, loopContinueNode, loopBreakNode],
   },
   {
     label: t('views.applicationWorkflow.nodes.classify.other'),
