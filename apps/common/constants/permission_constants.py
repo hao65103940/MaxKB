@@ -510,12 +510,6 @@ class PermissionConstants(Enum):
         parent_group=[WorkspaceGroup.TOOL, UserGroup.TOOL],
         resource_permission_group_list=[ResourcePermissionConst.TOOL_MANGE]
     )
-
-    TOOL_DEBUG = Permission(
-        group=Group.TOOL, operate=Operate.DEBUG, role_list=[RoleConstants.ADMIN, RoleConstants.USER],
-        parent_group=[WorkspaceGroup.TOOL, UserGroup.TOOL],
-        resource_permission_group_list=[ResourcePermissionConst.TOOL_MANGE]
-    )
     TOOL_IMPORT = Permission(
         group=Group.TOOL, operate=Operate.IMPORT, role_list=[RoleConstants.ADMIN, RoleConstants.USER],
         parent_group=[WorkspaceGroup.TOOL, UserGroup.TOOL],
@@ -804,12 +798,17 @@ class PermissionConstants(Enum):
                                   parent_group=[WorkspaceGroup.APPLICATION, UserGroup.APPLICATION],
                                   resource_permission_group_list=[ResourcePermissionConst.APPLICATION_VIEW],
                                   )
-    APPLICATION_DEBUG = Permission(group=Group.APPLICATION, operate=Operate.DEBUG,
-                                   role_list=[RoleConstants.ADMIN, RoleConstants.USER],
-                                   parent_group=[WorkspaceGroup.APPLICATION, UserGroup.APPLICATION],
-                                   resource_permission_group_list=[ResourcePermissionConst.APPLICATION_MANGE],
-                                   )
     APPLICATION_CREATE = Permission(group=Group.APPLICATION, operate=Operate.CREATE,
+                                    role_list=[RoleConstants.ADMIN, RoleConstants.USER],
+                                    parent_group=[WorkspaceGroup.APPLICATION, UserGroup.APPLICATION],
+                                    resource_permission_group_list=[ResourcePermissionConst.APPLICATION_MANGE],
+                                    )
+    APPLICATION_EDIT = Permission(group=Group.APPLICATION, operate=Operate.EDIT,
+                                  role_list=[RoleConstants.ADMIN, RoleConstants.USER],
+                                  parent_group=[WorkspaceGroup.APPLICATION, UserGroup.APPLICATION],
+                                  resource_permission_group_list=[ResourcePermissionConst.APPLICATION_MANGE],
+                                  )
+    APPLICATION_DELETE = Permission(group=Group.APPLICATION, operate=Operate.DELETE,
                                     role_list=[RoleConstants.ADMIN, RoleConstants.USER],
                                     parent_group=[WorkspaceGroup.APPLICATION, UserGroup.APPLICATION],
                                     resource_permission_group_list=[ResourcePermissionConst.APPLICATION_MANGE],
@@ -824,17 +823,6 @@ class PermissionConstants(Enum):
                                     resource_permission_group_list=[ResourcePermissionConst.APPLICATION_MANGE],
                                     parent_group=[WorkspaceGroup.APPLICATION, UserGroup.APPLICATION],
                                     )
-
-    APPLICATION_DELETE = Permission(group=Group.APPLICATION, operate=Operate.DELETE,
-                                    role_list=[RoleConstants.ADMIN, RoleConstants.USER],
-                                    parent_group=[WorkspaceGroup.APPLICATION, UserGroup.APPLICATION],
-                                    resource_permission_group_list=[ResourcePermissionConst.APPLICATION_MANGE],
-                                    )
-    APPLICATION_EDIT = Permission(group=Group.APPLICATION, operate=Operate.EDIT,
-                                  role_list=[RoleConstants.ADMIN, RoleConstants.USER],
-                                  parent_group=[WorkspaceGroup.APPLICATION, UserGroup.APPLICATION],
-                                  resource_permission_group_list=[ResourcePermissionConst.APPLICATION_MANGE],
-                                  )
     APPLICATION_RESOURCE_AUTHORIZATION = Permission(group=Group.APPLICATION, operate=Operate.AUTH,
                                                     role_list=[RoleConstants.ADMIN, RoleConstants.USER],
                                                     parent_group=[WorkspaceGroup.APPLICATION, UserGroup.APPLICATION],
@@ -1233,20 +1221,20 @@ class PermissionConstants(Enum):
         group=Group.SYSTEM_RES_APPLICATION, operate=Operate.READ, role_list=[RoleConstants.ADMIN],
         parent_group=[SystemGroup.RESOURCE_APPLICATION], is_ee=settings.edition == "EE"
     )
-    RESOURCE_APPLICATION_DEBUG = Permission(
-        group=Group.SYSTEM_RES_APPLICATION, operate=Operate.DEBUG, role_list=[RoleConstants.ADMIN],
-        parent_group=[SystemGroup.RESOURCE_APPLICATION], is_ee=settings.edition == "EE"
-    )
-    RESOURCE_APPLICATION_EXPORT = Permission(
-        group=Group.SYSTEM_RES_APPLICATION, operate=Operate.EXPORT, role_list=[RoleConstants.ADMIN],
+    RESOURCE_APPLICATION_EDIT = Permission(
+        group=Group.SYSTEM_RES_APPLICATION, operate=Operate.EDIT, role_list=[RoleConstants.ADMIN],
         parent_group=[SystemGroup.RESOURCE_APPLICATION], is_ee=settings.edition == "EE"
     )
     RESOURCE_APPLICATION_DELETE = Permission(
         group=Group.SYSTEM_RES_APPLICATION, operate=Operate.DELETE, role_list=[RoleConstants.ADMIN],
         parent_group=[SystemGroup.RESOURCE_APPLICATION], is_ee=settings.edition == "EE"
     )
-    RESOURCE_APPLICATION_EDIT = Permission(
-        group=Group.SYSTEM_RES_APPLICATION, operate=Operate.EDIT, role_list=[RoleConstants.ADMIN],
+    RESOURCE_APPLICATION_DEBUG = Permission(
+        group=Group.SYSTEM_RES_APPLICATION, operate=Operate.DEBUG, role_list=[RoleConstants.ADMIN],
+        parent_group=[SystemGroup.RESOURCE_APPLICATION], is_ee=settings.edition == "EE"
+    )
+    RESOURCE_APPLICATION_EXPORT = Permission(
+        group=Group.SYSTEM_RES_APPLICATION, operate=Operate.EXPORT, role_list=[RoleConstants.ADMIN],
         parent_group=[SystemGroup.RESOURCE_APPLICATION], is_ee=settings.edition == "EE"
     )
     RESOURCE_APPLICATION_AUTH = Permission(

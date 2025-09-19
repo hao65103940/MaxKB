@@ -133,7 +133,6 @@ const PermissionConst = {
   APPLICATION_CREATE: new Permission('APPLICATION:READ+CREATE'),
   APPLICATION_IMPORT: new Permission('APPLICATION:READ+IMPORT'),
   APPLICATION_SETTING: new Permission('APPLICATION:READ+SETTING'),
-  APPLICATION_DEBUG: new Permission('APPLICATION:READ+DEBUG'),
   APPLICATION_TO_CHAT: new Permission('APPLICATION:READ+TO_CHAT'),
 
   APPLICATION_OVERVIEW_READ: new Permission('APPLICATION_OVERVIEW:READ'),
@@ -207,7 +206,6 @@ const PermissionConst = {
   TOOL_EDIT: new Permission('TOOL:READ+EDIT'),
   TOOL_READ: new Permission('TOOL:READ'),
   TOOL_DELETE: new Permission('TOOL:READ+DELETE'),
-  TOOL_DEBUG: new Permission('TOOL:READ+DEBUG'),
   TOOL_IMPORT: new Permission('TOOL:READ+IMPORT'),
   TOOL_EXPORT: new Permission('TOOL:READ+EXPORT'),
 
