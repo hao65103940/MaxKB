@@ -190,7 +190,7 @@ const startStreamingOutput = () => {
     } else if (loading.value === false && currentDisplayIndex.value >= fullContent.value.length) {
       stopStreaming()
     }
-  }, 50) // 每50ms输出一次
+  }, 50) as  any
 }
 
 // 停止流式输出
