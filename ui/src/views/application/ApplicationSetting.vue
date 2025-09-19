@@ -773,7 +773,6 @@ const submit = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
   await formEl.validate((valid, fields) => {
     if (valid) {
-      console.log(applicationForm.value)
       loadSharedApi({ type: 'application', systemType: apiType.value })
         .putApplication(id, applicationForm.value, loading)
         .then(() => {
