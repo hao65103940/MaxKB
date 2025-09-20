@@ -54,6 +54,7 @@
             :options="modelOptions"
             showFooter
             :model-type="'LLM'"
+            @change="modelChange"
           ></ModelSelect>
         </el-form-item>
         <el-form-item :label="$t('views.application.form.prompt.label')" prop="prompt">
@@ -169,6 +170,14 @@ const openAIParamSettingDialog = () => {
       id,
       form.value.model_params_setting,
     )
+  }
+}
+
+function modelChange() {
+  if (form.value.model_id) {
+    AIModeParamSettingDialogRef.value?.reset_default(form.value.model_id, id)
+  } else {
+    refreshForm({})
   }
 }
 
