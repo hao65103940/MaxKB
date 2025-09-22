@@ -14,7 +14,7 @@ class SiliconCloudTTSModelGeneralParams(BaseForm):
     voice = forms.SingleSelect(
         TooltipLabel('Voice',
                      _('Try out the different sounds (Alloy, Echo, Fable, Onyx, Nova, and Sparkle) to find one that suits your desired tone and audience. The current voiceover is optimized for English.')),
-        required=True, default_value='alloy',
+        required=True, default_value='fnlp/MOSS-TTSD-v0.5:alex',
         text_field='value',
         value_field='value',
         option_list=[
