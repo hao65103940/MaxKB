@@ -76,6 +76,7 @@ export default {
     needConnect1: '節點的',
     needConnect2: '分支需要連接',
     cannotEndNode: '節點不能當做結束節點',
+    loopNodeBreakNodeRequired: '無線迴圈必須存在Break節點',
   },
   nodes: {
     classify: {

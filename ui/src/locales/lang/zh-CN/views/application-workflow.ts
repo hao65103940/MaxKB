@@ -78,6 +78,7 @@ export default {
     needConnect1: '节点的',
     needConnect2: '分支需要连接',
     cannotEndNode: '节点不能当做结束节点',
+    loopNodeBreakNodeRequired: '无线循环 必须存在 Break 节点',
   },
   nodes: {
     classify: {

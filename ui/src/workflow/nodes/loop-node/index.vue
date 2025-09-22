@@ -120,8 +120,14 @@ onMounted(() => {
   const nodeOutgoingNode = props.nodeModel.graphModel.getNodeOutgoingNode(props.nodeModel.id)
   if (!nodeOutgoingNode.some((item: any) => item.type == loopBodyNode.type)) {
     let workflow = { nodes: [loopStartNode], edges: [] }
+    let x = props.nodeModel.x
+    let y = props.nodeModel.y + 200
     if (props.nodeModel.properties.node_data.loop_body) {
       workflow = props.nodeModel.properties.node_data.loop_body
+    }
+    if (props.nodeModel.properties.node_data.loop) {
+      x = props.nodeModel.properties.node_data.loop.x
+      y = props.nodeModel.properties.node_data.loop.y
     }
     const nodeModel = props.nodeModel.graphModel.addNode({
       type: loopBodyNode.type,
@@ -130,8 +136,8 @@ onMounted(() => {
         workflow: workflow,
         loop_node_id: props.nodeModel.id,
       },
-      x: props.nodeModel.x,
-      y: props.nodeModel.y + loopBodyNode.height,
+      x: x,
+      y: y,
     })
     props.nodeModel.graphModel.addEdge({
       type: 'loop-edge',

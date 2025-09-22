@@ -12,17 +12,51 @@ import Dagre from '@/workflow/plugins/dagre'
 import { initDefaultShortcut } from '@/workflow/common/shortcut'
 import LoopBodyContainer from '@/workflow/nodes/loop-body-node/LoopBodyContainer.vue'
 import { WorkflowMode } from '@/enums/application'
+import { WorkFlowInstance } from '@/workflow/common/validate'
+import { t } from '@/locales'
 const nodes: any = import.meta.glob('@/workflow/nodes/**/index.ts', { eager: true })
 const props = defineProps<{ nodeModel: any }>()
 const containerRef = ref()
 
 const validate = () => {
+  const workflow = new WorkFlowInstance(lf.value.getGraphData())
   return Promise.all(lf.value.graphModel.nodes.map((element: any) => element?.validate?.()))
+    .then(() => {
+      const loop_node_id = props.nodeModel.properties.loop_node_id
+      const loop_node = props.nodeModel.graphModel.getNodeModelById(loop_node_id)
+      try {
+        workflow.is_loop_valid()
+        if (loop_node.properties.node_data.loop_type == 'LOOP' && !workflow.extis_break_node()) {
+          return Promise.reject({
+            node: loop_node,
+            errMessage: t('views.applicationWorkflow.validate.loopNodeBreakNodeRequired'),
+          })
+        }
+
+        return Promise.resolve({})
+      } catch (e) {
+        return Promise.reject({ node: loop_node, errMessage: e })
+      }
+    })
+    .catch((e) => {
+      props.nodeModel.graphModel.selectNodeById(props.nodeModel.id)
+      props.nodeModel.graphModel.transformModel.focusOn(
+        props.nodeModel.x,
+        props.nodeModel.y,
+        props.nodeModel.width,
+        props.nodeModel.height,
+      )
+      throw e
+    })
 }
 const set_loop_body = () => {
   const loop_node_id = props.nodeModel.properties.loop_node_id
   const loop_node = props.nodeModel.graphModel.getNodeModelById(loop_node_id)
   loop_node.properties.node_data.loop_body = lf.value.getGraphData()
+  loop_node.properties.node_data.loop = {
+    x: props.nodeModel.x,
+    y: props.nodeModel.y,
+  }
 }
 
 const refresh_loop_fields = (fields: Array<any>) => {

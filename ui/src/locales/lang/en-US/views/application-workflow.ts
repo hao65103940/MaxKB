@@ -75,6 +75,7 @@ export default {
     nodeUnavailable: 'Node unavailable',
     needConnect1: 'The branch of the node needs to be connected',
     cannotEndNode: 'This node cannot be used as an end node',
+    loopNodeBreakNodeRequired: 'Wireless loop must have a Break node',
   },
   nodes: {
     classify: {
