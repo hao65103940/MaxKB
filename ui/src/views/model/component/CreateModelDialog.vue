@@ -139,8 +139,7 @@
         <el-empty
           v-else-if="
             base_form_data.model_type === 'RERANKER' ||
-            base_form_data.model_type === 'EMBEDDING' ||
-            base_form_data.model_type === 'STT'
+            base_form_data.model_type === 'EMBEDDING' 
           "
           :description="$t('views.model.tip.emptyMessage2')"
         />
@@ -149,14 +148,7 @@
           <el-button
             type="text"
             @click.stop="openAddDrawer()"
-            :disabled="
-              base_form_data.model_type !== 'TTS' &&
-              base_form_data.model_type !== 'LLM' &&
-              base_form_data.model_type !== 'IMAGE' &&
-              base_form_data.model_type !== 'TTI' &&
-              base_form_data.model_type !== 'TTV' &&
-              base_form_data.model_type !== 'ITV'
-            "
+            :disabled="!['TTS', 'LLM', 'IMAGE', 'TTI', 'TTV', 'ITV','STT'].includes(base_form_data.model_type)"
           >
             <AppIcon iconName="app-add-outlined" class="mr-4"/> {{ $t('common.add') }}
           </el-button>
