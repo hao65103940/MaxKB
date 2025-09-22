@@ -21,4 +21,8 @@ class LTCompare(Compare):
         try:
             return float(source_value) < float(target_value)
         except Exception as e:
+            try:
+                return str(source_value) < str(target_value)
+            except Exception as _:
+                pass
             return False
