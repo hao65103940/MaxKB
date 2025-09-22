@@ -8716,3 +8716,6 @@ msgstr "Password login"
 
 msgid "Failed to obtain the image"
 msgstr ""
+
+msgid "Update auth setting"
+msgstr ""

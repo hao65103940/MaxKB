@@ -8842,3 +8842,6 @@ msgstr "密码登录"
 
 msgid "Failed to obtain the image"
 msgstr "獲取圖片失敗"
+
+msgid "Update auth setting"
+msgstr "更新認證設置"
