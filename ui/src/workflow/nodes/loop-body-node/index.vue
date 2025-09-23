@@ -26,7 +26,7 @@ const validate = () => {
       const loop_node = props.nodeModel.graphModel.getNodeModelById(loop_node_id)
       try {
         workflow.is_loop_valid()
-        if (loop_node.properties.node_data.loop_type == 'LOOP' && !workflow.extis_break_node()) {
+        if (loop_node.properties.node_data.loop_type == 'LOOP' && !workflow.exist_break_node()) {
           return Promise.reject({
             node: loop_node,
             errMessage: t('views.applicationWorkflow.validate.loopNodeBreakNodeRequired'),

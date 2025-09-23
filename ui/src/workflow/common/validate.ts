@@ -85,8 +85,8 @@ export class WorkFlowInstance {
     const base_node_list = this.nodes.filter((item) => item.id === WorkflowType.Base)
     return base_node_list[0]
   }
-  extis_break_node() {
-    return this.nodes.some((item) => item.id === WorkflowType.LoopBreakNode)
+  exist_break_node() {
+    return this.nodes.some((item) => item.type === WorkflowType.LoopBreakNode)
   }
   /**
    * 校验工作流

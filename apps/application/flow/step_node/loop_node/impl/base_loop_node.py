@@ -15,6 +15,10 @@ from application.flow.step_node.loop_node.i_loop_node import ILoopNode
 from application.flow.tools import Reasoning
 from application.models import ChatRecord
 from common.handle.impl.response.loop_to_response import LoopToResponse
+from maxkb.const import CONFIG
+from django.utils.translation import gettext as _
+
+max_loop_count = (CONFIG.get("MAX_LOOP_COUNT") or 1000)
 
 
 def _is_interrupt_exec(node, node_variable: Dict, workflow_variable: Dict):
@@ -127,6 +131,7 @@ def loop(workflow_manage_new_instance, node: INode, generate_loop):
     current_index = node.context.get("current_index") or 0
     node_params = node.node_params
     start_node_id = node_params.get('child_node', {}).get('runtime_node_id')
+    loop_type = node_params.get('loop_type')
     start_node_data = None
     chat_record = None
     child_node = None
@@ -138,6 +143,8 @@ def loop(workflow_manage_new_instance, node: INode, generate_loop):
                                  details=loop_node_data[current_index])
 
     for item, index in generate_loop(current_index):
+        if 0 < max_loop_count <= index - current_index and loop_type == 'LOOP':
+            raise Exception(_('Exceeding the maximum number of cycles'))
         """
         指定次数循环
         @return:
