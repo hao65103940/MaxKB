@@ -50,7 +50,7 @@
             "
             :options="modelOptions"
             showFooter
-            :model-type="'TTI'"
+            :model-type="'TTV'"
           ></ModelSelect>
         </el-form-item>
 
