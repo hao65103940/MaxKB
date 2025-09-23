@@ -354,6 +354,10 @@ export default {
         numberLoop: '指定次数循环',
         infiniteLoop: '无限循环',
       },
+      loopNumber: {
+        label: '循环次数',
+        requiredMessage: '循环次数必填',
+      },
       loopArray: {
         label: '循环数组',
         requiredMessage: '循环数组必填',

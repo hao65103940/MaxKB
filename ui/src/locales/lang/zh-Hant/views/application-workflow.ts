@@ -347,6 +347,10 @@ export default {
         numberLoop: '指定次數循環',
         infiniteLoop: '無限循環',
       },
+      loopNumber: {
+        label: '循環次數',
+        requiredMessage: '請填寫循環次數',
+      },
       loopArray: {
         label: '循環數組',
         requiredMessage: '循環數組必填',

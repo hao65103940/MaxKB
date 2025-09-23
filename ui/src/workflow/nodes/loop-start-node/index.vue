@@ -1,5 +1,6 @@
 <template>
   <NodeContainer :nodeModel="nodeModel">
+    <h5 class="title-decoration-1 mb-8">{{ $t('views.applicationWorkflow.nodeSetting') }}</h5>
     <LoopFieldTable :nodeModel="nodeModel"></LoopFieldTable>
     <template v-if="loop_input_fields?.length">
       <h5 class="title-decoration-1 mb-8">

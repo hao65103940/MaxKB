@@ -55,11 +55,11 @@
         </el-form-item>
         <el-form-item
           v-else-if="form_data.loop_type == 'NUMBER'"
-          :label="$t('views.applicationWorkflow.nodes.loopNode.loopArray.label')"
+          :label="$t('views.applicationWorkflow.nodes.loopNode.loopNumber.label')"
           @click.prevent
           prop="number"
           :rules="{
-            message: $t('views.applicationWorkflow.nodes.loopNode.loopArray.requiredMessage'),
+            message: $t('views.applicationWorkflow.nodes.loopNode.loopNumber.requiredMessage'),
             trigger: 'blur',
             required: true,
           }"

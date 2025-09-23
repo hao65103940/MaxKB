@@ -354,6 +354,10 @@ export default {
         numberLoop: 'Loop for Specified Times',
         infiniteLoop: 'Infinite Loop',
       },
+      loopNumber: {
+        label: 'Loop Number',
+        requiredMessage: 'Please enter the number of loops',
+      },
       loopArray: {
         label: 'Circular Array',
         requiredMessage: 'Circular Array is required',
