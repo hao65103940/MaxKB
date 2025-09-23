@@ -28,6 +28,7 @@ class BaseLoopBreakNode(ILoopBreakNode):
         is_break = all(r) if condition == 'and' else any(r)
         if is_break:
             self.node_params['is_result'] = True
+        self.context['is_break'] = is_break
         return NodeResult({'is_break': is_break}, {},
                           _write_context=_write_context,
                           _is_interrupt=lambda n, v, w: is_break)
@@ -50,7 +51,7 @@ class BaseLoopBreakNode(ILoopBreakNode):
         return {
             'name': self.node.properties.get('stepName'),
             "index": index,
-            "question": self.context.get('question'),
+            'is_break': self.context.get('is_break'),
             'run_time': self.context.get('run_time'),
             'type': self.node.type,
             'status': self.status,

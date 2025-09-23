@@ -18,6 +18,7 @@ class BaseLoopContinueNode(ILoopContinueNode):
         condition_list = [self.assertion(row.get('field'), row.get('compare'), row.get('value')) for row in
                           condition_list]
         is_continue = all(condition_list) if condition == 'and' else any(condition_list)
+        self.context['is_continue'] = is_continue
         if is_continue:
             return NodeResult({'is_continue': is_continue, 'branch_id': 'continue'}, {})
         return NodeResult({'is_continue': is_continue}, {})
@@ -40,7 +41,7 @@ class BaseLoopContinueNode(ILoopContinueNode):
         return {
             'name': self.node.properties.get('stepName'),
             "index": index,
-            "question": self.context.get('question'),
+            "is_continue": self.context.get('is_continue'),
             'run_time': self.context.get('run_time'),
             'type': self.node.type,
             'status': self.status,
