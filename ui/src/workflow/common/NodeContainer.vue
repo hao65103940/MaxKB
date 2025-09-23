@@ -284,6 +284,14 @@ const deleteNode = () => {
     confirmButtonText: t('common.confirm'),
     confirmButtonClass: 'danger',
   }).then(() => {
+    if (props.nodeModel.type === WorkflowType.LoopNode) {
+      const next = props.nodeModel.graphModel.getNodeOutgoingNode(props.nodeModel.id)
+      next.forEach((n: any) => {
+        if (n.type === 'loop-body-node') {
+          props.nodeModel.graphModel.deleteNode(n.id)
+        }
+      })
+    }
     props.nodeModel.graphModel.deleteNode(props.nodeModel.id)
   })
   props.nodeModel.graphModel.eventCenter.emit('delete_node')
