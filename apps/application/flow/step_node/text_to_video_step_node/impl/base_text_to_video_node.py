@@ -35,7 +35,7 @@ class BaseTextToVideoNode(ITextToVideoNode):
         message_list = self.generate_message_list(question, history_message)
         self.context['message_list'] = message_list
         self.context['dialogue_type'] = dialogue_type
-        self.context['negative_prompt'] = negative_prompt
+        self.context['negative_prompt'] = self.generate_prompt_question(negative_prompt)
         video_urls = ttv_model.generate_video(question, negative_prompt)
         print('video_urls', video_urls)
         # 保存图片

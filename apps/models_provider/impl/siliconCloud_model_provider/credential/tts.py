@@ -15,17 +15,17 @@ class SiliconCloudTTSModelGeneralParams(BaseForm):
         TooltipLabel('Voice',
                      _('Try out the different sounds (Alloy, Echo, Fable, Onyx, Nova, and Sparkle) to find one that suits your desired tone and audience. The current voiceover is optimized for English.')),
         required=True, default_value='fnlp/MOSS-TTSD-v0.5:alex',
-        text_field='value',
+        text_field='label',
         value_field='value',
         option_list=[
-            {'text': 'alex', 'value': 'fnlp/MOSS-TTSD-v0.5:alex'},
-            {'text': 'anna', 'value': 'fnlp/MOSS-TTSD-v0.5:anna'},
-            {'text': 'bella', 'value': 'fnlp/MOSS-TTSD-v0.5:bella'},
-            {'text': 'charles', 'value': 'fnlp/MOSS-TTSD-v0.5:charles'},
-            {'text': 'benjamin', 'value': 'fnlp/MOSS-TTSD-v0.5:benjamin'},
-            {'text': 'claire', 'value': 'fnlp/MOSS-TTSD-v0.5:claire'},
-            {'text': 'david', 'value': 'fnlp/MOSS-TTSD-v0.5:david'},
-            {'text': 'diana', 'value': 'fnlp/MOSS-TTSD-v0.5:diana'},
+            {'label': 'alex', 'value': 'fnlp/MOSS-TTSD-v0.5:alex'},
+            {'label': 'anna', 'value': 'fnlp/MOSS-TTSD-v0.5:anna'},
+            {'label': 'bella', 'value': 'fnlp/MOSS-TTSD-v0.5:bella'},
+            {'label': 'charles', 'value': 'fnlp/MOSS-TTSD-v0.5:charles'},
+            {'label': 'benjamin', 'value': 'fnlp/MOSS-TTSD-v0.5:benjamin'},
+            {'label': 'claire', 'value': 'fnlp/MOSS-TTSD-v0.5:claire'},
+            {'label': 'david', 'value': 'fnlp/MOSS-TTSD-v0.5:david'},
+            {'label': 'diana', 'value': 'fnlp/MOSS-TTSD-v0.5:diana'},
         ])
 
 

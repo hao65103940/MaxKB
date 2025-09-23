@@ -39,7 +39,7 @@ class BaseImageToVideoNode(IImageToVideoNode):
         message_list = self.generate_message_list(question, history_message)
         self.context['message_list'] = message_list
         self.context['dialogue_type'] = dialogue_type
-        self.context['negative_prompt'] = negative_prompt
+        self.context['negative_prompt'] = self.generate_prompt_question(negative_prompt)
         self.context['first_frame_url'] = first_frame_url
         self.context['last_frame_url'] = last_frame_url
         # 处理首尾帧图片 这块可以是url 也可以是file_id 如果是url 可以直接传递给模型  如果是file_id 需要传base64
