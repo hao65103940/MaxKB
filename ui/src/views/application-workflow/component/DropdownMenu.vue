@@ -1,5 +1,5 @@
 <template>
-  <div v-show="show" class="workflow-dropdown-menu border border-r-6 white-bg">
+  <div v-show="show" class="workflow-dropdown-menu border border-r-6 white-bg" :style="{ width: activeName === 'base' ? '400px':'640px' }">
     <el-tabs v-model="activeName" class="workflow-dropdown-tabs" @tab-change="handleClick">
       <div
         v-show="activeName === 'base'"
@@ -39,7 +39,7 @@
                         <component
                           :is="iconComponent(`${item.type}-icon`)"
                           class="mr-8"
-                          :size="32"
+                          :size="20"
                         />
                         <div class="lighter">{{ item.label }}</div>
                       </div>

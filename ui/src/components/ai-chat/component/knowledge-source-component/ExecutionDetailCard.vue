@@ -37,14 +37,10 @@
     </div>
     <el-collapse-transition>
       <div class="mt-12" v-if="data['show']">
-        <template v-if="data.status === 200">
+        <template v-if="data.status === 200 || data.type == WorkflowType.LoopNode">
           <!-- 开始 -->
           <template
-            v-if="
-              data.type === WorkflowType.Start ||
-              data.type === WorkflowType.Application ||
-              data.type === WorkflowType.LoopStartNode
-            "
+            v-if="data.type === WorkflowType.Start || data.type === WorkflowType.Application"
           >
             <div class="card-never border-r-6">
               <h5 class="p-8-12">
@@ -827,7 +823,9 @@
                   </template>
                 </el-radio-group>
                 <template
-                  v-for="(cLoop, cIndex) in Object.values(data.loop_node_data[currentLoopNode])"
+                  v-for="(cLoop, cIndex) in Object.values(
+                    data.loop_node_data?.[currentLoopNode] || [],
+                  )"
                   :key="cIndex"
                 >
                   <ExecutionDetailCard :data="cLoop"></ExecutionDetailCard>
@@ -835,6 +833,31 @@
               </template>
             </div>
           </div>
+          <!-- 循环开始 节点-->
+          <template v-if="data.type === WorkflowType.LoopStartNode">
+            <div class="card-never border-r-6">
+              <h5 class="p-8-12">
+                {{ $t('common.param.inputParam') }}
+              </h5>
+
+              <div class="p-8-12 border-t-dashed lighter">
+                <div class="mb-8">
+                  <span class="color-secondary">
+                    {{ $t('views.applicationWorkflow.nodes.loopStartNode.loopItem') }}:</span
+                  >
+
+                  {{ data.current_item }}
+                </div>
+                <div class="mb-8">
+                  <span class="color-secondary">
+                    {{ $t('views.applicationWorkflow.nodes.loopStartNode.loopIndex') }}:</span
+                  >
+
+                  {{ data.current_index }}
+                </div>
+              </div>
+            </div>
+          </template>
           <slot></slot>
         </template>
         <template v-else>
