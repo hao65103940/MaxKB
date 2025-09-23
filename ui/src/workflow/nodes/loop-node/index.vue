@@ -135,7 +135,7 @@ const mountLoopBodyNode = () => {
   if (!nodeOutgoingNode.some((item: any) => item.type == loopBodyNode.type)) {
     let workflow = { nodes: [loopStartNode], edges: [] }
     let x = props.nodeModel.x
-    let y = props.nodeModel.y + 200
+    let y = props.nodeModel.y + 350
     if (props.nodeModel.properties.node_data.loop_body) {
       workflow = props.nodeModel.properties.node_data.loop_body
     }
