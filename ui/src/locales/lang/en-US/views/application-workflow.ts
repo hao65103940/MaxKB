@@ -381,7 +381,7 @@ export default {
       text: 'Used to terminate the current loop and proceed to the next one.',
     },
     loopBreakNode: {
-      label: 'Exit Loop',
+      label: 'Break',
       text: 'Terminate the current loop and exit the loop body',
     },
   },

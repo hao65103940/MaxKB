@@ -377,11 +377,11 @@ export default {
       text: '循环体',
     },
     loopContinueNode: {
-      label: '跳过',
+      label: 'Continue',
       text: '用于终止当前循环，执行下次循环',
     },
     loopBreakNode: {
-      label: '退出循环',
+      label: 'Break',
       text: '终止当前循环，跳出循环体',
     },
   },

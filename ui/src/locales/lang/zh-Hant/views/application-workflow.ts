@@ -366,8 +366,8 @@ export default {
       loopVariable: '循環變量',
     },
     loopBodyNode: { label: '循環體', text: '循環體' },
-    loopContinueNode: { label: '跳過', text: '用於終止當前循環，執行下次循環' },
-    loopBreakNode: { label: '退出循環', text: '終止當前循環，跳出循環體' },
+    loopContinueNode: { label: 'Continue', text: '用於終止當前循環，執行下次循環' },
+    loopBreakNode: { label: 'Break', text: '終止當前循環，跳出循環體' },
   },
   compare: {
     is_null: '為空',
