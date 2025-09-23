@@ -9,6 +9,8 @@
 import time
 from typing import Dict, List
 
+from django.utils.translation import gettext as _
+
 from application.flow.common import Answer
 from application.flow.i_step_node import NodeResult, WorkFlowPostHandler, INode
 from application.flow.step_node.loop_node.i_loop_node import ILoopNode
@@ -16,7 +18,6 @@ from application.flow.tools import Reasoning
 from application.models import ChatRecord
 from common.handle.impl.response.loop_to_response import LoopToResponse
 from maxkb.const import CONFIG
-from django.utils.translation import gettext as _
 
 max_loop_count = int(CONFIG.get("WORKFLOW_LOOP_NODE_MAX_LOOP_COUNT", 500))
 
@@ -173,7 +174,17 @@ def loop(workflow_manage_new_instance, node: INode, generate_loop):
             answer += content_chunk
             yield chunk
             if chunk.get('node_status', "SUCCESS") == 'ERROR':
-                raise Exception(chunk.get('content'))
+                insert_or_replace(loop_node_data, index, instance.get_runtime_details())
+                insert_or_replace(loop_answer_data, index,
+                                  get_answer_list(instance, child_node_node_dict, node.runtime_node_id))
+                node.context['is_interrupt_exec'] = is_interrupt_exec
+                node.context['loop_node_data'] = loop_node_data
+                node.context['loop_answer_data'] = loop_answer_data
+                node.context["index"] = current_index
+                node.context["item"] = current_index
+                node.status = 500
+                node.err_message = chunk.get('content')
+                return
             node_type = chunk.get('node_type')
             if node_type == 'form-node':
                 break_outer = True
@@ -182,7 +193,6 @@ def loop(workflow_manage_new_instance, node: INode, generate_loop):
         start_node_data = None
         chat_record = None
         child_node = None
-        loop_global_data = instance.context
         insert_or_replace(loop_node_data, index, instance.get_runtime_details())
         insert_or_replace(loop_answer_data, index,
                           get_answer_list(instance, child_node_node_dict, node.runtime_node_id))
