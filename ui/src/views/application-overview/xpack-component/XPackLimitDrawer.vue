@@ -116,6 +116,7 @@
             </el-checkbox-group>
           </el-form-item>
           <el-form-item
+            v-if="form.authentication_value.type === 'login' && form.authentication_value?.login_value?.includes('LOCAL')"
             :label="$t('views.system.display_code')"
             :rules="[
               {
@@ -126,15 +127,22 @@
             ]"
             prop="authentication_value.max_attempts"
           >
+             <span style="font-size: 13px;">
+      {{ $t('views.system.loginFailed') }}
+    </span>
             <el-input-number
+              style="margin-left: 8px;"
               v-model="form.authentication_value.max_attempts"
               :min="-1"
               :max="10"
               :step="1"
               controls-position="right"
             />
+            <span style="margin-left: 8px; font-size: 13px;">
+      {{ $t('views.system.loginFailedMessage') }}
+    </span>
             <span style="margin-left: 8px; color: #909399; font-size: 12px;">
-      {{ $t('views.system.display_codeTip') }}
+      ({{ $t('views.system.display_codeTip') }})
     </span>
           </el-form-item>
         </el-card>
@@ -220,9 +228,6 @@ const open = (data: any) => {
   form.value.authentication_value = data.authentication_value || {
     type: 'password',
   }
-  if (!form.value.authentication_value.max_attempts) {
-    form.value.authentication_value.max_attempts = 1
-  }
   if (
     form.value.authentication_value.type === 'password' &&
     !form.value.authentication_value.password_value
@@ -278,6 +283,9 @@ function firstGeneration() {
     form.value.authentication_value = {
       type: 'password',
       password_value: generateAuthenticationValue(),
+    }
+    if (!form.value.authentication_value.max_attempts) {
+      form.value.authentication_value.max_attempts = 1
     }
   }
 }

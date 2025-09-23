@@ -40,15 +40,22 @@
             ]"
             prop="max_attempts"
           >
+            <span style="font-size: 13px;">
+      {{ $t('views.system.loginFailed') }}
+    </span>
             <el-input-number
+              style="margin-left: 8px;"
               v-model="form.max_attempts"
               :min="-1"
               :max="10"
               :step="1"
               controls-position="right"
             />
+            <span style="margin-left: 8px; font-size: 13px;">
+      {{ $t('views.system.loginFailedMessage') }}
+    </span>
             <span style="margin-left: 8px; color: #909399; font-size: 12px;">
-      {{ $t('views.system.display_codeTip') }}
+      ({{ $t('views.system.display_codeTip') }})
     </span>
           </el-form-item>
         </el-form>
