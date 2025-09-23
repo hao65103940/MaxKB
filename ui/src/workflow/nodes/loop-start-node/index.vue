@@ -53,7 +53,6 @@ watch(loop_input_fields, () => {
 const showicon = ref(false)
 
 onMounted(() => {
-  console.log(cloneDeep(loop_input_fields.value))
   props.nodeModel.graphModel.refresh_loop_fields(cloneDeep(loop_input_fields.value))
 })
 </script>

@@ -31,7 +31,7 @@ class LoopStartNode extends AppNode {
       type: this.props.model.type,
       children: this.props.model.properties?.config?.fields || [],
     })
-    console.log(result)
+
     return result
   }
 }

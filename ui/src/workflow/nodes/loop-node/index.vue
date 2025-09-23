@@ -71,9 +71,9 @@
   </NodeContainer>
 </template>
 <script setup lang="ts">
-import { set } from 'lodash'
+import { set, throttle } from 'lodash'
 import NodeContainer from '@/workflow/common/NodeContainer.vue'
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { isLastNode } from '@/workflow/common/data'
 import { loopBodyNode, loopStartNode } from '@/workflow/common/data'
 import NodeCascader from '@/workflow/common/NodeCascader.vue'
@@ -98,7 +98,20 @@ const form_data = computed({
     set(props.nodeModel.properties, 'node_data', value)
   },
 })
-
+const showNode = computed(() => {
+  if (props.nodeModel.properties.showNode !== undefined) {
+    return props.nodeModel.properties.showNode
+  }
+  set(props.nodeModel.properties, 'showNode', true)
+  return true
+})
+watch(showNode, () => {
+  if (showNode.value) {
+    throttle(mountLoopBodyNode, 1000)()
+  } else {
+    throttle(destroyLoopBodyNode, 1000)()
+  }
+})
 const replyNodeFormRef = ref()
 const nodeCascaderRef = ref()
 const validate = () => {
@@ -109,14 +122,15 @@ const validate = () => {
     return Promise.reject({ node: props.nodeModel, errMessage: err })
   })
 }
-
-onMounted(() => {
-  if (typeof props.nodeModel.properties.node_data?.is_result === 'undefined') {
-    if (isLastNode(props.nodeModel)) {
-      set(props.nodeModel.properties.node_data, 'is_result', true)
-    }
+const destroyLoopBodyNode = () => {
+  const nodeOutgoingNode = props.nodeModel.graphModel.getNodeOutgoingNode(props.nodeModel.id)
+  const loopBody = nodeOutgoingNode.find((item: any) => item.type == loopBodyNode.type)
+  if (loopBody) {
+    loopBody.set_loop_body()
+    props.nodeModel.graphModel.deleteNode(loopBody.id)
   }
-  set(props.nodeModel, 'validate', validate)
+}
+const mountLoopBodyNode = () => {
   const nodeOutgoingNode = props.nodeModel.graphModel.getNodeOutgoingNode(props.nodeModel.id)
   if (!nodeOutgoingNode.some((item: any) => item.type == loopBodyNode.type)) {
     let workflow = { nodes: [loopStartNode], edges: [] }
@@ -127,7 +141,7 @@ onMounted(() => {
     }
     if (props.nodeModel.properties.node_data.loop) {
       x = props.nodeModel.properties.node_data.loop.x
-      y = props.nodeModel.properties.node_data.loop.y
+      y = props.nodeModel.properties.node_data.loop.y - 330
     }
     const nodeModel = props.nodeModel.graphModel.addNode({
       type: loopBodyNode.type,
@@ -147,6 +161,16 @@ onMounted(() => {
       virtual: true,
     })
   }
+}
+
+onMounted(() => {
+  if (typeof props.nodeModel.properties.node_data?.is_result === 'undefined') {
+    if (isLastNode(props.nodeModel)) {
+      set(props.nodeModel.properties.node_data, 'is_result', true)
+    }
+  }
+  set(props.nodeModel, 'validate', validate)
+  mountLoopBodyNode()
 })
 </script>
 <style lang="scss" scoped></style>

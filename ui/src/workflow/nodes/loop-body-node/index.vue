@@ -52,11 +52,11 @@ const validate = () => {
 const set_loop_body = () => {
   const loop_node_id = props.nodeModel.properties.loop_node_id
   const loop_node = props.nodeModel.graphModel.getNodeModelById(loop_node_id)
-  loop_node.properties.node_data.loop_body = lf.value.getGraphData()
   loop_node.properties.node_data.loop = {
     x: props.nodeModel.x,
     y: props.nodeModel.y,
   }
+  loop_node.properties.node_data.loop_body = lf.value.getGraphData()
 }
 
 const refresh_loop_fields = (fields: Array<any>) => {
