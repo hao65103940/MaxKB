@@ -115,6 +115,7 @@ def generate_while_loop(current_index: int):
     index = current_index
     while True:
         yield index, index
+        index += 1
 
 
 def loop(workflow_manage_new_instance, node: INode, generate_loop):
