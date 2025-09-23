@@ -55,8 +55,9 @@
           prop="content_list"
           :label="$t('views.applicationWorkflow.nodes.intentNode.input.label')"
           :rules="{
-            required: true,
+            message: $t('views.applicationWorkflow.nodes.textToSpeechNode.content.label'),
             trigger: 'change',
+            required: true,
           }"
         >
           <template #label>
