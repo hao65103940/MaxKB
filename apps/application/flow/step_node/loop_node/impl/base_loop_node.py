@@ -18,7 +18,7 @@ from common.handle.impl.response.loop_to_response import LoopToResponse
 from maxkb.const import CONFIG
 from django.utils.translation import gettext as _
 
-max_loop_count = (CONFIG.get("MAX_LOOP_COUNT") or 1000)
+max_loop_count = int((CONFIG.get("MAX_LOOP_COUNT") or 1000))
 
 
 def _is_interrupt_exec(node, node_variable: Dict, workflow_variable: Dict):
