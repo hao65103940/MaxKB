@@ -126,6 +126,9 @@ const renderGraphData = (data?: any) => {
       }
     }
     lf.value.graphModel.refresh_loop_fields = refresh_loop_fields
+    lf.value.graphModel.get_parent_nodes = () => {
+      return props.nodeModel.graphModel.nodes
+    }
     lf.value.graphModel.get_up_node_field_list = props.nodeModel.get_up_node_field_list
     lf.value.batchRegister([...Object.keys(nodes).map((key) => nodes[key].default), AppEdge])
     lf.value.setDefaultEdgeType('app-edge')
