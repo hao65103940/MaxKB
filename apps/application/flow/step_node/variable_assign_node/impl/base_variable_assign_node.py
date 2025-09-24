@@ -80,7 +80,7 @@ class BaseVariableAssignNode(IVariableAssignNode):
             from application.flow.loop_workflow_manage import LoopWorkflowManage
             if isinstance(self.workflow_manage, LoopWorkflowManage):
                 self.workflow_manage.parentWorkflowManage.get_chat_info().set_chat_variable(
-                    self.workflow_manage.chat_context)
+                    self.workflow_manage.parentWorkflowManage.chat_context)
             else:
                 self.workflow_manage.get_chat_info().set_chat_variable(self.workflow_manage.chat_context)
         return NodeResult({'variable_list': variable_list, 'result_list': result_list}, {})
