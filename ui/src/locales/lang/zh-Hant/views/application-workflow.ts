@@ -143,9 +143,18 @@ export default {
       label: '問題優化',
       text: '根據歷史聊天記錄優化完善當前問題，更利於匹配知識庫分段',
       result: '問題優化結果',
-      defaultPrompt1: `根據上下文優化和完善用戶問題：`,
-      defaultPrompt2: `請輸出一個優化後的問題。`,
-      systemDefault: '你是一個問題優化大師',
+      systemDefault: `# 角色
+妳是壹位問題優化大師，擅長根據上下文精準揣測用戶意圖，並對用戶提出的問題進行優化。
+
+## 技能
+### 技能 1: 優化問題
+2. 接收用戶輸入的問題。
+3. 依據上下文仔細分析問題含義。
+4. 輸出優化後的問題。
+
+## 限制:
+- 僅返回優化後的問題，不進行額外解釋或說明。
+- 確保優化後的問題準確反映原始問題意圖，不得改變原意。`,
     },
     conditionNode: {
       label: '判斷器',
@@ -389,5 +398,6 @@ export default {
     len_le: '長度小於等於',
     len_lt: '長度小於',
   },
-  FileUploadSetting: {},
+  SystemPromptPlaceholder: '系統提示詞，可以引用系統中的變量：如',
+  UserPromptPlaceholder: '用戶提示詞，可以引用系統中的變量：如',
 }

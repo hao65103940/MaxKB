@@ -150,9 +150,18 @@ export default {
       label: '问题优化',
       text: '根据历史聊天记录优化完善当前问题，更利于匹配知识库分段',
       result: '问题优化结果',
-      defaultPrompt1: `根据上下文优化和完善用户问题`,
-      defaultPrompt2: `请输出一个优化后的问题。`,
-      systemDefault: '你是一个问题优化大师',
+      systemDefault: `# 角色
+你是一位问题优化大师，擅长根据上下文精准揣测用户意图，并对用户提出的问题进行优化。
+
+## 技能
+### 技能 1: 优化问题
+2. 接收用户输入的问题。
+3. 依据上下文仔细分析问题含义。
+4. 输出优化后的问题。
+
+## 限制:
+- 仅返回优化后的问题，不进行额外解释或说明。
+- 确保优化后的问题准确反映原始问题意图，不得改变原意。`,
     },
     conditionNode: {
       label: '判断器',
@@ -405,5 +414,6 @@ export default {
     is_true: '为真',
     is_not_true: '不为真',
   },
-  FileUploadSetting: {},
+  SystemPromptPlaceholder: '系统提示词，可以引用系统中的变量：如',
+  UserPromptPlaceholder: '用户提示词，可以引用系统中的变量：如',
 }

@@ -142,9 +142,18 @@ export default {
       label: 'Question Optimization',
       text: 'Optimize and improve the current question based on historical chat records to better match knowledge segments',
       result: 'Optimized Question Result',
-      defaultPrompt1: `Optimize and improve the user's question based on context:`,
-      defaultPrompt2: `Please output an optimized question.`,
-      systemDefault: 'You are a question optimization expert',
+      systemDefault: `#Role
+You are a master of problem optimization, adept at accurately inferring user intentions based on context and optimizing the questions raised by users.
+
+##Skills
+###Skill 1: Optimizing Problems
+2. Receive user input questions.
+3. Carefully analyze the meaning of the problem based on the context.
+4. Output optimized problems.
+
+##Limitations:
+-Only return the optimized problem without any additional explanation or clarification.
+-Ensure that the optimized problem accurately reflects the original problem intent and does not alter the original intention.`,
     },
     conditionNode: {
       label: 'Conditional Branch',
@@ -403,5 +412,6 @@ export default {
     len_le: 'Length less than or equal to',
     len_lt: 'Length less than',
   },
-  FileUploadSetting: {},
+  SystemPromptPlaceholder: 'System Prompt, can reference variables in the system, such as',
+  UserPromptPlaceholder: 'User Prompt, can reference variables in the system, such as',
 }

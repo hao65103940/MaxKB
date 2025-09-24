@@ -59,7 +59,7 @@
           prop="prompt"
           :rules="{
             required: true,
-            message: $t('views.application.form.prompt.requiredMessage'),
+            message: $t('common.prompt.placeholder'),
             trigger: 'blur',
           }"
         >
@@ -92,7 +92,7 @@
           prop="prompt"
           :rules="{
             required: false,
-            message: $t('views.application.form.prompt.requiredMessage'),
+            message: $t('common.prompt.placeholder'),
             trigger: 'blur',
           }"
         >

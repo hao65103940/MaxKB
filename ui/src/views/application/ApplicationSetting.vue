@@ -102,7 +102,17 @@
                 <el-form-item>
                   <template #label>
                     <div class="flex-between">
-                      <span>{{ $t('views.application.form.roleSettings.label') }}</span>
+                      <div class="flex align-center">
+                        <span>{{ $t('views.application.form.roleSettings.label') }}</span>
+                        <el-tooltip
+                          effect="dark"
+                          :content="$t('views.application.form.roleSettings.tooltip')"
+                          placement="right"
+                        >
+                          <AppIcon iconName="app-warning" class="app-warning-icon ml-4"></AppIcon>
+                        </el-tooltip>
+                      </div>
+
                       <el-button
                         type="primary"
                         link
@@ -119,7 +129,12 @@
                     v-model="applicationForm.model_setting.system"
                     style="height: 120px"
                     @submitDialog="submitSystemDialog"
-                    :placeholder="$t('views.application.form.roleSettings.placeholder')"
+                    :placeholder="
+                      $t('views.application.form.roleSettings.placeholder', {
+                        data: '{data}',
+                        question: '{question}',
+                      })
+                    "
                   />
                 </el-form-item>
                 <el-form-item
@@ -140,11 +155,7 @@
                       </span>
                       <el-tooltip
                         effect="dark"
-                        :content="
-                          $t('views.application.form.prompt.noReferencesTooltip', {
-                            question: '{question}',
-                          })
-                        "
+                        :content="$t('views.application.form.prompt.tooltip')"
                         placement="right"
                         popper-class="max-w-350"
                       >
@@ -162,7 +173,12 @@
                     v-model="applicationForm.model_setting.no_references_prompt"
                     style="height: 120px"
                     @submitDialog="submitNoReferencesPromptDialog"
-                    placeholder="{question}"
+                    :placeholder="
+                      $t('views.application.form.roleSettings.placeholder', {
+                        data: '{data}',
+                        question: '{question}',
+                      })
+                    "
                   />
                 </el-form-item>
                 <el-form-item
@@ -253,12 +269,7 @@
                       </span>
                       <el-tooltip
                         effect="dark"
-                        :content="
-                          $t('views.application.form.prompt.referencesTooltip', {
-                            data: '{data}',
-                            question: '{question}',
-                          })
-                        "
+                        :content="$t('views.application.form.prompt.tooltip')"
                         popper-class="max-w-350"
                         placement="right"
                       >
@@ -276,7 +287,12 @@
                     v-model="applicationForm.model_setting.prompt"
                     style="height: 150px"
                     @submitDialog="submitPromptDialog"
-                    :placeholder="defaultPrompt"
+                    :placeholder="
+                      $t('views.application.form.roleSettings.placeholder', {
+                        data: '{data}',
+                        question: '{question}',
+                      })
+                    "
                   />
                 </el-form-item>
                 <el-form-item :label="$t('views.application.form.prologue')">
@@ -415,7 +431,10 @@
                     </div>
                   </template>
                 </div>
-                <el-form-item @click.prevent v-if="applicationForm.mcp_enable || applicationForm.tool_enable">
+                <el-form-item
+                  @click.prevent
+                  v-if="applicationForm.mcp_enable || applicationForm.tool_enable"
+                >
                   <template #label>
                     <div class="flex-between">
                       <span class="mr-4">
@@ -485,12 +504,12 @@
                   </template>
                   <div class="flex-between w-full">
                     <ModelSelect
-                    v-show="applicationForm.stt_model_enable"
-                    v-model="applicationForm.stt_model_id"
-                    :placeholder="$t('views.application.form.voiceInput.placeholder')"
-                    :options="sttModelOptions"
-                    @change="sttModelChange"
-                    :model-type="'STT'"
+                      v-show="applicationForm.stt_model_enable"
+                      v-model="applicationForm.stt_model_id"
+                      :placeholder="$t('views.application.form.voiceInput.placeholder')"
+                      :options="sttModelOptions"
+                      @change="sttModelChange"
+                      :model-type="'STT'"
                     >
                     </ModelSelect>
 
@@ -698,7 +717,7 @@ const applicationForm = ref<ApplicationFormType>({
   },
   model_setting: {
     prompt: defaultPrompt,
-    system: t('views.application.form.roleSettings.placeholder'),
+    system: '',
     no_references_prompt: '{question}',
     reasoning_content_enable: false,
   },
@@ -834,7 +853,6 @@ const openSTTParamSettingDialog = () => {
   }
 }
 
-
 const openParamSettingDialog = () => {
   ParamSettingDialogRef.value?.open(applicationForm.value)
 }
@@ -847,7 +865,9 @@ function removeTool(id: any) {
 
 function removeMcpTool(id: any) {
   if (applicationForm.value.mcp_tool_ids) {
-    applicationForm.value.mcp_tool_ids = applicationForm.value.mcp_tool_ids.filter((v: any) => v !== id)
+    applicationForm.value.mcp_tool_ids = applicationForm.value.mcp_tool_ids.filter(
+      (v: any) => v !== id,
+    )
   }
 }
 
