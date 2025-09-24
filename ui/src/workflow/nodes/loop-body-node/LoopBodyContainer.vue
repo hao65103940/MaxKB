@@ -202,7 +202,7 @@ function enlargeHandle() {
     props.nodeModel.graphModel.transformModel.focusOn(
       props.nodeModel.x,
       props.nodeModel.y,
-      props.nodeModel.width + 470,
+      props.nodeModel.width + window.innerWidth - props.nodeModel.width,
       props.nodeModel.height - 30,
     )
     height.value =
