@@ -191,7 +191,8 @@ class CaptchaView(APIView):
                    responses=CaptchaAPI.get_response())
     def get(self, request: Request):
         username = request.query_params.get('username', None)
-        return result.success(CaptchaSerializer().generate(username, 'chat'))
+        accessToken = request.query_params.get('accessToken', None)
+        return result.success(CaptchaSerializer().chat_generate(username, 'chat', accessToken))
 
 
 class SpeechToText(APIView):
