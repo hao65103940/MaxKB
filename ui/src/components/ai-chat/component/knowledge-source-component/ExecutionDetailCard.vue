@@ -858,6 +858,42 @@
               </div>
             </div>
           </template>
+          <!-- 循环跳过 节点-->
+          <template v-if="data.type === WorkflowType.LoopContinueNode">
+            <div class="card-never border-r-6">
+              <h5 class="p-8-12">
+                {{ $t('common.param.outputParam') }}
+              </h5>
+
+              <div class="p-8-12 border-t-dashed lighter">
+                <div class="mb-8">
+                  <span class="color-secondary">
+                    {{ $t('views.applicationWorkflow.nodes.loopContinueNode.isContinue') }}:</span
+                  >
+
+                  {{ data.is_continue }}
+                </div>
+              </div>
+            </div>
+          </template>
+          <!-- 循环退出 节点-->
+          <template v-if="data.type === WorkflowType.LoopBreakNode">
+            <div class="card-never border-r-6">
+              <h5 class="p-8-12">
+                {{ $t('common.param.outputParam') }}
+              </h5>
+
+              <div class="p-8-12 border-t-dashed lighter">
+                <div class="mb-8">
+                  <span class="color-secondary">
+                    {{ $t('views.applicationWorkflow.nodes.loopBreakNode.isBreak') }}:</span
+                  >
+
+                  {{ data.is_break }}
+                </div>
+              </div>
+            </div>
+          </template>
           <slot></slot>
         </template>
         <template v-else>

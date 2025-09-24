@@ -53,7 +53,7 @@
           ></ModelSelect>
         </el-form-item>
 
-        <el-form-item :label="$t('views.application.form.roleSettings.label')">
+        <el-form-item>
           <template #label>
             <div class="flex-between">
               <span>{{ $t('views.application.form.roleSettings.label') }}</span>
@@ -72,7 +72,7 @@
             v-model="chat_data.system"
             style="height: 100px"
             @submitDialog="submitSystemDialog"
-            :placeholder="$t('views.application.form.roleSettings.label')"
+            :placeholder="$t('views.application.form.roleSettings.placeholder')"
           />
         </el-form-item>
         <el-form-item

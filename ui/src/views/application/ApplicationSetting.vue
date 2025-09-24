@@ -99,7 +99,7 @@
                   >
                   </ModelSelect>
                 </el-form-item>
-                <el-form-item :label="$t('views.application.form.roleSettings.label')">
+                <el-form-item>
                   <template #label>
                     <div class="flex-between">
                       <span>{{ $t('views.application.form.roleSettings.label') }}</span>
@@ -669,7 +669,7 @@ const optimizationPrompt =
 const AIModeParamSettingDialogRef = ref<InstanceType<typeof AIModeParamSettingDialog>>()
 const ReasoningParamSettingDialogRef = ref<InstanceType<typeof ReasoningParamSettingDialog>>()
 const TTSModeParamSettingDialogRef = ref<InstanceType<typeof TTSModeParamSettingDialog>>()
-const STTModeParamSettingDialogRef = ref<InstanceType<typeof STTModeParamSettingDialog>>()  
+const STTModeParamSettingDialogRef = ref<InstanceType<typeof STTModeParamSettingDialog>>()
 const ParamSettingDialogRef = ref<InstanceType<typeof ParamSettingDialog>>()
 const GeneratePromptDialogRef = ref<InstanceType<typeof GeneratePromptDialog>>()
 

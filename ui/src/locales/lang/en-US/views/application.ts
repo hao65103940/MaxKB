@@ -66,7 +66,7 @@ export default {
       placeholder: 'Please select an AI model',
     },
     roleSettings: {
-      label: 'System Role',
+      label: 'System Prompt',
       placeholder: 'You are xxx assistant',
     },
 

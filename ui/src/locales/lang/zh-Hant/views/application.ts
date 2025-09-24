@@ -62,7 +62,7 @@ export default {
       placeholder: '請選擇 AI 模型',
     },
     roleSettings: {
-      label: '角色設定',
+      label: '系統提示詞',
       placeholder: '你是 xxx 小助手',
     },
     prompt: {

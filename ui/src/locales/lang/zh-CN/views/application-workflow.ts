@@ -379,10 +379,12 @@ export default {
     loopContinueNode: {
       label: 'Continue',
       text: '用于终止当前循环，执行下次循环',
+      isContinue: 'Continue',
     },
     loopBreakNode: {
       label: 'Break',
       text: '终止当前循环，跳出循环体',
+      isBreak: 'Break',
     },
   },
   compare: {

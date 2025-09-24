@@ -61,7 +61,7 @@
             v-model="form_data.system"
             style="height: 100px"
             @submitDialog="submitSystemDialog"
-            :placeholder="$t('views.application.form.roleSettings.label')"
+            :placeholder="$t('views.application.form.roleSettings.placeholder')"
           />
         </el-form-item>
         <el-form-item

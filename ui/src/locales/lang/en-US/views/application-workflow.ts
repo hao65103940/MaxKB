@@ -379,10 +379,12 @@ export default {
     loopContinueNode: {
       label: 'Continue',
       text: 'Used to terminate the current loop and proceed to the next one.',
+      isContinue: 'Continue',
     },
     loopBreakNode: {
       label: 'Break',
       text: 'Terminate the current loop and exit the loop body',
+      isBreak: 'Break',
     },
   },
   compare: {
