@@ -35,7 +35,7 @@
               </el-input>
             </el-form-item>
           </div>
-          <div class="mb-24" v-if="loginMode !== 'LDAP' && showCaptcha">
+          <div class="mb-24" v-if="loginMode !== 'LDAP' && identifyCode">
             <el-form-item prop="captcha">
               <div class="flex-between w-full">
                 <el-input
@@ -208,72 +208,17 @@ const loginHandle = () => {
           .then(() => {
             locale.value = localStorage.getItem('MaxKB-locale') || getBrowserLang() || 'en-US'
             localStorage.setItem('workspace_id', 'default')
-            localStorage.removeItem(loginForm.value.username)
             router.push({name: 'home'})
           })
           .catch(() => {
             const username = loginForm.value.username
-            localStorage.setItem(username, String(Number(localStorage.getItem(username) || '0') + 1))
             loading.value = false
-            loginForm.value.username = ''
-            loginForm.value.password = ''
-            loginForm.value.captcha = ''
-            const timestampKey = `${username}_first_fail_timestamp`
-            if (!localStorage.getItem(timestampKey)) {
-              localStorage.setItem(timestampKey, Date.now().toString())
-            }
+            makeCode(username)
           })
       }
     }
   })
 }
-
-const showCaptcha = computed<boolean>(() => {
-  if (!authSetting.value) return true
-
-  const maxAttempts = authSetting.value.max_attempts
-
-  // -1 表示一直不显示
-  if (maxAttempts === -1) {
-    return false
-  }
-
-  // 0 表示一直显示
-  if (maxAttempts === 0) {
-    return true
-  }
-
-  // 大于 0，根据登录失败次数决定
-  const username = loginForm.value.username?.trim()
-  if (!username) {
-    return false // 没有输入用户名时不显示
-  }
-
-  const timestampKey = `${username}_first_fail_timestamp`
-  const firstFailTimestamp = localStorage.getItem(timestampKey)
-
-  if (firstFailTimestamp) {
-    const expirationTime = 10 * 60 * 1000 // 10分钟毫秒数
-    if (Date.now() - parseInt(firstFailTimestamp) > expirationTime) {
-      // 过期则清除记录
-      localStorage.removeItem(username)
-      localStorage.removeItem(timestampKey)
-      return false
-    }
-  } else {
-    // 如果没有时间戳但有失败次数，可能是旧数据，清除失败次数
-    const failCount = Number(localStorage.getItem(username) || '0')
-    if (failCount > 0) {
-      localStorage.removeItem(username)
-      return false
-    }
-  }
-
-  const failCount = Number(localStorage.getItem(username) || '0')
-  console.log('failCount', failCount)
-
-  return failCount >= maxAttempts
-})
 
 function makeCode(username?: string) {
   loginApi.getCaptcha(username).then((res: any) => {
@@ -286,9 +231,7 @@ function makeCode(username?: string) {
 }
 
 function handleUsernameBlur(username: string) {
-  if (showCaptcha.value) {
-    makeCode(username)
-  }
+  makeCode(username)
 }
 
 onBeforeMount(() => {

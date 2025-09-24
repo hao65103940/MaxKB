@@ -115,8 +115,8 @@ const ldapLogin: (
  * @param username
  * @param loading 接口加载器
  */
-const getCaptcha: (username?: string, loading?: Ref<boolean>) => Promise<Result<any>> = (username, loading) => {
-  return get('/captcha', {username: username}, loading)
+const getCaptcha: (username?: string, accessToken?: string, loading?: Ref<boolean>) => Promise<Result<any>> = (username, accessToken, loading) => {
+  return get('/captcha', {username: username, accessToken: accessToken}, loading)
 }
 
 /**

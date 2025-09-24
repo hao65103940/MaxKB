@@ -85,7 +85,7 @@
                 </el-input>
               </el-form-item>
             </div>
-            <div class="mb-24" v-if="loginMode !== 'LDAP'&& showCaptcha">
+            <div class="mb-24" v-if="loginMode !== 'LDAP'&& identifyCode">
               <el-form-item prop="captcha">
                 <div class="flex-between w-full">
                   <el-input
@@ -262,25 +262,15 @@ const loginHandle = () => {
           params: {accessToken: chatUser.accessToken},
           query: route.query,
         })
-        localStorage.removeItem('chat_' + loginForm.value.username)
       }).catch(() => {
-        const username = loginForm.value.username
-        localStorage.setItem('chat_' + username, String(Number(localStorage.getItem('chat_' + username) || '0') + 1))
-        loading.value = false
-        loginForm.value.username = ''
-        loginForm.value.password = ''
-        loginForm.value.captcha = ''
-        const timestampKey = `${username}_chat_first_fail_timestamp`
-        if (!localStorage.getItem(timestampKey)) {
-          localStorage.setItem(timestampKey, Date.now().toString())
-        }
+        makeCode(loginForm.value.username)
       })
     }
   })
 }
 
 function makeCode(username?: string) {
-  loginApi.getCaptcha(username).then((res: any) => {
+  loginApi.getCaptcha(username, accessToken).then((res: any) => {
     identifyCode.value = res.data.captcha
   })
 }
@@ -385,53 +375,8 @@ function changeMode(val: string) {
   loginFormRef.value?.clearValidate()
 }
 
-const showCaptcha = computed<boolean>(() => {
-  // -1 表示一直不显示
-  if (max_attempts.value === -1) {
-    return false
-  }
-
-  // 0 表示一直显示
-  if (max_attempts.value === 0) {
-    return true
-  }
-
-  // 大于 0，根据登录失败次数决定
-  const username = loginForm.value.username?.trim()
-  if (!username) {
-    return false // 没有输入用户名时不显示
-  }
-
-  const timestampKey = `${username}_chat_first_fail_timestamp`
-  const firstFailTimestamp = localStorage.getItem(timestampKey)
-
-  if (firstFailTimestamp) {
-    const expirationTime = 60 * 60 * 1000 // 10分钟毫秒数
-    if (Date.now() - parseInt(firstFailTimestamp) > expirationTime) {
-      // 过期则清除记录
-      localStorage.removeItem('chat_' + username)
-      localStorage.removeItem(timestampKey)
-      return false
-    }
-  } else {
-    // 如果没有时间戳但有失败次数，可能是旧数据，清除失败次数
-    const failCount = Number(localStorage.getItem('chat_' + username) || '0')
-    if (failCount > 0) {
-      localStorage.removeItem('chat_' + username)
-      return false
-    }
-  }
-
-  const failCount = Number(localStorage.getItem('chat_' + username) || '0')
-  console.log('failCount', failCount)
-
-  return failCount >= max_attempts.value
-})
-
 function handleUsernameBlur(username: string) {
-  if (showCaptcha.value) {
-    makeCode(username)
-  }
+  makeCode(username)
 }
 
 onBeforeMount(() => {
