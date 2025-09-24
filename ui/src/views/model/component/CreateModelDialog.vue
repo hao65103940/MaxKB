@@ -69,6 +69,8 @@
                       <p>{{ $t('views.model.modelForm.model_type.tooltip5') }}</p>
                       <p>{{ $t('views.model.modelForm.model_type.tooltip6') }}</p>
                       <p>{{ $t('views.model.modelForm.model_type.tooltip7') }}</p>
+                      <p>{{ $t('views.model.modelForm.model_type.tooltip8') }}</p>
+                      <p>{{ $t('views.model.modelForm.model_type.tooltip9') }}</p>
                     </template>
                     <AppIcon iconName="app-warning" class="app-warning-icon"></AppIcon>
                   </el-tooltip>
@@ -139,7 +141,7 @@
         <el-empty
           v-else-if="
             base_form_data.model_type === 'RERANKER' ||
-            base_form_data.model_type === 'EMBEDDING' 
+            base_form_data.model_type === 'EMBEDDING'
           "
           :description="$t('views.model.tip.emptyMessage2')"
         />
