@@ -16,6 +16,15 @@
             />
             <h4 class="ellipsis-1 break-all">{{ nodeModel.properties.stepName }}</h4>
           </div>
+          <!-- 放大缩小按钮 -->
+          <!-- <el-button link @click="enlargeHandle">
+            <AppIcon
+              :iconName="enlarge ? 'app-minify' : 'app-magnify'"
+              class="color-secondary"
+              style="font-size: 20px"
+            >
+            </AppIcon>
+          </el-button> -->
         </div>
         <el-collapse-transition>
           <div @mousedown.stop @keydown.stop @click.stop v-show="showNode" class="mt-16">
@@ -196,6 +205,17 @@ const nodeFields = computed(() => {
   }
   return []
 })
+
+const enlarge = ref(false)
+
+function enlargeHandle() {
+  enlarge.value = !enlarge.value
+  if (enlarge.value) {
+    // ...
+  } else {
+    // ...
+  }
+}
 </script>
 <style lang="scss" scoped>
 .workflow-node-container {
