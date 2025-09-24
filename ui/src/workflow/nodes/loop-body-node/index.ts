@@ -36,6 +36,17 @@ class LoopBodyModel extends AppNodeModel {
 
     return anchors
   }
+  setHeight(height: number) {
+    this.properties['height'] = height
+    this.outgoing.edges.forEach((edge: any) => {
+      // 调用自定义的更新方案
+      edge.updatePathByAnchor()
+    })
+    this.incoming.edges.forEach((edge: any) => {
+      // 调用自定义的更新方案
+      edge.updatePathByAnchor()
+    })
+  }
 }
 export default {
   type: 'loop-body-node',

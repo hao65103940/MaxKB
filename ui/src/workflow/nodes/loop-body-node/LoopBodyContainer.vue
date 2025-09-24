@@ -5,7 +5,7 @@
       :class="{ isSelected: props.nodeModel.isSelected, error: node_status !== 200 }"
       style="overflow: visible; background: #fff"
     >
-      <div v-resize="resizeStepContainer">
+      <div>
         <div class="flex-between">
           <div class="flex align-center">
             <component
@@ -17,14 +17,14 @@
             <h4 class="ellipsis-1 break-all">{{ nodeModel.properties.stepName }}</h4>
           </div>
           <!-- 放大缩小按钮 -->
-          <!-- <el-button link @click="enlargeHandle">
+          <el-button link @click="enlargeHandle">
             <AppIcon
               :iconName="enlarge ? 'app-minify' : 'app-magnify'"
               class="color-secondary"
               style="font-size: 20px"
             >
             </AppIcon>
-          </el-button> -->
+          </el-button>
         </div>
         <el-collapse-transition>
           <div @mousedown.stop @keydown.stop @click.stop v-show="showNode" class="mt-16">
@@ -40,7 +40,10 @@
               show-icon
               :closable="false"
             />
-            <slot></slot>
+            <div :style="`height:${height}px`">
+              <slot></slot>
+            </div>
+
             <template v-if="nodeFields.length > 0">
               <h5 class="title-decoration-1 mb-8 mt-8">
                 {{ $t('common.param.outputParam') }}
@@ -115,16 +118,8 @@ import { ElMessage } from 'element-plus'
 import type { FormInstance } from 'element-plus'
 import { t } from '@/locales'
 import { WorkflowMode } from '@/enums/application'
+
 provide('workflowMode', WorkflowMode.ApplicationLoop)
-const height = ref<{
-  stepContainerHeight: number
-  inputContainerHeight: number
-  outputContainerHeight: number
-}>({
-  stepContainerHeight: 0,
-  inputContainerHeight: 0,
-  outputContainerHeight: 0,
-})
 
 const titleFormRef = ref()
 const nodeNameDialogVisible = ref<boolean>(false)
@@ -179,14 +174,7 @@ const mousedown = () => {
 }
 const showicon = ref<number | null>(null)
 
-const resizeStepContainer = (wh: any) => {
-  if (wh.height) {
-    if (!props.nodeModel.virtual) {
-      height.value.stepContainerHeight = wh.height
-      props.nodeModel.setHeight(height.value.stepContainerHeight)
-    }
-  }
-}
+const height = ref<number>(600)
 
 const props = defineProps<{
   nodeModel: any
@@ -211,9 +199,22 @@ const enlarge = ref(false)
 function enlargeHandle() {
   enlarge.value = !enlarge.value
   if (enlarge.value) {
-    // ...
+    props.nodeModel.graphModel.transformModel.focusOn(
+      props.nodeModel.x,
+      props.nodeModel.y,
+      props.nodeModel.width + 470,
+      props.nodeModel.height - 30,
+    )
+    height.value =
+      (props.nodeModel.graphModel.height - 100) / props.nodeModel.graphModel.transformModel.SCALE_Y
+    const width = window.innerWidth / props.nodeModel.graphModel.transformModel.SCALE_X
+    props.nodeModel.width = width
+    props.nodeModel.setHeight(height.value)
   } else {
-    // ...
+    height.value = 600
+    const width = 1920
+    props.nodeModel.width = width
+    props.nodeModel.setHeight(height.value)
   }
 }
 </script>

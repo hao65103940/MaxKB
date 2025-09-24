@@ -1,6 +1,6 @@
 <template>
   <LoopBodyContainer :nodeModel="nodeModel">
-    <div ref="containerRef" @wheel.stop style="height: 600px"></div>
+    <div ref="containerRef" @wheel.stop style="height: 100%; width: 100%"></div>
   </LoopBodyContainer>
 </template>
 <script setup lang="ts">
