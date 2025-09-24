@@ -478,7 +478,7 @@ export const loopContinueNode = {
   type: WorkflowType.LoopContinueNode,
   text: t('views.applicationWorkflow.nodes.loopContinueNode.text'),
   label: t('views.applicationWorkflow.nodes.loopContinueNode.label'),
-  height: 600,
+  height: 100,
   properties: {
     width: 600,
     stepName: t('views.applicationWorkflow.nodes.loopContinueNode.label'),
@@ -510,7 +510,7 @@ export const loopBreakNode = {
   type: WorkflowType.LoopBreakNode,
   text: t('views.applicationWorkflow.nodes.loopBreakNode.text'),
   label: t('views.applicationWorkflow.nodes.loopBreakNode.label'),
-  height: 600,
+  height: 100,
   properties: {
     width: 600,
     stepName: t('views.applicationWorkflow.nodes.loopBreakNode.label'),
