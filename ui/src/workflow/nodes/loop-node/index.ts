@@ -1,9 +1,12 @@
 import LoopNode from './index.vue'
 import { AppNode, AppNodeModel } from '@/workflow/common/app-node'
 import { WorkflowType } from '@/enums/application'
+
 class LoopNodeView extends AppNode {
   constructor(props: any) {
+    const config = props.model.properties.config
     super(props, LoopNode)
+    props.model.properties.config = config
   }
 }
 class LoopModel extends AppNodeModel {
