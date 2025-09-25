@@ -107,10 +107,9 @@
           <div>
             <div
               v-for="(item, index) in form_data.branch"
-              v-resize="(wh: any) => resizeBranch(wh, item, index)"
               :key="item.id"
             >
-            <el-form-item 
+            <el-form-item
             :prop="`branch.${index}.content`"
             :rules="{
             message: $t('views.applicationWorkflow.nodes.intentNode.classify.placeholder'),
@@ -133,7 +132,6 @@
                   <el-button
                     link
                     size="large"
-                    class="mt-4"
                     v-if="!item.isOther"
                     :disabled="form_data.branch.filter((b: any) => !b.isOther).length <= 1"
                     @click="deleteClassifyBranch(item.id)"
@@ -192,6 +190,7 @@ function addClassfiyBranch() {
   list.splice(list.length - 1, 0, obj)
   refreshBranchAnchor(list, true)
   set(props.nodeModel.properties.node_data, 'branch', list)
+  props.nodeModel.refreshBranch()
 }
 
 function deleteClassifyBranch(id: string) {
@@ -336,7 +335,7 @@ const validate = () => {
     nodeCascaderRef.value ? nodeCascaderRef.value.validate() : Promise.resolve(''),
     IntentClassifyNodeFormRef.value?.validate(),
   ]).then(() => {
-    if (form_data.value.branch.length != new Set(form_data.value.branch.map((item: any) => item.content)).size) { 
+    if (form_data.value.branch.length != new Set(form_data.value.branch.map((item: any) => item.content)).size) {
       throw t('views.applicationWorkflow.nodes.intentNode.error2')
     }
   }).catch((err: any) => {
