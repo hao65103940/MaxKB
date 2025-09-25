@@ -965,7 +965,7 @@ class ApplicationOperateSerializer(serializers.Serializer):
             application = QuerySet(ApplicationVersion).filter(application_id=application_id).order_by(
                 '-create_time').first()
         if application.stt_model_enable:
-            model = get_model_instance_by_model_workspace_id(application.stt_model_id, application.workspace_id)
+            model = get_model_instance_by_model_workspace_id(application.stt_model_id, application.workspace_id, **application.stt_model_params_setting)
             text = model.speech_to_text(instance.get('file'))
             return text
 

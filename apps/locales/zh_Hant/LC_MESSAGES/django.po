@@ -8845,3 +8845,12 @@ msgstr "獲取圖片失敗"
 
 msgid "Update auth setting"
 msgstr "更新認證設置"
+
+msgid "If not passed, the default value is streaming_asr_demo"
+msgstr "如果未傳入，則預設值為 streaming_asr_demo"
+
+msgid "If not passed, the default value is 16000"
+msgstr "如果未傳入，則預設值為 16000"
+
+msgid "Sample Rate"
+msgstr "採樣率"
