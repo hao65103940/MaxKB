@@ -341,6 +341,7 @@ You are a master of problem optimization, adept at accurately inferring user int
       label: 'IntentNode',
       text: 'Match user questions with user-defined intent classifications',
       other: 'other',
+      error2: 'Repeated intent',
       placeholder: 'Please choose a classification option',
       classify: {
         label: 'Intent classify',

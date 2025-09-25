@@ -90,10 +90,6 @@
           />
         </el-form-item>
         <el-form-item
-          :rules="{
-            required: true,
-            trigger: 'change',
-          }"
         >
           <template #label>
             <div class="flex-between">
@@ -113,6 +109,14 @@
               v-for="(item, index) in form_data.branch"
               v-resize="(wh: any) => resizeBranch(wh, item, index)"
               :key="item.id"
+            >
+            <el-form-item 
+            :prop="`branch.${index}.content`"
+            :rules="{
+            message: $t('views.applicationWorkflow.nodes.intentNode.classify.placeholder'),
+            trigger: 'change',
+            required: true,
+          }"
             >
               <el-row class="mb-8" :gutter="12" align="middle">
                 <el-col :span="21">
@@ -138,6 +142,7 @@
                   </el-button>
                 </el-col>
               </el-row>
+            </el-form-item>
             </div>
           </div>
         </el-form-item>
@@ -326,10 +331,15 @@ const IntentClassifyNodeFormRef = ref<FormInstance>()
 const modelOptions = ref<any>(null)
 
 const validate = () => {
+
   return Promise.all([
     nodeCascaderRef.value ? nodeCascaderRef.value.validate() : Promise.resolve(''),
     IntentClassifyNodeFormRef.value?.validate(),
-  ]).catch((err: any) => {
+  ]).then(() => {
+    if (form_data.value.branch.length != new Set(form_data.value.branch.map((item: any) => item.content)).size) { 
+      throw t('views.applicationWorkflow.nodes.intentNode.error2')
+    }
+  }).catch((err: any) => {
     return Promise.reject({ node: props.nodeModel, errMessage: err })
   })
 }

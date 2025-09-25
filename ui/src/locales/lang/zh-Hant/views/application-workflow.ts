@@ -334,6 +334,7 @@ export default {
       label: '意圖識別',
       text: '將用戶問題與用戶預設的意圖分類進行匹配',
       other: '其他',
+      error2: '意圖重複',
       placeholder: '請選擇分類項',
       classify: {
         label: '意圖分類',
