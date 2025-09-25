@@ -168,7 +168,7 @@ class CaptchaSerializer(serializers.Serializer):
         if max_attempts == -1:
             need_captcha = False
         elif max_attempts > 0:
-            fail_count = cache.get(system_get_key(f'system_{username}'), version=system_version) or 0
+            fail_count = cache.get(system_get_key(f'{type}_{username}'), version=system_version) or 0
             need_captcha = fail_count >= max_attempts
 
 
