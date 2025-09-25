@@ -50,6 +50,7 @@
             "
             :options="modelOptions"
             showFooter
+            @focus="getSelectModel"
             :model-type="'TTI'"
           ></ModelSelect>
         </el-form-item>
