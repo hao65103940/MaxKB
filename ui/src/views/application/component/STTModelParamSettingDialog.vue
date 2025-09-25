@@ -71,7 +71,7 @@ const open = (model_id: string, application_id?: string, model_setting_data?: an
     .getModelParamsForm(model_id, loading)  
     .then(( ok: any ) => {
       model_form_field.value = ok.data
-      const res = ok.data
+      const resp = ok.data
         .map((item: any) => ({
           [item.field]: item.show_default_value !== false ? item.default_value : undefined,
         }))
@@ -79,12 +79,12 @@ const open = (model_id: string, application_id?: string, model_setting_data?: an
 
       if (model_setting_data) {
         Object.keys(model_setting_data).forEach((key) => {
-          if (!(key in res)) {
+          if (!(key in resp)) {
             delete model_setting_data[key]
           }
         })
       }
-      model_setting_data = { ...res, ...model_setting_data }
+      model_setting_data = { ...resp, ...model_setting_data }
       // 渲染动态表单
       dynamicsFormRef.value?.render(model_form_field.value, model_setting_data)
     })
