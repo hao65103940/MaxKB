@@ -142,42 +142,43 @@ class CaptchaSerializer(serializers.Serializer):
     def generate(username: str, type: str = 'system'):
         auth_setting = LoginSerializer.get_auth_setting()
         max_attempts = auth_setting.get("max_attempts", 1)
+
         need_captcha = False
         if max_attempts == -1:
             need_captcha = False
         elif max_attempts > 0:
-            fail_count = cache.get(system_get_key(f'{type}_{username}'), version=system_version) or 0
+            fail_count = cache.get(system_get_key(f'system_{username}'), version=system_version) or 0
             need_captcha = fail_count >= max_attempts
 
-        if need_captcha:
-            chars = get_random_chars()
-            image = ImageCaptcha()
-            data = image.generate(chars)
-            captcha = base64.b64encode(data.getbuffer())
-            cache.set(Cache_Version.CAPTCHA.get_key(captcha=f'{type}_{username}'), chars.lower(),
-                      timeout=300, version=Cache_Version.CAPTCHA.get_version())
-            return {'captcha': 'data:image/png;base64,' + captcha.decode()}
-        return {'captcha': ''}
+        return CaptchaSerializer._generate_captcha_if_needed(username, type, need_captcha)
 
     @staticmethod
     def chat_generate(username: str, type: str = 'chat', access_token: str = ''):
-        auth_setting = {}
         application_access_token = ApplicationAccessToken.objects.filter(
             access_token=access_token
         ).first()
 
         if not application_access_token:
             raise AppApiException(1005, _('Invalid access token'))
-        if application_access_token:
-            auth_setting = application_access_token.authentication_value
+
+        auth_setting = application_access_token.authentication_value
         max_attempts = auth_setting.get("max_attempts", 1)
+
         need_captcha = False
         if max_attempts == -1:
             need_captcha = False
         elif max_attempts > 0:
-            fail_count = cache.get(system_get_key(f'{type}_{username}'), version=system_version) or 0
+            fail_count = cache.get(system_get_key(f'system_{username}'), version=system_version) or 0
             need_captcha = fail_count >= max_attempts
 
+
+        return CaptchaSerializer._generate_captcha_if_needed(username, type, need_captcha)
+
+    @staticmethod
+    def _generate_captcha_if_needed(username: str, type: str, need_captcha: bool):
+        """
+        提取的公共验证码生成方法
+        """
         if need_captcha:
             chars = get_random_chars()
             image = ImageCaptcha()
@@ -187,6 +188,3 @@ class CaptchaSerializer(serializers.Serializer):
                       timeout=300, version=Cache_Version.CAPTCHA.get_version())
             return {'captcha': 'data:image/png;base64,' + captcha.decode()}
         return {'captcha': ''}
-
-
-
