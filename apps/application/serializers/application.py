@@ -282,7 +282,7 @@ class ApplicationCreateSerializer(serializers.Serializer):
                 work_flow={},
                 mcp_enable=application.get('mcp_enable', False),
                 mcp_tool_ids=application.get('mcp_tool_ids', []),
-                mcp_servers=application.get('mcp_servers'),
+                mcp_servers=application.get('mcp_servers', {}),
                 mcp_source=application.get('mcp_source', 'referencing'),
                 tool_enable=application.get('tool_enable', False),
                 tool_ids=application.get('tool_ids', []),
