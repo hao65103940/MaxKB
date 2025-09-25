@@ -143,7 +143,7 @@ class CaptchaSerializer(serializers.Serializer):
         auth_setting = LoginSerializer.get_auth_setting()
         max_attempts = auth_setting.get("max_attempts", 1)
 
-        need_captcha = False
+        need_captcha = True
         if max_attempts == -1:
             need_captcha = False
         elif max_attempts > 0:
@@ -164,7 +164,7 @@ class CaptchaSerializer(serializers.Serializer):
         auth_setting = application_access_token.authentication_value
         max_attempts = auth_setting.get("max_attempts", 1)
 
-        need_captcha = False
+        need_captcha = True
         if max_attempts == -1:
             need_captcha = False
         elif max_attempts > 0:
