@@ -129,7 +129,8 @@ def loop(workflow_manage_new_instance, node: INode, generate_loop):
     is_interrupt_exec = False
     loop_node_data = node.context.get('loop_node_data') or []
     loop_answer_data = node.context.get("loop_answer_data") or []
-    current_index = node.context.get("current_index") or 0
+    start_index = node.context.get("current_index") or 0
+    current_index = start_index
     node_params = node.node_params
     start_node_id = node_params.get('child_node', {}).get('runtime_node_id')
     loop_type = node_params.get('loop_type')
@@ -144,7 +145,7 @@ def loop(workflow_manage_new_instance, node: INode, generate_loop):
                                  details=loop_node_data[current_index])
 
     for item, index in generate_loop(current_index):
-        if 0 < max_loop_count <= index - current_index and loop_type == 'LOOP':
+        if 0 < max_loop_count <= index - start_index and loop_type == 'LOOP':
             raise Exception(_('Exceeding the maximum number of cycles'))
         """
         指定次数循环
