@@ -72,7 +72,6 @@ const init = async () => {
       }
     })
   } catch (error) {
-    console.error('Error initializing login panel:', error)
   }
 }
 
