@@ -19,7 +19,7 @@ const props = defineProps<{ nodeModel: any }>()
 const containerRef = ref()
 
 const validate = () => {
-  const workflow = new WorkFlowInstance(lf.value.getGraphData())
+  const workflow = new WorkFlowInstance(lf.value.getGraphData(), WorkflowMode.ApplicationLoop)
   return Promise.all(lf.value.graphModel.nodes.map((element: any) => element?.validate?.()))
     .then(() => {
       const loop_node_id = props.nodeModel.properties.loop_node_id

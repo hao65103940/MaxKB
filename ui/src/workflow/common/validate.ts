@@ -1,4 +1,5 @@
-import { WorkflowType } from '@/enums/application'
+import { WorkflowType, WorkflowMode } from '@/enums/application'
+
 import { t } from '@/locales'
 
 const end_nodes: Array<string> = [
@@ -18,14 +19,39 @@ const end_nodes: Array<string> = [
   WorkflowType.LoopNode,
   WorkflowType.LoopBreakNode,
 ]
+
+const loop_end_nodes: Array<string> = [
+  WorkflowType.AiChat,
+  WorkflowType.Reply,
+  WorkflowType.ToolLib,
+  WorkflowType.ToolLibCustom,
+  WorkflowType.ImageUnderstandNode,
+  WorkflowType.Application,
+  WorkflowType.SpeechToTextNode,
+  WorkflowType.TextToSpeechNode,
+  WorkflowType.ImageGenerateNode,
+  WorkflowType.ImageToVideoGenerateNode,
+  WorkflowType.TextToVideoGenerateNode,
+  WorkflowType.ImageGenerateNode,
+  WorkflowType.LoopBodyNode,
+  WorkflowType.LoopNode,
+  WorkflowType.LoopBreakNode,
+  WorkflowType.VariableAssignNode,
+]
+const end_nodes_dict = {
+  [WorkflowMode.Application]: end_nodes,
+  [WorkflowMode.ApplicationLoop]: loop_end_nodes,
+}
 export class WorkFlowInstance {
   nodes
   edges
   workFlowNodes: Array<any>
-  constructor(workflow: { nodes: Array<any>; edges: Array<any> }) {
+  workflowModel: WorkflowMode
+  constructor(workflow: { nodes: Array<any>; edges: Array<any> }, workflowModel?: WorkflowMode) {
     this.nodes = workflow.nodes
     this.edges = workflow.edges
     this.workFlowNodes = []
+    this.workflowModel = workflowModel ? workflowModel : WorkflowMode.Application
   }
   /**
    * 校验开始节点
@@ -124,7 +150,8 @@ export class WorkFlowInstance {
     const node_list = edge_list
       .map((edge) => this.nodes.filter((node) => node.id == edge.targetNodeId))
       .reduce((x, y) => [...x, ...y], [])
-    if (node_list.length == 0 && !end_nodes.includes(node.type)) {
+    const end = end_nodes_dict[this.workflowModel]
+    if (node_list.length == 0 && !end.includes(node.type)) {
       throw t('views.applicationWorkflow.validate.noNextNode')
     }
     return node_list
@@ -161,7 +188,8 @@ export class WorkFlowInstance {
       }
     } else {
       const edge_list = this.edges.filter((edge) => edge.sourceNodeId == node.id)
-      if (edge_list.length == 0 && !end_nodes.includes(node.type)) {
+      const end = end_nodes_dict[this.workflowModel]
+      if (edge_list.length == 0 && !end.includes(node.type)) {
         throw `${node.properties.stepName} ${t('views.applicationWorkflow.validate.cannotEndNode')}`
       }
     }
