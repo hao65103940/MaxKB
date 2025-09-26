@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     v-model="dialogVisible"
-    width="1000"
+    width="1200"
     append-to-body
     class="tool-store-dialog"
     align-center
@@ -10,7 +10,7 @@
   >
     <template #header="{ titleId }">
       <div class="dialog-header flex-between mb-8">
-        <h4 :id="titleId" class="medium">
+        <h4 :id="titleId" class="medium w-240 mr-8">
           {{ $t('views.tool.toolStore.title') }}
         </h4>
         <el-radio-group v-model="toolType" @change="radioChange" class="app-radio-button-group">

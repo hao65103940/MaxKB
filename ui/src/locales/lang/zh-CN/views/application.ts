@@ -7,7 +7,7 @@ export default {
   importApplication: '导入应用',
   copyApplication: '复制应用',
   workflow: '高级编排',
-  simple: '简单应用',
+  simple: '简易应用',
   simplePlaceholder: '适用于初级用户使用表单设置构建AI对话助手',
   workflowPlaceholder: '适用于高级用户使用低代码拖拉拽方式构建复杂逻辑的AI对话助手',
   appTest: '调试预览',

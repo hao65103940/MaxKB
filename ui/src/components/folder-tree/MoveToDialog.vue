@@ -139,5 +139,8 @@ defineExpose({ open })
     padding: 0 !important;
     margin-bottom: 8px;
   }
+  :deep(.tree-label) {
+    max-width: 100% !important;
+  }
 }
 </style>

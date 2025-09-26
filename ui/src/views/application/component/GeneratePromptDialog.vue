@@ -24,7 +24,7 @@
             </div>
             <p v-else-if="loading" shadow="always" style="margin: 0.5rem 0">
               <el-icon class="is-loading color-primary mr-4"><Loading /></el-icon>
-               {{ $t('views.application.generateDialog.loading') }}
+              {{ $t('views.application.generateDialog.loading') }}
               <span class="dotting"></span>
             </p>
             <p v-else class="flex align-center">
@@ -196,7 +196,7 @@ const startStreamingOutput = () => {
     } else if (loading.value === false && currentDisplayIndex.value >= fullContent.value.length) {
       stopStreaming()
     }
-  }, 50) as  any
+  }, 50) as any
 }
 
 // 停止流式输出
@@ -338,7 +338,6 @@ function generatePrompt(inputValue: any) {
         reader.read().then(getWrite(reader))
       })
   } else if (apiType.value === 'systemManage') {
-    console.log(apiType.value)
     systemGeneratePromptAPI
       .generate_prompt(applicationID.value, modelID.value, requestData)
       .then((response) => {
@@ -423,24 +422,26 @@ const handleScroll = () => {
 }
 
 const handleDialogClose = (done: () => void) => {
-  // 弹出 消息
-  MsgConfirm(t('common.tip'), t('views.application.generateDialog.exit'), {
-    confirmButtonText: t('common.confirm'),
-    cancelButtonText: t('common.cancel'),
-    distinguishCancelAndClose: true,
-  })
-    .then(() => {
-      // 点击确认，清除状态
-      stopStreaming()
-      chatMessages.value = []
-      fullContent.value = ''
-      currentDisplayIndex.value = 0
-      isOutputComplete.value = false
-      done() // 真正关闭
+  if (answer.value) {
+    // 弹出 消息
+    MsgConfirm(t('common.tip'), t('views.application.generateDialog.exit'), {
+      confirmButtonText: t('common.confirm'),
+      cancelButtonText: t('common.cancel'),
+      distinguishCancelAndClose: true,
     })
-    .catch(() => {
-      // 点击取消
-    })
+      .then(() => {
+        // 点击确认，清除状态
+        stopStreaming()
+        chatMessages.value = []
+        fullContent.value = ''
+        currentDisplayIndex.value = 0
+        isOutputComplete.value = false
+        done() // 真正关闭
+      })
+      .catch(() => {
+        // 点击取消
+      })
+  }
 }
 
 // 组件卸载时清理定时器
