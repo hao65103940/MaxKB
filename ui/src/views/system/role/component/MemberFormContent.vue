@@ -109,5 +109,10 @@ const validate = () => {
   return Promise.resolve()
 }
 
-defineExpose({ validate })
+const resetValidation = () => {
+  if (formRef.value) {
+    formRef.value.clearValidate()
+  }
+}
+defineExpose({ validate, resetValidation })
 </script>
