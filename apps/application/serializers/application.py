@@ -345,7 +345,7 @@ class Query(serializers.Serializer):
         if create_user is not None:
             application_query_set = application_query_set.filter(user_id=create_user)
         application_custom_sql_query_set = application_query_set
-        application_query_set = application_query_set.order_by("-update_time")
+        application_query_set = application_query_set.order_by("-create_time")
 
         return {'folder_query_set': folder_query_set,
                 'application_query_set': application_query_set,
