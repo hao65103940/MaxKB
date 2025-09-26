@@ -529,35 +529,39 @@ const search_type_change = () => {
   search_form.value = { name: '', create_user: '' }
 }
 
-const apiInputParams = ref([])
-
 function toChat(row: any) {
-  row?.work_flow?.nodes
-    ?.filter((v: any) => v.id === 'base-node')
-    .map((v: any) => {
-      apiInputParams.value = v.properties.api_input_field_list
-        ? v.properties.api_input_field_list.map((v: any) => {
-            return {
-              name: v.variable,
-              value: v.default_value,
-            }
-          })
-        : v.properties.input_field_list
-          ? v.properties.input_field_list
-              .filter((v: any) => v.assignment_method === 'api_input')
-              .map((v: any) => {
-                return {
-                  name: v.variable,
-                  value: v.default_value,
-                }
-              })
-          : []
+  const api =
+    row.type == 'WORK_FLOW'
+      ? (id: string) => ApplicationApi.getApplicationDetail(id)
+      : (id: string) => Promise.resolve({ data: row })
+  api(row.id).then((ok) => {
+    let aips = ok.data?.work_flow?.nodes
+      ?.filter((v: any) => v.id === 'base-node')
+      .map((v: any) => {
+        return v.properties.api_input_field_list
+          ? v.properties.api_input_field_list.map((v: any) => {
+              return {
+                name: v.variable,
+                value: v.default_value,
+              }
+            })
+          : v.properties.input_field_list
+            ? v.properties.input_field_list
+                .filter((v: any) => v.assignment_method === 'api_input')
+                .map((v: any) => {
+                  return {
+                    name: v.variable,
+                    value: v.default_value,
+                  }
+                })
+            : []
+      })
+      .reduce((x: Array<any>, y: Array<any>) => [...x, ...y])
+    aips = aips ? aips : []
+    const apiParams = mapToUrlParams(aips) ? '?' + mapToUrlParams(aips) : ''
+    ApplicationApi.getAccessToken(row.id, loading).then((res: any) => {
+      window.open(application.location + res?.data?.access_token + apiParams)
     })
-  const apiParams = mapToUrlParams(apiInputParams.value)
-    ? '?' + mapToUrlParams(apiInputParams.value)
-    : ''
-  ApplicationApi.getAccessToken(row.id, loading).then((res: any) => {
-    window.open(application.location + res?.data?.access_token + apiParams)
   })
 }
 
