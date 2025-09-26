@@ -141,7 +141,7 @@ const mountLoopBodyNode = () => {
     }
     if (props.nodeModel.properties.node_data.loop) {
       x = props.nodeModel.properties.node_data.loop.x
-      y = props.nodeModel.properties.node_data.loop.y - 330
+      y = props.nodeModel.properties.node_data.loop.y
     }
     const nodeModel = props.nodeModel.graphModel.addNode({
       type: loopBodyNode.type,
