@@ -356,7 +356,8 @@ class ToolSerializer(serializers.Serializer):
                 ToolCreateRequest(data=instance).is_valid(raise_exception=True)
                 # 校验代码是否包括禁止的关键字
                 ToolExecutor().validate_banned_keywords(instance.get('code', ''))
-                ToolExecutor().validate_mcp_transport(instance.get('code', ''))
+                if instance.get('tool_type') == ToolType.MCP:
+                    ToolExecutor().validate_mcp_transport(instance.get('code', ''))
 
             tool_id = uuid.uuid7()
             Tool(
@@ -487,7 +488,8 @@ class ToolSerializer(serializers.Serializer):
                 ToolEditRequest(data=instance).is_valid(raise_exception=True)
                 # 校验代码是否包括禁止的关键字
                 ToolExecutor().validate_banned_keywords(instance.get('code', ''))
-                ToolExecutor().validate_mcp_transport(instance.get('code', ''))
+                if instance.get('tool_type') == ToolType.MCP:
+                    ToolExecutor().validate_mcp_transport(instance.get('code', ''))
 
             if not QuerySet(Tool).filter(id=self.data.get('id')).exists():
                 raise serializers.ValidationError(_('Tool not found'))
