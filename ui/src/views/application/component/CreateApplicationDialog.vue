@@ -240,11 +240,6 @@ const submitHandle = async (formEl: FormInstance | undefined) => {
       applicationApi
         .postApplication({ ...applicationForm.value, folder_id: currentFolder.value }, loading)
         .then((res) => {
-          return user.profile().then(() => {
-            return res
-          })
-        })
-        .then((res) => {
           MsgSuccess(t('common.createSuccess'))
           emit('refresh')
           if (isWorkFlow(applicationForm.value.type)) {
@@ -253,6 +248,11 @@ const submitHandle = async (formEl: FormInstance | undefined) => {
             router.push({ path: `/application/workspace/${res.data.id}/${res.data.type}/setting` })
           }
           dialogVisible.value = false
+        })
+        .then((res) => {
+          return user.profile().then(() => {
+            return res
+          })
         })
     }
   })
