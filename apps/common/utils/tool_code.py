@@ -1,12 +1,13 @@
 # coding=utf-8
 import ast
-import os
 import json
+import os
 import subprocess
 import sys
 from textwrap import dedent
 
 import uuid_utils.compat as uuid
+from django.utils.translation import gettext_lazy as _
 
 from maxkb.const import BASE_DIR, CONFIG
 from maxkb.const import PROJECT_DIR
@@ -209,6 +210,12 @@ exec({dedent(code)!a})
         matched = next((bad for bad in self.banned_keywords if bad in code_str), None)
         if matched:
             raise Exception(f"keyword '{matched}' is banned in the tool.")
+
+    def validate_mcp_transport(self, code_str):
+        servers = json.loads(code_str)
+        for server, config in servers.items():
+            if config.get('transport') not in ['sse', 'streamable_http']:
+                raise Exception(_('Only support transport=sse or transport=streamable_http'))
 
     @staticmethod
     def _exec(_code):
