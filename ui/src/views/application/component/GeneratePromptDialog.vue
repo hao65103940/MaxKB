@@ -133,17 +133,34 @@ const promptTemplates = {
 必须严格遵循以下规则：
 1. **严格禁止输出解释、前言、额外说明**，只输出最终结果。
 2. **严格使用以下格式**，不能缺少标题、不能多出其他段落。
+3. **如果用户需求不明确，就忽略用户需求**。
 
 # 角色:
-
+角色概述和主要职责的一句话描述
 
 ## 目标：
 角色的工作目标,如果有多目标可以分点列出,但建议更聚焦1-2个目标
 
-## 技能：
-1. 为了实现目标,角色需要具备的技能1
-2. 为了实现目标,角色需要具备的技能2
-3. 为了实现目标,角色需要具备的技能3
+## 核心技能：
+### 技能 1: [技能名称，如作品推荐/信息查询/专业分析等]
+1. [执行步骤1 - 描述该技能的第一个具体操作步骤，包括条件判断和处理方式]
+2. [执行步骤2 - 描述该技能的第二个具体操作步骤，包括如何获取或处理信息]
+3. [执行步骤3 - 描述该技能的最终输出步骤，说明如何呈现结果]
+
+===回复示例===
+- 📋 [标识符]: <具体内容格式说明>
+- 🎯 [标识符]: <具体内容格式说明>
+- 💡 [标识符]: <具体内容格式说明>
+===示例结束===
+
+### 技能 2: [技能名称]
+1. [执行步骤1 - 描述触发条件和初始处理方式]
+2. [执行步骤2 - 描述信息获取和深化处理的具体方法]
+3. [执行步骤3 - 描述最终输出的具体要求和格式]
+
+### 技能 3: [技能名称]
+- [核心能力描述 - 说明该技能的主要作用和知识基础]
+- [应用方法 - 描述如何运用该技能为用户提供服务，包括具体的实施方式]
 
 ## 工作流：
 1. 描述角色工作流程的第一步
@@ -183,6 +200,15 @@ const startStreamingOutput = () => {
   isPaused.value = false
 
   streamTimer = setInterval(() => {
+    if (isApiComplete.value && !isPaused.value) { 
+       // 更新显示内容
+      const currentAnswer = chatMessages.value[chatMessages.value.length - 1]
+      if (currentAnswer && currentAnswer.role === 'ai') {
+        currentAnswer.content = fullContent .value
+      }
+      stopStreaming()
+      return
+    }
     if (!isPaused.value && currentDisplayIndex.value < fullContent.value.length) {
       // 每次输出1-3个字符，模拟真实的流式输出
       const step = Math.min(3, fullContent.value.length - currentDisplayIndex.value)
@@ -256,6 +282,7 @@ const getWrite = (reader: any) => {
       if (done) {
         // 流数据接收完成，但定时器继续运行直到显示完所有内容
         loading.value = false
+        isApiComplete.value = true
         return
       }
       const decoder = new TextDecoder('utf-8')
@@ -283,7 +310,6 @@ const getWrite = (reader: any) => {
               }
             }
             if (chunk.is_end) {
-              isApiComplete.value = true
               return Promise.resolve()
             }
           }
@@ -317,6 +343,7 @@ const showContinueButton = computed(() => {
 })
 
 function generatePrompt(inputValue: any) {
+  isApiComplete.value=false
   loading.value = true
   const workspaceId = user.getWorkspaceId() || 'default'
   chatMessages.value.push({ content: inputValue, role: 'user' })
@@ -368,6 +395,9 @@ const handleSubmit = (event?: any) => {
     event?.preventDefault()
     if (!originalUserInput.value) {
       originalUserInput.value = inputValue.value
+    }
+    if (isPaused.value || isStreaming.value) { 
+      return
     }
     if (inputValue.value) {
       generatePrompt(inputValue.value)
