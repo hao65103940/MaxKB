@@ -7,13 +7,14 @@
     @desc:
 """
 import json
+import os
 from gettext import gettext
 from typing import List, Dict
 
 import uuid_utils.compat as uuid
 from django.db.models import QuerySet
 from django.utils.translation import gettext_lazy as _
-from langchain_core.messages import HumanMessage, AIMessage
+from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
 from rest_framework import serializers
 
 from application.chat_pipeline.pipeline_manage import PipelineManage
@@ -36,8 +37,9 @@ from common.exception.app_exception import AppApiException, AppChatNumOutOfBound
 from common.handle.base_to_response import BaseToResponse
 from common.handle.impl.response.openai_to_response import OpenaiToResponse
 from common.handle.impl.response.system_to_response import SystemToResponse
-from common.utils.common import flat_map
+from common.utils.common import flat_map, get_file_content
 from knowledge.models import Document, Paragraph
+from maxkb.conf import PROJECT_DIR
 from models_provider.models import Model, Status
 from models_provider.tools import get_model_instance_by_model_workspace_id
 
@@ -66,6 +68,7 @@ class GeneratePromptSerializers(serializers.Serializer):
                 raise AppApiException(400, _("Authentication failed. Please verify that the parameters are correct."))
             if role not in ['user', 'ai']:
                 raise AppApiException(400, _("Authentication failed. Please verify that the parameters are correct."))
+
 
 class ChatMessageSerializers(serializers.Serializer):
     message = serializers.CharField(required=True, label=_("User Questions"))
@@ -140,6 +143,7 @@ class DebugChatSerializers(serializers.Serializer):
             "application_id": chat_info.application.id, "debug": True
         }).chat(instance, base_to_response)
 
+SYSTEM_ROLE = get_file_content(os.path.join(PROJECT_DIR, "apps", "chat", 'template', 'generate_prompt_system'))
 
 class PromptGenerateSerializer(serializers.Serializer):
     workspace_id = serializers.CharField(required=False, label=_('Workspace ID'))
@@ -152,13 +156,14 @@ class PromptGenerateSerializer(serializers.Serializer):
         query_set = QuerySet(Application).filter(id=self.data.get('application_id'))
         if workspace_id:
             query_set = query_set.filter(workspace_id=workspace_id)
-        if not query_set.exists():
+        application=query_set.first()
+        if application is None:
             raise AppApiException(500, _('Application id does not exist'))
+        return application
 
-    def generate_prompt(self, instance: dict, with_valid=True):
-        if with_valid:
-            self.is_valid(raise_exception=True)
-            GeneratePromptSerializers(data=instance).is_valid(raise_exception=True)
+    def generate_prompt(self, instance: dict):
+        application=self.is_valid(raise_exception=True)
+        GeneratePromptSerializers(data=instance).is_valid(raise_exception=True)
         workspace_id = self.data.get('workspace_id')
         model_id = self.data.get('model_id')
         prompt = instance.get('prompt')
@@ -169,17 +174,19 @@ class PromptGenerateSerializer(serializers.Serializer):
         messages[-1]['content'] = q
 
         model_exist = QuerySet(Model).filter(
-                                             id=model_id,
-                                             model_type = "LLM"
-                                             ).exists()
+            id=model_id,
+            model_type="LLM"
+        ).exists()
         if not model_exist:
             raise Exception(_("Model does not exists or is not an LLM model"))
 
-        def process():
-            model = get_model_instance_by_model_workspace_id(model_id=model_id, workspace_id=workspace_id)
+        system_content = SYSTEM_ROLE.format(application_name=application.name, detail=application.desc)
 
-            for r in model.stream([HumanMessage(content=m.get('content')) if m.get('role') == 'user' else AIMessage(
-                    content=m.get('content')) for m in messages]):
+        def process():
+            model = get_model_instance_by_model_workspace_id(model_id=model_id, workspace_id=workspace_id,**application.model_params_setting)
+            for r in model.stream([SystemMessage(content=system_content),
+                                   *[HumanMessage(content=m.get('content')) if m.get('role') == 'user' else AIMessage(
+                                           content=m.get('content')) for m in messages]]):
                 yield 'data: ' + json.dumps({'content': r.content}) + '\n\n'
 
         return to_stream_response_simple(process())
