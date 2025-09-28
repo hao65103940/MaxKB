@@ -18,6 +18,7 @@ from django.core import validators
 from django.db import models
 from django.db.models import QuerySet, Q
 from django.http import StreamingHttpResponse
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _, gettext
 from openpyxl.cell.cell import ILLEGAL_CHARACTERS_RE
 from rest_framework import serializers
@@ -74,12 +75,14 @@ class ApplicationChatQuerySerializers(serializers.Serializer):
             raise AppApiException(500, _('Application id does not exist'))
 
     def get_end_time(self):
-        return datetime.datetime.combine(
-            datetime.datetime.strptime(self.data.get('end_time'), '%Y-%m-%d'),
-            datetime.datetime.max.time())
+        d = datetime.datetime.strptime(self.data.get('end_time'), '%Y-%m-%d').date()
+        naive = datetime.datetime.combine(d, datetime.time.max)
+        return timezone.make_aware(naive, timezone.get_default_timezone())
 
     def get_start_time(self):
-        return self.data.get('start_time')
+        d = datetime.datetime.strptime(self.data.get('start_time'), '%Y-%m-%d').date()
+        naive = datetime.datetime.combine(d, datetime.time.min)
+        return timezone.make_aware(naive, timezone.get_default_timezone())
 
     def get_query_set(self, select_ids=None):
         end_time = self.get_end_time()
