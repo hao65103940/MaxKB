@@ -188,7 +188,11 @@ const openResetPassword = () => {
 
 const logout = () => {
   login.logout().then(() => {
-    router.push({name: 'login', query: {login_mode: 'manual'}})
+    if (user?.userInfo?.source && ['CAS', 'OIDC', 'OAuth2'].includes(user.userInfo.source)) {
+      router.push({name: 'login', query: {login_mode: 'manual'}})
+    } else {
+      router.push({name: 'login'})
+    }
   })
 }
 
