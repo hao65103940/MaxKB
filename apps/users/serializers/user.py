@@ -109,6 +109,7 @@ class UserProfileSerializer(serializers.Serializer):
             'username': user.username,
             'nick_name': user.nick_name,
             'email': user.email,
+            'source': user.source,
             'role': auth.role_list,
             'permissions': auth.permission_list,
             'is_edit_password': user.password == 'd880e722c47a34d8e9fce789fc62389d' if user.source == 'LOCAL' else False,
