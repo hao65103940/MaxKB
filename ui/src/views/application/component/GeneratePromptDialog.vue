@@ -32,7 +32,7 @@
               {{ $t('views.application.generateDialog.title') }}
             </p>
           </el-scrollbar>
-          <div v-if="answer && !loading && !isStreaming && !showContinueButton">
+          <div v-if="answer && !loading && !isStreaming && !showContinueButton" class="mt-8">
             <el-button type="primary" @click="() => emit('replace', answer)">
               {{ $t('views.application.generateDialog.replace') }}
             </el-button>
@@ -126,14 +126,22 @@ const promptTemplates = {
   INIT_TEMPLATE: `
 请根据用户描述生成一个完整的AI角色人设模板:
 
+应用名称：{application_name}
+应用描述：{detail}
 用户需求：{userInput}
+
+重要说明：
+1. 角色设定必须服务于"{application_name}"应用的核心功能
+2. 允许用户对角色设定的具体内容进行调整和优化
+3. 如果用户要求修改某个技能或部分，在保持应用主题的前提下进行相应调整
 
 请按以下格式生成：
 
 必须严格遵循以下规则：
 1. **严格禁止输出解释、前言、额外说明**，只输出最终结果。
 2. **严格使用以下格式**，不能缺少标题、不能多出其他段落。
-3. **如果用户需求不明确，就忽略用户需求**。
+3. **如果用户要求修改角色设定的某个部分，在保持应用核心功能的前提下进行调整**。
+4. **如果用户需求与角色设定生成完全无关（如闲聊、其他话题），则忽略用户需求，基于应用信息生成标准角色设定**。
 
 # 角色:
 角色概述和主要职责的一句话描述
@@ -174,7 +182,7 @@ const promptTemplates = {
 ## 限制：
 1. **严格限制回答范围**：仅回答与角色设定相关的问题。
    - 如果用户提问与角色无关，必须使用以下固定格式回复：
-     “对不起，我只能回答与【角色设定】相关的问题，您的问题不在服务范围内。”
+     “对不起，我只能回答与[角色设定]相关的问题，您的问题不在服务范围内。”
    - 不得提供任何与角色设定无关的回答。
 2. 描述角色在互动过程中需要遵循的限制条件2
 3. 描述角色在互动过程中需要遵循的限制条件3
@@ -200,7 +208,7 @@ const startStreamingOutput = () => {
   isPaused.value = false
 
   streamTimer = setInterval(() => {
-    if (isApiComplete.value && !isPaused.value) { 
+    if (isApiComplete.value && !isPaused.value) {
        // 更新显示内容
       const currentAnswer = chatMessages.value[chatMessages.value.length - 1]
       if (currentAnswer && currentAnswer.role === 'ai') {
@@ -393,10 +401,13 @@ const handleSubmit = (event?: any) => {
   if (!event?.ctrlKey && !event?.shiftKey && !event?.altKey && !event?.metaKey) {
     // 如果没有按下组合键，则会阻止默认事件
     event?.preventDefault()
+    if (!inputValue.value.trim() || loading.value || isStreaming.value) {
+      return
+    }
     if (!originalUserInput.value) {
       originalUserInput.value = inputValue.value
     }
-    if (isPaused.value || isStreaming.value) { 
+    if (isPaused.value || isStreaming.value) {
       return
     }
     if (inputValue.value) {
@@ -471,6 +482,8 @@ const handleDialogClose = (done: () => void) => {
       .catch(() => {
         // 点击取消
       })
+  } else {
+    done()
   }
 }
 

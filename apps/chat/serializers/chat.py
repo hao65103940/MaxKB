@@ -171,6 +171,9 @@ class PromptGenerateSerializer(serializers.Serializer):
 
         message = messages[-1]['content']
         q = prompt.replace("{userInput}", message)
+        q = q.replace("{application_name}",application.name)
+        q = q.replace("{detail}",application.desc)
+
         messages[-1]['content'] = q
 
         model_exist = QuerySet(Model).filter(
