@@ -237,10 +237,15 @@ const submitHandle = async (formEl: FormInstance | undefined) => {
         workflowDefault.value.nodes[0].properties.node_data.name = applicationForm.value.name
         applicationForm.value['work_flow'] = workflowDefault.value
       }
+      loading.value=true
       applicationApi
-        .postApplication({ ...applicationForm.value, folder_id: currentFolder.value }, loading)
-        .then(async (res) => {
-          await user.profile()
+        .postApplication({ ...applicationForm.value, folder_id: currentFolder.value })
+        .then((res) => {
+          return user.profile().then(() => {
+            return res
+          })
+        })
+        .then((res) => {
           MsgSuccess(t('common.createSuccess'))
           emit('refresh')
           if (isWorkFlow(applicationForm.value.type)) {
@@ -249,6 +254,8 @@ const submitHandle = async (formEl: FormInstance | undefined) => {
             router.push({ path: `/application/workspace/${res.data.id}/${res.data.type}/setting` })
           }
           dialogVisible.value = false
+        }).finally(() => {
+          loading.value=false
         })
     }
   })
