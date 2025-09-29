@@ -435,7 +435,7 @@
                 </div>
                 <el-form-item
                   @click.prevent
-                  v-if="applicationForm.mcp_enable || applicationForm.tool_enable"
+                  v-if="(applicationForm.mcp_enable || applicationForm.tool_enable) && toolPermissionPrecise.read()"
                 >
                   <template #label>
                     <div class="flex-between">
