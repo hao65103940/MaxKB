@@ -309,6 +309,12 @@ const getWrite = (reader: any) => {
         if (split) {
           for (const index in split) {
             const chunk = JSON?.parse(split[index].replace('data:', ''))
+            if (chunk.error) {
+              loading.value = false
+              stopStreaming()
+              middleAnswer.content = chunk.error
+              return Promise.reject(new Error(chunk.error))
+            }
             if (!chunk.is_end) {
               // 实时将新接收的内容添加到完整内容中
               fullContent.value += chunk.content
