@@ -2,6 +2,14 @@ import { hasPermission } from '@/utils/permission/index'
 import { ComplexPermission } from '@/utils/permission/type'
 import { EditionConst, PermissionConst, RoleConst } from '@/utils/permission/data'
 const share = {
+  read: () =>
+    hasPermission(
+     [
+       RoleConst.ADMIN,
+       PermissionConst.SHARED_TOOL_READ,
+     ],
+     'OR',
+    ),
   is_share: () => false,
   create: () =>
     hasPermission(
@@ -67,8 +75,8 @@ const share = {
       ],
       'OR',
     ),
-    
-  auth: () => false,  
+
+  auth: () => false,
   folderCreate: () => false,
   folderEdit: () => false,
   folderDelete: () => false,

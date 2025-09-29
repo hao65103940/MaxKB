@@ -2,6 +2,11 @@ import { hasPermission } from '@/utils/permission/index'
 import { ComplexPermission } from '@/utils/permission/type'
 import { EditionConst, PermissionConst, RoleConst } from '@/utils/permission/data'
 const workspace = {
+  read: () =>
+    hasPermission(
+      [PermissionConst.TOOL_READ.getWorkspacePermission, PermissionConst.TOOL_READ.getWorkspacePermissionWorkspaceManageRole],
+      'OR'
+    ),
   is_share: () =>
     hasPermission(
       new ComplexPermission(
@@ -29,7 +34,7 @@ const workspace = {
         PermissionConst.TOOL_IMPORT.getWorkspacePermissionWorkspaceManageRole
       ],
       'OR'
-    ),  
+    ),
   folderCreate: () =>
     hasPermission(
       [
@@ -109,7 +114,7 @@ const workspace = {
         PermissionConst.TOOL_EXPORT.getWorkspacePermissionWorkspaceManageRole
       ],
       'OR'
-    ), 
+    ),
   auth: (source_id:string) =>
     hasPermission(
       [
@@ -119,18 +124,18 @@ const workspace = {
         PermissionConst.TOOL_RESOURCE_AUTHORIZATION.getWorkspacePermissionWorkspaceManageRole
       ],
       'OR'
-    ), 
+    ),
   debug: () =>
     hasPermission(
-      [ 
-        RoleConst.USER.getWorkspaceRole,  
+      [
+        RoleConst.USER.getWorkspaceRole,
         RoleConst.WORKSPACE_MANAGE.getWorkspaceRole,
         PermissionConst.TOOL_EDIT.getWorkspacePermission,
         PermissionConst.TOOL_EDIT.getWorkspacePermissionWorkspaceManageRole
       ],
       'OR'
-    ), 
-     
+    ),
+
 }
 
 export default workspace
