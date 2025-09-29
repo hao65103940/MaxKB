@@ -128,8 +128,7 @@ const loading = ref(false)
 const searchValue = ref('')
 const folderId = ref('')
 const toolType = ref('INTERNAL')
-
-const categories = ref<ToolCategory[]>([
+const defaultCategories = ref<ToolCategory[]>([
   // 第一版不上
   // {
   //   id: 'recommend',
@@ -162,6 +161,8 @@ const categories = ref<ToolCategory[]>([
   //   tools: []
   // }
 ])
+const categories = ref<ToolCategory[]>([...defaultCategories.value])
+
 const filterList = ref<any>(null)
 
 function getSubTitle(tool: any) {
@@ -188,6 +189,7 @@ async function getList() {
 
 async function getInternalToolList() {
   try {
+    categories.value = defaultCategories.value
     const res = await ToolStoreApi.getInternalToolList({ name: searchValue.value }, loading)
     if (searchValue.value.length) {
       filterList.value = res.data
