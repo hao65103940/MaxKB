@@ -23,8 +23,8 @@
           step-strictly
         />
         <span class="ml-4">{{
-          $t('views.applicationOverview.appInfo.LimitDialog.timesDays')
-        }}</span>
+            $t('views.applicationOverview.appInfo.LimitDialog.timesDays')
+          }}</span>
       </el-form-item>
       <!--     身份验证 -->
       <el-form-item
@@ -74,7 +74,7 @@
                     style="margin: 0 4px 0 0 !important"
                   >
                     <el-icon>
-                      <RefreshRight />
+                      <RefreshRight/>
                     </el-icon>
                   </el-button>
                 </el-tooltip>
@@ -111,7 +111,7 @@
           >
             <el-checkbox-group v-model="form.authentication_value.login_value">
               <template v-for="t in auth_list" :key="t.value">
-                <el-checkbox :label="t.label" :value="t.value" />
+                <el-checkbox :label="t.label" :value="t.value"/>
               </template>
             </el-checkbox-group>
           </el-form-item>
@@ -178,18 +178,18 @@
   </el-drawer>
 </template>
 <script setup lang="ts">
-import { ref, watch, computed } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import type { FormInstance, FormRules } from 'element-plus'
-import { MsgSuccess } from '@/utils/message'
-import { t } from '@/locales'
-import { copyClick } from '@/utils/clipboard'
-import { loadSharedApi } from '@/utils/dynamics-api/shared-api'
+import {ref, watch, computed} from 'vue'
+import {useRoute, useRouter} from 'vue-router'
+import type {FormInstance, FormRules} from 'element-plus'
+import {MsgSuccess} from '@/utils/message'
+import {t} from '@/locales'
+import {copyClick} from '@/utils/clipboard'
+import {loadSharedApi} from '@/utils/dynamics-api/shared-api'
 
 const router = useRouter()
 const route = useRoute()
 const {
-  params: { id },
+  params: {id},
 } = route
 
 const apiType = computed(() => {
@@ -238,9 +238,12 @@ const open = (data: any) => {
   ) {
     refreshAuthentication()
   }
+  if (!form.value.authentication_value.max_attempts) {
+    form.value.authentication_value.max_attempts = 1
+  }
   form.value.authentication = data.authentication
   dialogVisible.value = true
-  loadSharedApi({ type: 'application', systemType: apiType.value })
+  loadSharedApi({type: 'application', systemType: apiType.value})
     .getChatUserAuthType()
     .then((ok: any) => {
       auth_list.value = ok.data
@@ -258,7 +261,7 @@ const submit = async (formEl: FormInstance | undefined) => {
         authentication: form.value.authentication,
         authentication_value: form.value.authentication_value,
       }
-      loadSharedApi({ type: 'application', systemType: apiType.value })
+      loadSharedApi({type: 'application', systemType: apiType.value})
         .putAccessToken(id as string, obj, loading)
         .then(() => {
           emit('refresh')
@@ -294,7 +297,7 @@ function firstGeneration() {
   }
 }
 
-defineExpose({ open })
+defineExpose({open})
 </script>
 <style lang="scss" scoped>
 .authentication-append-input {
