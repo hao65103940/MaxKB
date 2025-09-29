@@ -357,8 +357,8 @@ defineExpose({ open })
   }
 
   .category-scrollbar {
-    max-height: calc(100vh - 260px);
-    min-height: 500px;
+    height: calc(100vh - 260px);
+    // min-height: 500px;
   }
 }
 </style>
