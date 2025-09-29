@@ -300,9 +300,9 @@ const open = (data: any) => {
     userManageApi.getSystemDefaultPassword().then((res: any) => {
       userForm.value.password = res.data.password
     })
-    if (memberFormContentRef.value) {
-      memberFormContentRef.value.resetValidation()
-    }
+  }
+  if (memberFormContentRef.value) {
+    memberFormContentRef.value.resetValidation()
   }
 
   visible.value = true
