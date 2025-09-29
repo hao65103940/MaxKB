@@ -8854,3 +8854,6 @@ msgstr "如果未傳入，則預設值為 16000"
 
 msgid "Sample Rate"
 msgstr "採樣率"
+
+msgid "Captcha is required"
+msgstr "驗證碼是必填項"
