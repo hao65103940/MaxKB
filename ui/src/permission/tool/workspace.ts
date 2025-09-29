@@ -4,7 +4,12 @@ import { EditionConst, PermissionConst, RoleConst } from '@/utils/permission/dat
 const workspace = {
   read: () =>
     hasPermission(
-      [PermissionConst.TOOL_READ.getWorkspacePermission, PermissionConst.TOOL_READ.getWorkspacePermissionWorkspaceManageRole],
+      [
+        RoleConst.WORKSPACE_MANAGE.getWorkspaceRole,
+        RoleConst.USER.getWorkspaceRole,
+        PermissionConst.TOOL_READ.getWorkspacePermission,
+        PermissionConst.TOOL_READ.getWorkspacePermissionWorkspaceManageRole
+      ],
       'OR'
     ),
   is_share: () =>
