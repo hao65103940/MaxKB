@@ -777,7 +777,7 @@ class ToolSerializer(serializers.Serializer):
                 finally:
                     # 清理临时文件
                     os.unlink(temp_zip_path)
-            except requests.RequestException as e:
+            except Exception as e:
                 maxkb_logger.error(f"fetch appstore tools error: {e}")
                 return {'apps': [], 'additionalProperties': {'tags': []}}
 
