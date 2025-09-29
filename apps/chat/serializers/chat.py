@@ -187,11 +187,13 @@ class PromptGenerateSerializer(serializers.Serializer):
 
         def process():
             model = get_model_instance_by_model_workspace_id(model_id=model_id, workspace_id=workspace_id,**application.model_params_setting)
-            for r in model.stream([SystemMessage(content=system_content),
+            try:
+                for r in model.stream([SystemMessage(content=system_content),
                                    *[HumanMessage(content=m.get('content')) if m.get('role') == 'user' else AIMessage(
                                            content=m.get('content')) for m in messages]]):
-                yield 'data: ' + json.dumps({'content': r.content}) + '\n\n'
-
+                    yield 'data: ' + json.dumps({'content': r.content}) + '\n\n'
+            except Exception as e:
+                yield 'data: ' + json.dumps({'error': str(e)}) + '\n\n'
         return to_stream_response_simple(process())
 
 
