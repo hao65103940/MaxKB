@@ -100,7 +100,7 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeMount, ref } from 'vue'
+import { onBeforeMount, ref, watch } from 'vue'
 import ToolStoreApi from '@/api/tool/store'
 import { t } from '@/locales'
 import ToolCard from './ToolCard.vue'
@@ -127,7 +127,7 @@ const dialogVisible = ref(false)
 const loading = ref(false)
 const searchValue = ref('')
 const folderId = ref('')
-const toolType = ref('INTERNAL')
+const toolType = ref('APPSTORE')
 const defaultCategories = ref<ToolCategory[]>([
   // 第一版不上
   // {
@@ -164,6 +164,12 @@ const defaultCategories = ref<ToolCategory[]>([
 const categories = ref<ToolCategory[]>([...defaultCategories.value])
 
 const filterList = ref<any>(null)
+
+watch(dialogVisible, (bool) => {
+  if (!bool) {
+    toolType.value = 'APPSTORE'
+  }
+})
 
 function getSubTitle(tool: any) {
   return categories.value.find((i) => i.id === tool.label)?.title ?? ''
