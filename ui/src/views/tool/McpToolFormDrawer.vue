@@ -119,7 +119,7 @@ import { computed, reactive, ref, watch } from 'vue'
 import EditAvatarDialog from '@/views/tool/component/EditAvatarDialog.vue'
 import type { toolData } from '@/api/type/tool'
 import type { FormInstance } from 'element-plus'
-import { MsgConfirm, MsgSuccess } from '@/utils/message'
+import { MsgConfirm, MsgError, MsgSuccess } from '@/utils/message'
 import { cloneDeep } from 'lodash'
 import { t } from '@/locales'
 import { isAppIcon } from '@/utils/common'
@@ -245,9 +245,16 @@ const submit = async (formEl: FormInstance | undefined) => {
   if (!formEl) return
   await formEl.validate((valid: any) => {
     if (valid) {
+      try {
+        JSON.parse(form.value.code as string)
+      } catch (e) {
+        MsgError(t('views.applicationWorkflow.nodes.mcpNode.mcpServerTip'))
+        return
+      }
+      loading.value = true
       if (isEdit.value) {
         loadSharedApi({ type: 'tool', systemType: apiType.value })
-          .putTool(form.value?.id as string, form.value, loading)
+          .putTool(form.value?.id as string, form.value)
           .then((res: any) => {
             MsgSuccess(t('common.editSuccess'))
             emit('refresh', res.data)
@@ -256,13 +263,16 @@ const submit = async (formEl: FormInstance | undefined) => {
           .then(() => {
             visible.value = false
           })
+          .finally(() => {
+            loading.value = false
+          })
       } else {
         const obj = {
           folder_id: folder.currentFolder?.id,
           ...form.value,
         }
         loadSharedApi({ type: 'tool', systemType: apiType.value })
-          .postTool(obj, loading)
+          .postTool(obj)
           .then((res: any) => {
             MsgSuccess(t('common.createSuccess'))
             emit('refresh')
@@ -270,6 +280,9 @@ const submit = async (formEl: FormInstance | undefined) => {
           })
           .then(() => {
             visible.value = false
+          })
+          .finally(() => {
+            loading.value = false
           })
       }
     }
