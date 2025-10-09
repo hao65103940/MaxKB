@@ -359,6 +359,7 @@
     ref="ResourceAuthorizationDrawerRef"
     v-if="apiType === 'workspace'"
   />
+  <ToolStoreDescDrawer ref="toolStoreDescDrawerRef" />
 </template>
 
 <script lang="ts" setup>
@@ -383,6 +384,7 @@ import permissionMap from '@/permission'
 import useStore from '@/stores'
 import { t } from '@/locales'
 import ToolStoreApi from '@/api/tool/store.ts'
+import ToolStoreDescDrawer from "@/views/tool/component/ToolStoreDescDrawer.vue";
 const route = useRoute()
 const { folder, user, tool } = useStore()
 onBeforeRouteLeave((to, from) => {
@@ -473,10 +475,20 @@ function openAuthorizedWorkspaceDialog(row: any) {
   }
 }
 
+const toolStoreDescDrawerRef = ref<InstanceType<typeof ToolStoreDescDrawer>>()
 function openCreateDialog(data?: any) {
   // mcp工具
   if (data?.tool_type === 'MCP') {
     openCreateMcpDialog(data)
+    return
+  }
+  // 有版本号的展示readme，是商店更新过来的
+  if (data?.version) {
+    let readMe = ''
+    storeTools.value.filter((item) => item.id === data.template_id).forEach((item) => {
+      readMe = item.readMe
+    })
+    toolStoreDescDrawerRef.value?.open(readMe, data)
     return
   }
   // 有template_id的不允许编辑，是模板转换来的
