@@ -222,9 +222,21 @@ class OpenAIChatSerializer(serializers.Serializer):
     def generate_chat(chat_id, application_id, message, chat_user_id, chat_user_type):
         if chat_id is None:
             chat_id = str(uuid.uuid1())
-        chat_info = ChatInfo(chat_id, chat_user_id, chat_user_type, [], [],
-                             application_id)
-        chat_info.set_cache()
+            chat_info = ChatInfo(chat_id, chat_user_id, chat_user_type, [], [],
+                                 application_id)
+            chat_info.set_cache()
+        else:
+            chat_info = ChatInfo.get_cache(chat_id)
+            if chat_info is None:
+                ser = ChatSerializers(data={
+                    'chat_id': chat_id,
+                    'chat_user_id': chat_user_id,
+                    'chat_user_type': chat_user_type,
+                    'application_id': application_id
+                })
+                ser.is_valid(raise_exception=True)
+                chat_info = ser.re_open_chat(chat_id)
+                chat_info.set_cache()
         return chat_id
 
     def chat(self, instance: Dict, with_valid=True):
