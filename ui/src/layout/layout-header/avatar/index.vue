@@ -23,7 +23,7 @@
             <template v-if="user.userInfo?.role_name && user.userInfo.role_name.length > 0">
               <TagGroup
                 size="small"
-                :tags="user.userInfo?.role_name"
+                :tags="role_list"
                 v-if="hasPermission([EditionConst.IS_EE, EditionConst.IS_PE], 'OR')"
               />
             </template>
@@ -150,9 +150,10 @@
   <!-- <UserPwdDialog ref="UserPwdDialogRef" /> -->
 </template>
 <script setup lang="ts">
-import {ref, onMounted} from 'vue'
+import {ref, onMounted, computed} from 'vue'
 import useStore from '@/stores'
-import {useRouter} from 'vue-router'
+import { useRouter } from 'vue-router'
+import {t} from "@/locales"
 import ResetPassword from './ResetPassword.vue'
 import AboutDialog from './AboutDialog.vue'
 // import UserPwdDialog from '@/views/user-manage/component/UserPwdDialog.vue'
@@ -185,7 +186,23 @@ function openAPIKeyDialog() {
 const openResetPassword = () => {
   resetPasswordRef.value?.open()
 }
-
+const m:any = {
+  "系统管理员": 'layout.about.inner_admin',
+  "工作空间管理员": 'layout.about.inner_wsm',
+  "普通用户":'layout.about.inner_user'
+}
+const role_list = computed(() => { 
+  if (!user.userInfo) { 
+return []
+  }
+ return user.userInfo?.role_name?.map(name => { 
+    const inner = m[name]
+    if (inner) { 
+      return t(inner)
+    }
+    return name
+  })
+})
 const logout = () => {
   login.logout().then(() => {
     if (user?.userInfo?.source && ['CAS', 'OIDC', 'OAuth2'].includes(user.userInfo.source)) {

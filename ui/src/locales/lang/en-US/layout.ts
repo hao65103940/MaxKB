@@ -21,7 +21,9 @@ export default {
     remark: 'Remarks',
     update: 'Update',
     authorize: 'Authorized',
-
+    inner_admin: 'System Admin',
+    inner_wsm: 'Workspace Manager',
+    inner_user: 'Common User',
   },
   time: {
     daysLater: 'days later',

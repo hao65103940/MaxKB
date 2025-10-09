@@ -20,7 +20,11 @@ export default {
     serialNo: '序列号',
     remark: '备注',
     update: '更新',
-    authorize: '授权给'
+    authorize: '授权给',
+    inner_admin: '系统管理员',
+    inner_wsm: '工作空间管理员',
+    inner_user: '普通用户',
+
   },
   time: {
     daysLater: '天后',
