@@ -386,8 +386,11 @@ class AppNodeModel extends HtmlResize.model {
         if (targetNode.id == sourceNode.id) {
           return false
         }
-        const up_node_list = this.graphModel.getNodeIncomingNode(targetNode.id)
-        const is_c = up_node_list.find((up_node) => up_node.id == sourceNode.id)
+        const up_edge_list = this.graphModel.getNodeIncomingEdge(targetNode.id)
+        const is_c = up_edge_list.find(
+          (up_edge) =>
+            up_edge.targetAnchorId == targetAnchor.id && up_edge.sourceAnchorId == sourceAnchor.id,
+        )
         return !is_c && !isLoop(sourceNode.id, targetNode.id)
       },
     })
