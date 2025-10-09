@@ -138,7 +138,7 @@
                   v-model="item.source"
                   size="small"
                   style="width: 85px"
-                  @change="form_data.tool_params[form_data.params_nested] = {}"
+                  @change="form_data.tool_params[form_data.params_nested] = {}; form_data.tool_params[form_data.params_nested][item.label.label]"
                 >
                   <el-option
                     :label="$t('views.applicationWorkflow.nodes.replyNode.replyContent.reference')"
@@ -207,6 +207,7 @@
                   v-model="item.source"
                   size="small"
                   style="width: 85px"
+                  @change="form_data.tool_params[item.label.label] = ''"
                 >
                   <el-option
                     :label="$t('views.applicationWorkflow.nodes.replyNode.replyContent.reference')"
