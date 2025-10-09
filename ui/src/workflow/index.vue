@@ -67,7 +67,6 @@ const renderGraphData = (data?: any) => {
       },
       isSilentMode: false,
       container: container,
-      saa: 'sssssss',
     })
     lf.value.setTheme({
       bezier: {
@@ -129,6 +128,7 @@ const onmousedown = (shapeItem: ShapeItem) => {
       properties: { ...shapeItem.properties },
     })
   }
+
   if (shapeItem.callback) {
     shapeItem.callback(lf.value)
   }

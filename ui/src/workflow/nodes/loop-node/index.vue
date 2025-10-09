@@ -170,7 +170,9 @@ onMounted(() => {
     }
   }
   set(props.nodeModel, 'validate', validate)
-  mountLoopBodyNode()
+  if (!props.nodeModel.virtual) {
+    mountLoopBodyNode()
+  }
 })
 </script>
 <style lang="scss" scoped></style>
