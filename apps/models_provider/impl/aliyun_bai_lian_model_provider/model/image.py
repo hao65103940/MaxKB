@@ -2,6 +2,9 @@
 
 from typing import Dict
 
+from langchain_community.chat_models import ChatTongyi
+from langchain_core.messages import HumanMessage
+from django.utils.translation import gettext
 from models_provider.base_model_provider import MaxKBBaseModel
 from models_provider.impl.base_chat_open_ai import BaseChatOpenAI
 
@@ -25,3 +28,7 @@ class QwenVLChatModel(MaxKBBaseModel, BaseChatOpenAI):
             extra_body=optional_params
         )
         return chat_tong_yi
+
+    def check_auth(self, api_key):
+        chat = ChatTongyi(api_key=api_key, model_name='qwen-max')
+        chat.invoke([HumanMessage([{"type": "text", "text": gettext('Hello')}])])
