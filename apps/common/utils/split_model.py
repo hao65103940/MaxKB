@@ -169,7 +169,14 @@ def parse_level(text, pattern: str):
 
 
 def re_findall(pattern, text):
-    result = re.findall(pattern, text, flags=0)
+    if not pattern or not pattern.strip():
+        return []
+
+    try:
+        result = re.findall(pattern, text, flags=0)
+    except re.error:
+        return []
+
     return list(filter(lambda r: r is not None and len(r) > 0, reduce(lambda x, y: [*x, *y], list(
         map(lambda row: [*(row if isinstance(row, tuple) else [row])], result)),
                                                                       [])))
