@@ -108,6 +108,7 @@
             <div
               v-for="(item, index) in form_data.branch"
               :key="item.id"
+              class="mb-8"
             >
             <el-form-item
             :prop="`branch.${index}.content`"
@@ -117,7 +118,7 @@
             required: true,
           }"
             >
-              <el-row class="mb-8" :gutter="12" align="middle">
+              <el-row :gutter="12" align="middle">
                 <el-col :span="21">
                   <el-input
                     v-model="item.content"

@@ -1,5 +1,5 @@
 <template>
-  <CardBox :title="props.tool.name" :description="props.tool.desc" class="cursor">
+  <CardBox :title="props.tool.name" :description="props.tool.desc" class="cursor tool-card">
     <template #icon>
       <el-avatar
         v-if="isAppIcon(props.tool?.icon)"
@@ -34,7 +34,7 @@
       <span class="card-footer-left color-secondary">
         {{ `${$t('common.author')}: MaxKB` }}
       </span>
-      <div class="card-footer-operation" @click.stop>
+      <div class="card-footer-operation mb-8" @click.stop>
         <el-button @click="emit('handleDetail')">
           {{ $t('common.detail') }}
         </el-button>
@@ -63,7 +63,7 @@ const emit = defineEmits<{
 </script>
 
 <style lang="scss" scoped>
-.el-card {
+.tool-card {
   :deep(.card-footer) {
     & > div:first-of-type {
       flex: 1;

@@ -339,6 +339,11 @@ defineExpose({ open })
 
   .layout-container__left {
     background-color: var(--app-layout-bg-color);
+    border-radius: 0 0 0 8px;
+  }
+  .layout-container__right {
+    background-color: var(--app-layout-bg-color);
+    border-radius: 0 0 8px 0;
   }
 
   .el-anchor {
