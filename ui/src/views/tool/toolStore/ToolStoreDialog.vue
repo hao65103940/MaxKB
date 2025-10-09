@@ -219,6 +219,10 @@ async function getStoreToolList() {
     const res = await ToolStoreApi.getStoreToolList({ name: searchValue.value }, loading)
     const tags = res.data.additionalProperties.tags
     const storeTools = res.data.apps
+    //
+    storeTools.forEach((tool: any) => {
+      tool.desc = tool.description
+    })
 
     if (storeTools.length === 0) {
       filterList.value = []
