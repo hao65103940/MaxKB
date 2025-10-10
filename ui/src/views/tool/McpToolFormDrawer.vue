@@ -246,7 +246,10 @@ const submit = async (formEl: FormInstance | undefined) => {
   await formEl.validate((valid: any) => {
     if (valid) {
       try {
-        JSON.parse(form.value.code as string)
+        const parsed = JSON.parse(form.value.code as string)
+        if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) {
+          throw new Error('Code must be a valid JSON object')
+        }
       } catch (e) {
         MsgError(t('views.applicationWorkflow.nodes.mcpNode.mcpServerTip'))
         return
