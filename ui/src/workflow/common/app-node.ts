@@ -75,6 +75,7 @@ class AppNode extends HtmlResize.view {
     }
     result.push({
       value: this.props.model.id,
+      icon: this.props.model.properties.node_data?.icon,
       label: this.props.model.properties.stepName,
       type: this.props.model.type,
       children: this.props.model.properties?.config?.fields || [],
