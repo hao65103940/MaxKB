@@ -1,3 +1,4 @@
+import { cloneDeep } from 'lodash'
 import type LogicFlow from '@logicflow/core'
 import { type GraphModel } from '@logicflow/core'
 import { MsgSuccess, MsgError, MsgConfirm } from '@/utils/message'
@@ -63,7 +64,7 @@ export function initDefaultShortcut(lf: LogicFlow, graph: GraphModel) {
       MsgError(base_nodes[0]?.properties?.stepName + t('views.applicationWorkflow.tip.cannotCopy'))
       return
     }
-    selected = elements
+    selected = cloneDeep(elements)
     selected.nodes.forEach((node: any) => translationNodeData(node, TRANSLATION_DISTANCE))
     selected.edges.forEach((edge: any) => translationEdgeData(edge, TRANSLATION_DISTANCE))
     MsgSuccess(t('views.applicationWorkflow.tip.copyError'))

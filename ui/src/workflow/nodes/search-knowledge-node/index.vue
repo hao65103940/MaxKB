@@ -196,6 +196,7 @@ function addKnowledge(val: Array<any>) {
     'knowledge_id_list',
     val.map((item) => item.id),
   )
+  set(props.nodeModel.properties.node_data, 'knowledge_list', val)
   knowledgeList.value = val
 }
 
