@@ -169,7 +169,12 @@ def parse_level(text, pattern: str):
 
 
 def re_findall(pattern, text):
-    if not pattern or not pattern.strip():
+    # 检查 pattern 是否为空或无效
+    if pattern is None:
+        return []
+
+    # 如果是字符串类型，检查是否为空字符串
+    if isinstance(pattern, str) and (not pattern or not pattern.strip()):
         return []
 
     try:
