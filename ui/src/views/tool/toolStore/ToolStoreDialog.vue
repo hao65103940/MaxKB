@@ -221,12 +221,16 @@ async function getStoreToolList() {
     storeTools.forEach((tool: any) => {
       tool.desc = tool.description
     })
-
-    categories.value = tags.map((tag: any) => ({
-      id: tag.key,
-      title: tag.name, // 国际化
-      tools: storeTools.filter((tool: any) => tool.label === tag.key),
-    }))
+    if (searchValue.value.length) {
+      filterList.value = res.data.apps
+    } else {
+      filterList.value = null
+      categories.value = tags.map((tag: any) => ({
+        id: tag.key,
+        title: tag.name, // 国际化
+        tools: storeTools.filter((tool: any) => tool.label === tag.key),
+      }))
+    }
   } catch (error) {
     console.error(error)
   }
@@ -302,6 +306,7 @@ async function handleStoreAdd(tool: any) {
 }
 
 function radioChange() {
+  searchValue.value = ''
   getList()
 }
 
