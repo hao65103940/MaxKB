@@ -38,6 +38,7 @@ const init = async () => {
   }
   const lang = localStorage.getItem('MaxKB-locale') || getBrowserLang() || 'en-US'
   const redirectUri = window.location.origin
+  console.log('redirectUri', redirectUri)
   try {
     wwLogin.value = ww.createWWLoginPanel({
       el: '#wecom-qr',
