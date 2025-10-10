@@ -179,11 +179,9 @@ function open(id: string) {
   folderId.value = id
   filterList.value = null
   dialogVisible.value = true
-}
 
-onBeforeMount(() => {
   getList()
-})
+}
 
 async function getList() {
   if (toolType.value === 'INTERNAL') {
