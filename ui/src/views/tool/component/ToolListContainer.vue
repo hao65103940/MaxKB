@@ -151,7 +151,7 @@
                 </template>
                 <template #subTitle>
                   <el-text class="color-secondary lighter" size="small">
-                    {{ $t('common.creator') }}: {{ item.nick_name }}
+                    {{ $t('common.creator') }}: {{ i18n_name(item.nick_name) }}
                   </el-text>
                 </template>
               </CardBox>
@@ -186,7 +186,7 @@
                 </template>
                 <template #subTitle>
                   <el-text class="color-secondary lighter" size="small">
-                    {{ $t('common.creator') }}: {{ item.nick_name }}
+                    {{ $t('common.creator') }}: {{ i18n_name(item.nick_name) }}
                   </el-text>
                 </template>
                 <template #tag="{ hoverShow }">
@@ -383,6 +383,7 @@ import { loadSharedApi } from '@/utils/dynamics-api/shared-api'
 import permissionMap from '@/permission'
 import useStore from '@/stores'
 import { t } from '@/locales'
+import { i18n_name } from '@/utils/common'
 import ToolStoreApi from '@/api/tool/store.ts'
 import ToolStoreDescDrawer from "@/views/tool/component/ToolStoreDescDrawer.vue";
 const route = useRoute()

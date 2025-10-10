@@ -26,7 +26,7 @@
     </template>
     <template #subTitle>
       <el-text class="color-secondary lighter" size="small">
-        {{ $t('common.creator') }}: {{ model.nick_name }}
+        {{ $t('common.creator') }}: {{ i18n_name(model.nick_name) }}
       </el-text>
     </template>
     <template #tag>
@@ -145,6 +145,7 @@ import AuthorizedWorkspace from '@/views/system-shared/AuthorizedWorkspaceDialog
 import ResourceAuthorizationDrawer from '@/components/resource-authorization-drawer/index.vue'
 import { SourceTypeEnum } from '@/enums/common'
 import { t } from '@/locales'
+import { i18n_name } from '@/utils/common'
 import permissionMap from '@/permission'
 import { useRoute } from 'vue-router'
 import { loadSharedApi } from '@/utils/dynamics-api/shared-api'

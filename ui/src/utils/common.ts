@@ -1,4 +1,5 @@
 import {nanoid} from 'nanoid'
+import {t} from '@/locales'
 
 /**
  * 数字处理
@@ -84,6 +85,22 @@ export function downloadByURL(url: string, name: string) {
   a.click()
   document.body.removeChild(a)
 }
+
+// 替换固定数据国际化
+const i18n_default_name_map:any = {
+  "系统管理员": 'layout.about.inner_admin',
+  "工作空间管理员": 'layout.about.inner_wsm',
+  "普通用户": 'layout.about.inner_user',
+  "根目录": 'layout.about.root',
+  "默认工作空间": 'layout.about.default_workspace',
+  "默认用户组": 'layout.about.default_user_group',
+}
+
+export function i18n_name(name: string) {
+  const key = i18n_default_name_map[name]
+  return key ? t(key) : name
+}
+
 
 // 截取文件名
 export function cutFilename(filename: string, num: number) {

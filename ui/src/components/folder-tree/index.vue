@@ -43,7 +43,7 @@
               <div class="flex align-center">
                 <AppIcon iconName="app-folder" style="font-size: 20px"></AppIcon>
                 <span class="ml-8 ellipsis tree-label" style="max-width: 110px" :title="node.label">{{
-                  node.label
+                  i18n_name(node.label)
                 }}</span>
               </div>
 
@@ -103,6 +103,7 @@ import { onBeforeRouteLeave } from 'vue-router'
 import type { TreeInstance } from 'element-plus'
 import CreateFolderDialog from '@/components/folder-tree/CreateFolderDialog.vue'
 import { t } from '@/locales'
+import { i18n_name } from '@/utils/common'
 import folderApi from '@/api/folder'
 import { EditionConst } from '@/utils/permission/data'
 import { hasPermission } from '@/utils/permission/index'

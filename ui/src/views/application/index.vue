@@ -177,7 +177,7 @@
                   </template>
                   <template #subTitle>
                     <el-text class="color-secondary lighter" size="small">
-                      {{ $t('common.creator') }}: {{ item.nick_name }}
+                      {{ $t('common.creator') }}: {{ i18n_name(item.nick_name) }}
                     </el-text>
                   </template>
                 </CardBox>
@@ -197,7 +197,7 @@
                   <template #subTitle>
                     <el-text class="color-secondary lighter" size="small">
                       <auto-tooltip :content="item.username">
-                        {{ $t('common.creator') }}: {{ item.nick_name }}
+                        {{ $t('common.creator') }}: {{ i18n_name(item.nick_name) }}
                       </auto-tooltip>
                     </el-text>
                   </template>
@@ -330,6 +330,7 @@ import ApplicationApi from '@/api/application/application'
 import { MsgSuccess, MsgConfirm, MsgError } from '@/utils/message'
 import useStore from '@/stores'
 import { t } from '@/locales'
+import { i18n_name } from '@/utils/common'
 import { useRouter, useRoute } from 'vue-router'
 import { isWorkFlow } from '@/utils/application'
 import { resetUrl } from '@/utils/common'

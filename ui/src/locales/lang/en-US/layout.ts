@@ -23,7 +23,10 @@ export default {
     authorize: 'Authorized',
     inner_admin: 'System Admin',
     inner_wsm: 'Workspace Manager',
-    inner_user: 'Common User',
+    inner_user: 'Regular User',
+    root: 'Root Directory',
+    default_workspace: 'Default Workspace',
+    default_user_group: 'Default User Group',
   },
   time: {
     daysLater: 'days later',
