@@ -41,7 +41,7 @@ const init = async () => {
     agentId: props.config.agent_id
   }
   const lang = localStorage.getItem('MaxKB-locale') || getBrowserLang() || 'en-US'
-  const redirectUri = encodeURIComponent(window.location.origin)
+  const redirectUri = window.location.origin
   try {
     wwLogin.value = ww.createWWLoginPanel({
       el: '#wecom-qr',
