@@ -222,11 +222,6 @@ async function getStoreToolList() {
       tool.desc = tool.description
     })
 
-    if (storeTools.length === 0) {
-      filterList.value = []
-      return
-    }
-
     categories.value = tags.map((tag: any) => ({
       id: tag.key,
       title: tag.name, // 国际化
