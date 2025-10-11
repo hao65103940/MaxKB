@@ -57,6 +57,13 @@
                 >
                   {{ $t('common.setting') }}
                 </el-button>
+                <el-button
+                  @click="openAddTagDialog()"
+                  :disabled="multipleSelection.length === 0"
+                  v-if="permissionPrecise.doc_edit(id)"
+                >
+                  {{ $t('views.document.tag.add') }}
+                </el-button>
                 <el-dropdown v-if="MoreFilledPermission0(id)">
                   <el-button class="ml-12 mr-12">
                     <AppIcon iconName="app-more"></AppIcon>
@@ -96,15 +103,19 @@
                 </el-dropdown>
               </template>
             </div>
-
-            <el-input
-              v-model="filterText"
-              :placeholder="$t('common.searchBar.placeholder')"
-              prefix-icon="Search"
-              class="w-240"
-              @change="getList"
-              clearable
-            />
+            <div>
+              <el-input
+                v-model="filterText"
+                :placeholder="$t('common.searchBar.placeholder')"
+                prefix-icon="Search"
+                class="w-240"
+                @change="getList"
+                clearable
+              />
+              <el-button @click="openTagDrawer" class="ml-12">
+                {{ $t('views.document.tag.label') }}
+              </el-button>
+            </div>
           </div>
           <app-table
             ref="multipleTableRef"
@@ -449,6 +460,11 @@
                             {{ $t('views.document.generateQuestion.title') }}
                           </el-dropdown-item>
                           <el-dropdown-item
+                            @click="openTagSettingDrawer(row)"
+                          >
+                            {{ $t('views.document.tag.setting') }}
+                          </el-dropdown-item>
+                          <el-dropdown-item
                             @click="openknowledgeDialog(row)"
                             v-if="permissionPrecise.doc_migrate(id)"
                           >
@@ -645,6 +661,9 @@
       :workspaceId="knowledgeDetail?.workspace_id"
     />
     <GenerateRelatedDialog ref="GenerateRelatedDialogRef" @refresh="getList" :apiType="apiType" />
+    <TagDrawer ref="tagDrawerRef"/>
+    <TagSettingDrawer ref="tagSettingDrawerRef" :knowledge-tags="knowledgeTags"/>
+    <AddTagDialog ref="addTagDialogRef" @addTags="addTags" :knowledge-tags="knowledgeTags"/>
   </div>
 </template>
 <script setup lang="ts">
@@ -666,6 +685,9 @@ import { TaskType, State } from '@/utils/status'
 import { t } from '@/locales'
 import permissionMap from '@/permission'
 import { loadSharedApi } from '@/utils/dynamics-api/shared-api'
+import TagDrawer from "./component/TagDrawer.vue";
+import TagSettingDrawer from "./component/TagSettingDrawer.vue";
+import AddTagDialog from "@/views/document/component/AddTagDialog.vue";
 
 const route = useRoute()
 const router = useRouter()
@@ -1181,6 +1203,43 @@ function openGenerateDialog(row?: any) {
   GenerateRelatedDialogRef.value.open(arr, 'document')
 }
 
+const tagDrawerRef = ref()
+function openTagDrawer() {
+  tagDrawerRef.value.open()
+}
+
+const tagSettingDrawerRef = ref()
+function openTagSettingDrawer(doc: any) {
+ tagSettingDrawerRef.value.open(doc)
+}
+
+const addTagDialogRef = ref()
+
+function openAddTagDialog() {
+  addTagDialogRef.value?.open()
+}
+
+function addTags(tags: any) {
+  const arr: string[] = multipleSelection.value.map((v) => v.id)
+
+  loadSharedApi({type: 'document', systemType: apiType.value})
+    .postMulDocumentTags(id, {tag_ids: tags, document_ids: arr}, loading)
+    .then(() => {
+      addTagDialogRef.value?.close()
+      getList()
+      clearSelection()
+    })
+}
+
+const knowledgeTags = ref<any[]>([])
+function getTags() {
+  loadSharedApi({type: 'knowledge', systemType: apiType.value})
+    .getTags(id, {}, loading)
+    .then((res: any) => {
+      knowledgeTags.value = res.data
+    })
+}
+
 onMounted(() => {
   getDetail()
   if (beforePagination.value) {
@@ -1191,6 +1250,7 @@ onMounted(() => {
     filterMethod.value = beforeSearch.value['filterMethod']
   }
   getList()
+  getTags()
   // 初始化定时任务
   initInterval()
 })

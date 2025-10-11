@@ -523,6 +523,40 @@ const importLarkDocument: (
   return post(`${prefix}/lark/${knowledge_id}/import`, data, null, loading)
 }
 
+const getDocumentTags: (
+  knowledge_id: string,
+  document_id: string,
+  params: any,
+  loading?: Ref<boolean>,
+) => Promise<Result<Array<string>>> = (knowledge_id, document_id, params, loading) => {
+  return get(`${prefix}/${knowledge_id}/document/${document_id}/tags`, params, loading)
+}
+
+const postDocumentTags: (
+  knowledge_id: string,
+  document_id: string,
+  data: any,
+  loading?: Ref<boolean>,
+) => Promise<Result<boolean>> = (knowledge_id, document_id, data, loading) => {
+  return post(`${prefix}/${knowledge_id}/document/${document_id}/tags`, data, null, loading)
+}
+
+const postMulDocumentTags: (
+  knowledge_id: string,
+  data: any,
+  loading?: Ref<boolean>,
+) => Promise<Result<boolean>> = (knowledge_id, data, loading) => {
+  return post(`${prefix}/${knowledge_id}/document/batch_add_tag`, data, null, loading)
+}
+
+const delMulDocumentTag: (
+  knowledge_id: string,
+  document_id: string,
+  tags: any,
+  loading?: Ref<boolean>,
+) => Promise<Result<boolean>> = (knowledge_id, document_id, tags, loading) => {
+  return put(`${prefix}/${knowledge_id}/document/${document_id}/tags/batch_delete`, tags, null, loading)
+}
 
 export default {
   getDocumentList,
@@ -555,4 +589,8 @@ export default {
   putLarkDocumentSync,
   putMulLarkSyncDocument,
   importLarkDocument,
+  getDocumentTags,
+  postDocumentTags,
+  postMulDocumentTags,
+  delMulDocumentTag
 }

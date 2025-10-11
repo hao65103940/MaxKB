@@ -3,6 +3,7 @@ import json
 import os
 import re
 import traceback
+from collections import defaultdict
 from functools import reduce
 from tempfile import TemporaryDirectory
 from typing import Dict, List
@@ -15,8 +16,8 @@ from django.core import validators
 from django.db import transaction, models
 from django.db.models import QuerySet, Func, F, Value
 from django.db.models.aggregates import Max
-from django.db.models.fields.json import KeyTextTransform
-from django.db.models.functions import Substr, Reverse, Coalesce, Cast
+from django.db.models.functions import Substr, Reverse
+from django.db.models.query_utils import Q
 from django.http import HttpResponse
 from django.utils.translation import gettext_lazy as _, gettext, get_language, to_locale
 from openpyxl.cell.cell import ILLEGAL_CHARACTERS_RE
@@ -47,7 +48,7 @@ from common.utils.fork import Fork
 from common.utils.logger import maxkb_logger
 from common.utils.split_model import get_split_model, flat_map
 from knowledge.models import Knowledge, Paragraph, Problem, Document, KnowledgeType, ProblemParagraphMapping, State, \
-    TaskType, File, FileSourceType
+    TaskType, File, FileSourceType, Tag, DocumentTag
 from knowledge.serializers.common import ProblemParagraphManage, BatchSerializer, \
     get_embedding_model_id_by_knowledge_id, MetaSerializer, write_image, zip_dir
 from knowledge.serializers.paragraph import ParagraphSerializers, ParagraphInstanceSerializer, \
@@ -1286,6 +1287,35 @@ class DocumentSerializers(serializers.Serializer):
                 except AlreadyQueued as e:
                     pass
 
+        def batch_add_tag(self, instance: Dict, with_valid=True):
+            if with_valid:
+                self.is_valid(raise_exception=True)
+            document_id_list = instance.get("document_ids")
+            tag_id_list = instance.get("tag_ids")
+            # 批量查询已存在的标签关联关系
+            existing_relations = {
+                (str(doc_id), str(tag_id))
+                for doc_id, tag_id in QuerySet(DocumentTag).filter(
+                    document_id__in=document_id_list,
+                    tag_id__in=tag_id_list
+                ).values_list('document_id', 'tag_id')
+            }
+
+            # 批量创建不存在的关联关系
+            new_relations = [
+                DocumentTag(
+                    id=uuid.uuid7(),
+                    document_id=document_id,
+                    tag_id=tag_id,
+                )
+                for document_id in document_id_list
+                for tag_id in tag_id_list
+                if (document_id, tag_id) not in existing_relations
+            ]
+
+            if new_relations:
+                QuerySet(DocumentTag).bulk_create(new_relations)
+
     class BatchGenerateRelated(serializers.Serializer):
         workspace_id = serializers.CharField(required=True, label=_('workspace id'))
         knowledge_id = serializers.UUIDField(required=True, label=_('knowledge id'))
@@ -1328,9 +1358,148 @@ class DocumentSerializers(serializers.Serializer):
                 QuerySet(Document).filter(id__in=document_id_list))()
             try:
                 for document_id in document_id_list:
-                    generate_related_by_document_id.delay(document_id, model_id, model_params_setting, prompt, state_list)
+                    generate_related_by_document_id.delay(
+                        document_id, model_id, model_params_setting, prompt, state_list
+                    )
             except AlreadyQueued as e:
                 pass
+
+    class Tags(serializers.Serializer):
+        workspace_id = serializers.CharField(required=True, label=_('workspace id'))
+        knowledge_id = serializers.UUIDField(required=True, label=_('knowledge id'))
+        document_id = serializers.UUIDField(required=True, label=_('document id'))
+        name = serializers.CharField(required=False, allow_null=True, allow_blank=True, label=_('search value'))
+
+        def is_valid(self, *, raise_exception=False):
+            super().is_valid(raise_exception=True)
+            workspace_id = self.data.get('workspace_id')
+            query_set = QuerySet(Knowledge).filter(id=self.data.get('knowledge_id'))
+            if workspace_id and workspace_id != 'None':
+                query_set = query_set.filter(workspace_id=workspace_id)
+            if not query_set.exists():
+                raise AppApiException(500, _('Knowledge id does not exist'))
+            if not QuerySet(Document).filter(
+                    id=self.data.get('document_id'),
+                    knowledge_id=self.data.get('knowledge_id')
+            ).exists():
+                raise AppApiException(500, _('Document id does not exist'))
+
+        def list(self):
+            self.is_valid(raise_exception=True)
+
+            tag_ids = QuerySet(DocumentTag).filter(
+                document_id=self.data.get('document_id')
+            ).values_list('tag_id', flat=True)
+
+            if self.data.get('name'):
+                tag_ids = QuerySet(Tag).filter(
+                    knowledge_id=self.data.get('knowledge_id'),
+                    id__in=tag_ids,
+                ).filter(
+                    Q(key__icontains=self.data.get('name')) | Q(value__icontains=self.data.get('name'))
+                ).values_list('id', flat=True)
+
+            # 获取所有标签，按创建时间排序保持稳定顺序
+            tags = QuerySet(Tag).filter(
+                knowledge_id=self.data.get('knowledge_id'),
+                id__in=tag_ids
+            ).values('key', 'value', 'id', 'create_time', 'update_time').order_by('create_time', 'key', 'value')
+
+            # 按key分组
+            grouped_tags = defaultdict(list)
+            for tag in tags:
+                grouped_tags[tag['key']].append({
+                    'id': tag['id'],
+                    'value': tag['value'],
+                    'create_time': tag['create_time'],
+                    'update_time': tag['update_time']
+                })
+
+            # 转换为期望的格式，保持key的顺序
+            result = []
+            # 按key排序以确保结果顺序一致
+            for key in sorted(grouped_tags.keys()):
+                values = grouped_tags[key]
+                # 按创建时间对values进行排序
+                values.sort(key=lambda x: x['create_time'])
+                result.append({
+                    'key': key,
+                    'values': values,
+                })
+
+            return result
+
+    class AddTags(serializers.Serializer):
+        workspace_id = serializers.CharField(required=True, label=_('workspace id'))
+        knowledge_id = serializers.UUIDField(required=True, label=_('knowledge id'))
+        document_id = serializers.UUIDField(required=True, label=_('document id'))
+        tag_ids = serializers.ListField(
+            required=True, label=_('tag ids'), child=serializers.UUIDField(required=True, label=_('tag id'))
+        )
+
+        def is_valid(self, *, raise_exception=False):
+            super().is_valid(raise_exception=True)
+            workspace_id = self.data.get('workspace_id')
+            query_set = QuerySet(Knowledge).filter(id=self.data.get('knowledge_id'))
+            if workspace_id and workspace_id != 'None':
+                query_set = query_set.filter(workspace_id=workspace_id)
+            if not query_set.exists():
+                raise AppApiException(500, _('Knowledge id does not exist'))
+            if not QuerySet(Document).filter(
+                    id=self.data.get('document_id'),
+                    knowledge_id=self.data.get('knowledge_id')
+            ).exists():
+                raise AppApiException(500, _('Document id does not exist'))
+
+        def add_tags(self):
+            self.is_valid(raise_exception=True)
+            document_id = self.data.get('document_id')
+            tag_ids = self.data.get('tag_ids')
+            existing_tag_ids = set(
+                QuerySet(DocumentTag).filter(
+                    document_id=document_id, tag_id__in=tag_ids
+                ).values_list('tag_id', flat=True)
+            )
+            new_tags = [
+                DocumentTag(
+                    id=uuid.uuid7(),
+                    document_id=document_id,
+                    tag_id=tag_id
+                ) for tag_id in tag_ids if tag_id not in existing_tag_ids
+            ]
+            if new_tags:
+                QuerySet(DocumentTag).bulk_create(new_tags)
+
+    class DeleteTags(serializers.Serializer):
+        workspace_id = serializers.CharField(required=True, label=_('workspace id'))
+        knowledge_id = serializers.UUIDField(required=True, label=_('knowledge id'))
+        document_id = serializers.UUIDField(required=True, label=_('document id'))
+        tag_ids = serializers.ListField(
+            required=True, label=_('tag ids'), child=serializers.UUIDField(required=True, label=_('tag id'))
+        )
+
+        def is_valid(self, *, raise_exception=False):
+            super().is_valid(raise_exception=True)
+            workspace_id = self.data.get('workspace_id')
+            query_set = QuerySet(Knowledge).filter(id=self.data.get('knowledge_id'))
+            if workspace_id and workspace_id != 'None':
+                query_set = query_set.filter(workspace_id=workspace_id)
+            if not query_set.exists():
+                raise AppApiException(500, _('Knowledge id does not exist'))
+            if not QuerySet(Document).filter(
+                    id=self.data.get('document_id'),
+                    knowledge_id=self.data.get('knowledge_id')
+            ).exists():
+                raise AppApiException(500, _('Document id does not exist'))
+
+        def delete_tags(self):
+            self.is_valid(raise_exception=True)
+            document_id = self.data.get('document_id')
+            tag_ids = self.data.get('tag_ids')
+            QuerySet(DocumentTag).filter(
+                document_id=document_id,
+                tag_id__in=tag_ids
+            ).delete()
 
 
 class FileBufferHandle:
