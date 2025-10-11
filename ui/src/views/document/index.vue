@@ -978,11 +978,19 @@ function syncMulDocument() {
       arr.push(v.id)
     }
   })
-  loadSharedApi({ type: 'document', systemType: apiType.value })
-    .putMulSyncDocument(id, arr, loading)
+  MsgConfirm(t('views.document.sync.confirmTitle'), t('views.document.sync.confirmMessage1'), {
+    confirmButtonText: t('views.document.sync.label'),
+    confirmButtonClass: 'danger',
+  })
     .then(() => {
-      MsgSuccess(t('views.document.sync.successMessage'))
-      getList()
+      loadSharedApi({type: 'document', systemType: apiType.value})
+        .putMulSyncDocument(id, arr, loading)
+        .then(() => {
+          MsgSuccess(t('views.document.sync.successMessage'))
+          getList()
+        })
+    })
+    .catch(() => {
     })
 }
 
