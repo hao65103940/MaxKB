@@ -73,7 +73,7 @@
 <script setup lang="ts">
 import { set, throttle } from 'lodash'
 import NodeContainer from '@/workflow/common/NodeContainer.vue'
-import { ref, computed, onMounted, watch } from 'vue'
+import { ref, computed, onMounted, watch, onUnmounted } from 'vue'
 import { isLastNode } from '@/workflow/common/data'
 import { loopBodyNode, loopStartNode } from '@/workflow/common/data'
 import NodeCascader from '@/workflow/common/NodeCascader.vue'

@@ -31,6 +31,7 @@ from .text_to_video_step_node.impl.base_text_to_video_node import BaseTextToVide
 from .tool_lib_node import *
 from .tool_node import *
 from .variable_assign_node import BaseVariableAssignNode
+from .variable_splitting_node import BaseVariableSplittingNode
 
 node_list = [BaseStartStepNode, BaseChatNode, BaseSearchKnowledgeNode, BaseQuestionNode,
              BaseConditionNode, BaseReplyNode,
@@ -40,7 +41,7 @@ node_list = [BaseStartStepNode, BaseChatNode, BaseSearchKnowledgeNode, BaseQuest
              BaseImageGenerateNode, BaseVariableAssignNode, BaseMcpNode, BaseTextToVideoNode, BaseImageToVideoNode,
              BaseIntentNode, BaseLoopNode, BaseLoopStartStepNode,
              BaseLoopContinueNode,
-             BaseLoopBreakNode]
+             BaseLoopBreakNode, BaseVariableSplittingNode]
 
 
 def get_node(node_type):

@@ -396,6 +396,16 @@ export default {
       text: '终止当前循环，跳出循环体',
       isBreak: 'Break',
     },
+    variableSplittingNode: {
+      label: '变量拆分',
+      text: '用于拆分变量',
+      result: '结果',
+      splitVariables: '拆分变量',
+      expression: {
+        label: '表达式',
+        placeholder: '请输入表达式',
+      },
+    },
   },
   compare: {
     is_null: '为空',

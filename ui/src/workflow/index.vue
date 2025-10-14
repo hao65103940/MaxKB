@@ -6,16 +6,16 @@
 </template>
 <script setup lang="ts">
 import LogicFlow from '@logicflow/core'
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import AppEdge from './common/edge'
 import loopEdge from './common/loopEdge'
 import Control from './common/NodeControl.vue'
-import { baseNodes } from '@/workflow/common/data'
 import '@logicflow/extension/lib/style/index.css'
 import '@logicflow/core/dist/style/index.css'
 import { initDefaultShortcut } from '@/workflow/common/shortcut'
 import Dagre from '@/workflow/plugins/dagre'
-import { getTeleport } from '@/workflow/common/teleport'
+import { disconnectAll, getTeleport } from '@/workflow/common/teleport'
+import { WorkflowMode } from '@/enums/application'
 const nodes: any = import.meta.glob('./nodes/**/index.ts', { eager: true })
 
 defineOptions({ name: 'WorkFlow' })
@@ -39,6 +39,9 @@ const props = defineProps({
 const lf = ref()
 onMounted(() => {
   renderGraphData()
+})
+onUnmounted(() => {
+  disconnectAll()
 })
 const render = (data: any) => {
   lf.value.render(data)
@@ -88,7 +91,13 @@ const renderGraphData = (data?: any) => {
     lf.value.setDefaultEdgeType('app-edge')
 
     lf.value.render(data ? data : {})
-
+    lf.value.graphModel.get_provide = (node: any, graph: any) => {
+      return {
+        getNode: () => node,
+        getGraph: () => graph,
+        workflowMode: WorkflowMode.Application,
+      }
+    }
     lf.value.graphModel.eventCenter.on('delete_edge', (id_list: Array<string>) => {
       id_list.forEach((id: string) => {
         lf.value.deleteEdge(id)

@@ -396,6 +396,16 @@ You are a master of problem optimization, adept at accurately inferring user int
       text: 'Terminate the current loop and exit the loop body',
       isBreak: 'Break',
     },
+    variableSplittingNode: {
+      label: 'Variable Splitting',
+      text: 'Used to split variables',
+      result: 'Result',
+      splitVariables: 'Split Variables',
+      expression: {
+        label: 'Expression',
+        placeholder: 'Please enter expression',
+      },
+    },
   },
   compare: {
     is_null: 'Is null',

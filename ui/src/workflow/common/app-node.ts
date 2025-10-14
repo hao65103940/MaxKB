@@ -7,7 +7,7 @@ import { h as lh } from '@logicflow/core'
 import { createApp, h } from 'vue'
 import directives from '@/directives'
 import i18n from '@/locales'
-import { WorkflowType } from '@/enums/application'
+import { WorkflowMode, WorkflowType } from '@/enums/application'
 import { nodeDict } from '@/workflow/common/data'
 import { isActive, connect, disconnect } from './teleport'
 import { t } from '@/locales'
@@ -243,6 +243,7 @@ class AppNode extends HtmlResize.view {
             return {
               getNode: () => model,
               getGraph: () => graphModel,
+              workflowMode: WorkflowMode.Application,
             }
           },
         })

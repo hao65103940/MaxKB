@@ -33,7 +33,12 @@
                         {{ item.name }}
                       </auto-tooltip>
                     </div>
-                    <el-tooltip v-if="item.desc"  effect="dark" placement="right" popper-class="max-w-200">
+                    <el-tooltip
+                      v-if="item.desc"
+                      effect="dark"
+                      placement="right"
+                      popper-class="max-w-200"
+                    >
                       <template #content>
                         {{ item.desc }}
                       </template>

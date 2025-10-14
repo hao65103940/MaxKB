@@ -137,6 +137,24 @@ export const questionNode = {
     },
   },
 }
+export const variableSplittingNode = {
+  type: WorkflowType.VariableSplittingNode,
+  text: t('views.applicationWorkflow.nodes.variableSplittingNode.text', '变量拆分'),
+  label: t('views.applicationWorkflow.nodes.variableSplittingNode.label', '变量拆分'),
+  height: 345,
+  properties: {
+    stepName: t('views.applicationWorkflow.nodes.variableSplittingNode.label', '变量拆分'),
+    config: {
+      fields: [
+        {
+          label: t('views.applicationWorkflow.nodes.variableSplittingNode.result', '结果'),
+          value: 'result',
+        },
+      ],
+    },
+  },
+}
+
 export const conditionNode = {
   type: WorkflowType.Condition,
   text: t('views.applicationWorkflow.nodes.conditionNode.text'),
@@ -541,6 +559,10 @@ export const menuNodes = [
     list: [conditionNode, formNode, variableAssignNode, replyNode, loopNode],
   },
   {
+    label: t('views.applicationWorkflow.nodes.classify.dataProcessing', '数据处理'),
+    list: [variableSplittingNode],
+  },
+  {
     label: t('views.applicationWorkflow.nodes.classify.other'),
     list: [mcpNode, documentExtractNode, toolNode],
   },
@@ -564,6 +586,10 @@ export const applicationLoopMenuNodes = [
   {
     label: t('views.applicationWorkflow.nodes.classify.businessLogic'),
     list: [conditionNode, formNode, variableAssignNode, replyNode, loopContinueNode, loopBreakNode],
+  },
+  {
+    label: t('views.applicationWorkflow.nodes.classify.dataProcessing', '数据处理'),
+    list: [variableSplittingNode],
   },
   {
     label: t('views.applicationWorkflow.nodes.classify.other'),
@@ -666,6 +692,7 @@ export const nodeDict: any = {
   [WorkflowType.LoopStartNode]: loopStartNode,
   [WorkflowType.LoopBreakNode]: loopBodyNode,
   [WorkflowType.LoopContinueNode]: loopContinueNode,
+  [WorkflowType.VariableSplittingNode]: variableSplittingNode,
 }
 export function isWorkFlow(type: string | undefined) {
   return type === 'WORK_FLOW'
