@@ -54,12 +54,12 @@
       <LayoutContainer showCollapse>
         <template #left>
           <div class="paragraph-sidebar p-16">
-            <el-scrollbar class="paragraph-scollbar">
+            <el-scrollbar class="paragraph-scrollbar">
               <el-anchor
                 direction="vertical"
                 type="default"
                 :offset="130"
-                container=".paragraph-scollbar"
+                container=".paragraph-scrollbar"
                 @click="handleClick"
               >
                 <template v-for="item in paragraphDetail" :key="item.id">
@@ -76,7 +76,7 @@
         <div class="w-full">
           <el-empty v-if="paragraphDetail.length == 0" :description="$t('common.noData')" />
           <div v-else>
-            <el-scrollbar class="paragraph-scollbar">
+            <el-scrollbar class="paragraph-scrollbar">
               <div class="paragraph-detail">
                 <el-checkbox-group v-model="multipleSelection">
                   <InfiniteScroll
@@ -175,7 +175,12 @@
           {{ $t('common.selected') }} {{ multipleSelection.length }}
           {{ $t('views.document.items') }}
         </span>
-        <el-button link type="primary" v-if="multipleSelection.length > 0" @click="multipleSelection = []">
+        <el-button
+          link
+          type="primary"
+          v-if="multipleSelection.length > 0"
+          @click="multipleSelection = []"
+        >
           {{ $t('common.clear') }}
         </el-button>
       </div>
