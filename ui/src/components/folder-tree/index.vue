@@ -48,7 +48,7 @@
               </div>
 
               <div
-                v-if="canOperation"
+                v-if="canOperation && permissionPrecise.folderManage(data.id)"
                 @click.stop
                 v-show="hoverNodeId === data.id"
                 @mouseenter.stop="handleMouseEnter(data)"
@@ -56,30 +56,37 @@
                 class="mr-16"
               >
                 <el-dropdown trigger="click" :teleported="false">
-                  <el-button text class="w-full" v-if="MoreFilledPermission(node)">
+                  <el-button text class="w-full" v-if="permissionPrecise.folderManage(data.id)">
                     <AppIcon iconName="app-more"></AppIcon>
                   </el-button>
                   <template #dropdown>
                     <el-dropdown-menu>
                       <el-dropdown-item
                         @click.stop="openCreateFolder(data)"
-                        v-if="node.level !== 3 && permissionPrecise.folderCreate()"
+                        v-if="node.level !== 3 && permissionPrecise.folderManage(data.id)"
                       >
                         <AppIcon iconName="app-add-folder" class="color-secondary"></AppIcon>
                         {{ $t('components.folder.addChildFolder') }}
                       </el-dropdown-item>
                       <el-dropdown-item
                         @click.stop="openEditFolder(data)"
-                        v-if="permissionPrecise.folderEdit()"
+                        v-if="permissionPrecise.folderManage(data.id)"
                       >
                         <AppIcon iconName="app-edit" class="color-secondary"></AppIcon>
                         {{ $t('common.edit') }}
                       </el-dropdown-item>
                       <el-dropdown-item
+                        @click.stop="openAuthorization(data)"
+                        v-if="permissionPrecise.folderManage(data.id)"
+                      > 
+                        <AppIcon iconName="app-resource-authorization" class="color-secondary"></AppIcon>
+                        {{ $t('views.system.resourceAuthorization.title') }}
+                      </el-dropdown-item>
+                      <el-dropdown-item
                         divided
                         @click.stop="deleteFolder(data)"
                         :disabled="!data.parent_id"
-                        v-if="permissionPrecise.folderDelete()"
+                        v-if="permissionPrecise.folderManage(data.id)"
                       >
                         <AppIcon iconName="app-delete" class="color-secondary"></AppIcon>
                         {{ $t('common.delete') }}
@@ -94,6 +101,12 @@
       </el-scrollbar>
     </div>
     <CreateFolderDialog ref="CreateFolderDialogRef" @refresh="refreshFolder" :title="title" />
+    <ResourceAuthorizationDrawer
+      :type="props.source"
+      :is-folder="true"
+      :is-root-folder="!currentNode?.parent_id"
+      ref="ResourceAuthorizationDrawerRef"
+    />
   </div>
 </template>
 
@@ -102,6 +115,7 @@ import { computed, onUnmounted, ref, watch } from 'vue'
 import { onBeforeRouteLeave } from 'vue-router'
 import type { TreeInstance } from 'element-plus'
 import CreateFolderDialog from '@/components/folder-tree/CreateFolderDialog.vue'
+import ResourceAuthorizationDrawer from '@/components/resource-authorization-drawer/index.vue'
 import { t } from '@/locales'
 import { i18n_name } from '@/utils/common'
 import folderApi from '@/api/folder'
@@ -253,6 +267,13 @@ function openCreateFolder(row: Tree) {
 function openEditFolder(row: Tree) {
   title.value = t('components.folder.editFolder')
   CreateFolderDialogRef.value.open(props.source, row.id, row)
+}
+
+const currentNode = ref<Tree | null>(null)
+const ResourceAuthorizationDrawerRef = ref()
+function openAuthorization(data: any) {
+  currentNode.value = data
+  ResourceAuthorizationDrawerRef.value.open(data.id)
 }
 
 function refreshFolder() {

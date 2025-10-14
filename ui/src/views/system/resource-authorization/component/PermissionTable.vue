@@ -67,8 +67,10 @@
         <el-table-column prop="name" :label="$t('common.name')">
           <template #default="{ row }">
             <el-space :size="8">
+              <!--  文件夹 icon -->
+              <AppIcon v-if="row.resource_type === 'folder'" iconName="app-folder" style="font-size: 20px"></AppIcon> 
               <!--  知识库 icon -->
-              <KnowledgeIcon :size="20" v-if="isKnowledge" :type="row.icon" />
+              <KnowledgeIcon :size="20" v-else-if="isKnowledge" :type="row.icon" />
               <!--  应用/工具 自定义 icon -->
               <el-avatar
                 v-else-if="isAppIcon(row?.icon) && !isModel"
@@ -100,7 +102,7 @@
               v-model="row.permission"
               @change="(val: any) => submitPermissions(val, row)"
             >
-              <template v-for="(item, index) in permissionOptions" :key="index">
+              <template v-for="(item, index) in getRowPermissionOptions(row)" :key="index">
                 <el-radio :value="item.value" class="mr-16">{{ item.label }}</el-radio>
               </template>
             </el-radio-group>
@@ -153,6 +155,28 @@ const props = defineProps<{
   getData?: () => void
 }>()
 const emit = defineEmits(['submitPermissions'])
+
+const permissionOptionMap = computed(() => {
+  return {
+    rootFolder: getPermissionOptions(true, true),
+    folder: getPermissionOptions(true, false),
+    resource: getPermissionOptions(false, false),
+  }
+})
+
+
+const getRowPermissionOptions = (row: any) => {
+  const isFolder = row.resource_type === 'folder'
+  const isRoot = isFolder && row.folder_id === null
+  if (isRoot) {
+    return permissionOptionMap.value.rootFolder
+  } 
+  if (isFolder) {
+    return permissionOptionMap.value.folder
+  }
+  return permissionOptionMap.value.resource
+
+}
 
 const permissionOptions = computed(() => {
   return getPermissionOptions()

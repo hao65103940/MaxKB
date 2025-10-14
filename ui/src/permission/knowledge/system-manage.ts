@@ -159,6 +159,8 @@ const systemManage = {
       PermissionConst.RESOURCE_KNOWLEDGE_AUTH
     ],'OR'
     ),
+  folderRead: () => false,
+  folderManage: () => false,
   folderCreate: () => false,
   folderEdit: () => false,
   folderDelete: () => false,

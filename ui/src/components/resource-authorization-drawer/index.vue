@@ -112,7 +112,7 @@
             v-model="row.permission"
             @change="(val: any) => permissionsHandle(val, row)"
           >
-            <template v-for="(item, index) in permissionOptions" :key="index">
+            <template v-for="(item, index) in getFolderPermissionOptions()" :key="index">
               <el-radio :value="item.value" class="mr-16">{{ item.label }}</el-radio>
             </template>
           </el-radio-group>
@@ -157,6 +157,8 @@ import useStore from '@/stores'
 const { user } = useStore()
 const props = defineProps<{
   type: string
+  isFolder?: boolean
+  isRootFolder?: boolean
 }>()
 
 const apiType = computed(() => {
@@ -166,6 +168,24 @@ const apiType = computed(() => {
     return 'workspace'
   }
 })
+
+const permissionOptionMap = computed(() => {
+  return {
+    rootFolder: getPermissionOptions(true, true),
+    folder: getPermissionOptions(true, false),
+  }
+})
+
+const getFolderPermissionOptions = () => {
+  if (props.isRootFolder) {
+    return permissionOptionMap.value.rootFolder
+  }
+  if (props.isFolder) {
+    return permissionOptionMap.value.folder
+  }
+  return getPermissionOptions(false, false)
+}
+
 const permissionOptions = computed(() => {
   return getPermissionOptions()
 })
@@ -281,7 +301,12 @@ const getPermissionList = () => {
       loading,
     )
     .then((res: any) => {
-      permissionData.value = res.data.records || []
+      permissionData.value = res.data.records.map((item: any) => {
+        if (props.isRootFolder && item.permission === 'NOT_AUTH') {
+          return {...item, permission: 'VIEW'}
+        }
+        return item
+      }) || []
       paginationConfig.total = res.data.total || 0
     })
 }

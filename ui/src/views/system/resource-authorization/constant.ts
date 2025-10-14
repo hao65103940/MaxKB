@@ -23,7 +23,15 @@ const permissionOptions = [
 ]
 
  
-const getPermissionOptions=()=>{ 
+const getPermissionOptions = (isFodler = false, isRootFolder = false) => {
+  if (isFodler && isRootFolder) {
+    return permissionOptions.filter(
+      item => item.value === AuthorizationEnum.VIEW || item.value === AuthorizationEnum.MANAGE
+    )
+  }
+  if (isFodler) {
+    return permissionOptions
+  }
   if (hasPermission([EditionConst.IS_EE, EditionConst.IS_PE], 'OR')) { 
     return [...permissionOptions,{
     label: t('views.system.resourceAuthorization.setting.role'),

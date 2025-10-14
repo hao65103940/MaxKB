@@ -73,6 +73,9 @@ const systemManage = {
       ],
       'OR',
     ),
+  
+  folderRead: () => false,
+  folderManage: () => false,
   folderCreate: () => false,
   folderEdit: () => false,
   folderDelete: () => false,

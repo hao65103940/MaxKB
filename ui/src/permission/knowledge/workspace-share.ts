@@ -33,6 +33,8 @@ const workspaceShare = {
   problem_edit: () => false,
   chat_user_edit: () =>false,
 
+  folderRead: () => false,
+  folderManage: () => false,
   folderCreate: () => false,
   folderEdit: () => false,
   folderDelete: () => false,

@@ -185,6 +185,8 @@ const share = {
   chat_user_edit: () =>false,
 
   auth: () => false,
+  folderRead: () => false,
+  folderManage: () => false,
   folderCreate: () => false,
   folderEdit: () => false,
   folderDelete: () => false,

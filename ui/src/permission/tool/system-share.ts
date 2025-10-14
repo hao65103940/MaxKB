@@ -77,6 +77,9 @@ const share = {
     ),
 
   auth: () => false,
+
+  folderRead: () => false,
+  folderManage: () => false,
   folderCreate: () => false,
   folderEdit: () => false,
   folderDelete: () => false,

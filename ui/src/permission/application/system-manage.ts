@@ -13,6 +13,8 @@ const systemManage = {
             'OR'
     ),
     folderEdit: () => false,
+    folderRead: () => false,
+    folderManage: () => false,
     export: () =>
         hasPermission(
             [

@@ -23,6 +23,26 @@ const workspace = {
             ],
             'OR'
     ),
+    folderRead: (folder_id: string) => 
+        hasPermission(
+            [
+              new ComplexPermission([RoleConst.USER],[PermissionConst.APPLICATION.getApplicationWorkspaceResourcePermission(folder_id)],[],'AND'),  
+              RoleConst.WORKSPACE_MANAGE.getWorkspaceRole,
+              PermissionConst.APPLICATION_FOLDER_READ.getApplicationWorkspaceResourcePermission(folder_id),
+              PermissionConst.APPLICATION_FOLDER_READ.getWorkspacePermissionWorkspaceManageRole,  
+            ],
+            'OR'
+    ),
+    folderManage: (folder_id: string) => 
+        hasPermission(
+            [
+              new ComplexPermission([RoleConst.USER],[PermissionConst.APPLICATION.getApplicationWorkspaceResourcePermission(folder_id)],[],'AND'),  
+              RoleConst.WORKSPACE_MANAGE.getWorkspaceRole,
+              PermissionConst.APPLICATION_FOLDER_EDIT.getApplicationWorkspaceResourcePermission(folder_id),
+              PermissionConst.APPLICATION_EDIT.getWorkspacePermissionWorkspaceManageRole,  
+            ],
+            'OR'
+    ),
     edit: (source_id:string) => 
         hasPermission(
             [
