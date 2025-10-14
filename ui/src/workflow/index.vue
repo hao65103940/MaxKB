@@ -10,6 +10,7 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import AppEdge from './common/edge'
 import loopEdge from './common/loopEdge'
 import Control from './common/NodeControl.vue'
+import { SelectionSelect } from '@logicflow/extension'
 import '@logicflow/extension/lib/style/index.css'
 import '@logicflow/core/dist/style/index.css'
 import { initDefaultShortcut } from '@/workflow/common/shortcut'
@@ -50,7 +51,7 @@ const renderGraphData = (data?: any) => {
   const container: any = document.querySelector('#container')
   if (container) {
     lf.value = new LogicFlow({
-      plugins: [Dagre],
+      plugins: [Dagre, SelectionSelect],
       textEdit: false,
       adjustEdge: false,
       adjustEdgeStartAndEnd: false,
@@ -107,12 +108,13 @@ const renderGraphData = (data?: any) => {
       // 清除当前节点下面的子节点的所有缓存
       data.nodeModel.clear_next_node_field(false)
     })
-
+    lf.value.openSelectionSelect()
     setTimeout(() => {
       lf.value?.fitView()
     }, 500)
   }
 }
+
 const validate = () => {
   return Promise.all(lf.value.graphModel.nodes.map((element: any) => element?.validate?.()))
 }

@@ -100,12 +100,12 @@ export function initDefaultShortcut(lf: LogicFlow, graph: GraphModel) {
     const nodes = elements.nodes.filter((node) =>
       ['start-node', 'base-node', 'loop-body-node'].includes(node.type),
     )
-    if (nodes.length > 0) {
-      MsgError(
-        `${nodes[0].properties?.stepName}${t('views.applicationWorkflow.delete.deleteMessage')}`,
-      )
-      return
-    }
+    // if (nodes.length > 0) {
+    //   MsgError(
+    //     `${nodes[0].properties?.stepName}${t('views.applicationWorkflow.delete.deleteMessage')}`,
+    //   )
+    //   return
+    // }
     MsgConfirm(t('common.tip'), t('views.applicationWorkflow.delete.confirmTitle'), {
       confirmButtonText: t('common.confirm'),
       confirmButtonClass: 'danger',

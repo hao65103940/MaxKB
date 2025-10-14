@@ -265,8 +265,10 @@ const editName = async (formEl: FormInstance | undefined) => {
   })
 }
 
-const mousedown = () => {
-  props.nodeModel.graphModel.clearSelectElements()
+const mousedown = (event?: any) => {
+  if (!event?.shiftKey) {
+    props.nodeModel.graphModel.clearSelectElements()
+  }
   set(props.nodeModel, 'isSelected', true)
   set(props.nodeModel, 'isHovered', true)
   props.nodeModel.graphModel.toFront(props.nodeModel.id)
