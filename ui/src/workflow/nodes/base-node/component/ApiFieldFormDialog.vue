@@ -1,10 +1,6 @@
 <template>
   <el-dialog
-    :title="
-      isEdit
-        ? $t('common.param.editParam')
-        : $t('common.param.addParam')
-    "
+    :title="isEdit ? $t('common.param.editParam') : $t('common.param.addParam')"
     v-model="dialogVisible"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
@@ -38,11 +34,27 @@
         :rules="{
           required: form.is_required,
           message: $t('dynamicsForm.default.placeholder'),
-          trigger: 'blur'
+          trigger: 'blur',
         }"
       >
         <el-input
           v-model="form.default_value"
+          :placeholder="$t('dynamicsForm.default.placeholder')"
+          @blur="form.name = form.name.trim()"
+        />
+      </el-form-item>
+      <el-form-item
+        :label="$t('views.application.form.appDescription.label')"
+        prop="desc"
+        :rules="{
+          required: form.is_required,
+          message:
+            $t('common.inputPlaceholder') + $t('views.application.form.appDescription.label'),
+          trigger: 'blur',
+        }"
+      >
+        <el-input
+          v-model="form.desc"
           :placeholder="$t('dynamicsForm.default.placeholder')"
           @blur="form.name = form.name.trim()"
         />
@@ -76,15 +88,22 @@ const form = ref<any>({
   is_required: true,
   assignment_method: 'api_input',
   optionList: [''],
-  default_value: ''
+  default_value: '',
+  desc: '',
 })
 
 const rules = reactive({
-  name: [{ required: true, message: t('dynamicsForm.paramForm.name.requiredMessage'), trigger: 'blur' }],
+  name: [
+    { required: true, message: t('dynamicsForm.paramForm.name.requiredMessage'), trigger: 'blur' },
+  ],
   variable: [
-    { required: true, message:  t('dynamicsForm.paramForm.field.requiredMessage'), trigger: 'blur' },
-    { pattern: /^[a-zA-Z0-9_]+$/, message: t('dynamicsForm.paramForm.field.requiredMessage2'), trigger: 'blur' }
-  ]
+    { required: true, message: t('dynamicsForm.paramForm.field.requiredMessage'), trigger: 'blur' },
+    {
+      pattern: /^[a-zA-Z0-9_]+$/,
+      message: t('dynamicsForm.paramForm.field.requiredMessage2'),
+      trigger: 'blur',
+    },
+  ],
 })
 
 const dialogVisible = ref<boolean>(false)
@@ -98,7 +117,8 @@ watch(dialogVisible, (bool) => {
       is_required: true,
       assignment_method: 'api_input',
       optionList: [''],
-      default_value: ''
+      default_value: '',
+      desc: '',
     }
     isEdit.value = false
   }
