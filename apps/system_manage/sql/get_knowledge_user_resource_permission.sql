@@ -1,23 +1,32 @@
-SELECT
-    app_or_knowledge.*,
+SELECT resource_or_folder.*,
     CASE
-		WHEN
-	      wurp."permission" is null then 'NOT_AUTH'
-		ELSE wurp."permission"
-	END
+        WHEN wurp.permission IS NULL THEN 'NOT_AUTH'
+        ELSE wurp.permission
+    END
 FROM (
-    SELECT
-        "id",
-        "name",
-        'KNOWLEDGE' AS "auth_target_type",
-        user_id,
-        workspace_id,
-        "type"::varchar     AS "icon",
-        folder_id
-    FROM
-        knowledge
-        ${query_set}
-) app_or_knowledge
+        SELECT
+            id::text,
+            "name",
+            'KNOWLEDGE' AS "auth_target_type",
+            'knowledge' AS "resource_type",
+            user_id,
+            workspace_id,
+            "type"::varchar AS "icon",
+            folder_id
+        FROM knowledge
+            ${query_set}
+        UNION
+        SELECT knowledge_folder."id"::text,
+               knowledge_folder."name",
+               'KNOWLEDGE'                  AS "auth_target_type",
+                    'folder'                       AS "resource_type",
+                    knowledge_folder."user_id",
+                    knowledge_folder."workspace_id",
+                    NULL                           AS "icon",
+                    knowledge_folder."parent_id" AS "folder_id"
+        FROM knowledge_folder
+        ${folder_query_set}
+    ) resource_or_folder
 LEFT JOIN (
     SELECT
         target,
@@ -34,5 +43,5 @@ LEFT JOIN (
         workspace_user_resource_permission
         ${workspace_user_resource_permission_query_set}
 ) wurp
-ON wurp.target = app_or_knowledge."id"
+ON wurp.target::text = resource_or_folder.id
 ${resource_query_set}

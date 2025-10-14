@@ -942,7 +942,6 @@ class ToolTreeSerializer(serializers.Serializer):
                 tool_query_set = tool_query_set.filter(tool_type=tool_type)
 
             query_set_dict = {
-                'folder_query_set': folder_query_set,
                 'tool_query_set': tool_query_set,
                 'default_query_set': default_query_set,
             }

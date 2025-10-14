@@ -161,7 +161,7 @@ class KnowledgeSerializer(serializers.Serializer):
             query_set_dict['knowledge_custom_sql'] = QuerySet(model=get_dynamics_model({
                 'knowledge.workspace_id': models.CharField(),
             })).filter(**{'knowledge.workspace_id': workspace_id})
-            query_set_dict['folder_query_set'] = folder_query_set
+            # query_set_dict['folder_query_set'] = folder_query_set
             if not workspace_manage:
                 query_set_dict['workspace_user_resource_permission_query_set'] = QuerySet(
                     WorkspaceUserResourcePermission).filter(
@@ -321,7 +321,6 @@ class KnowledgeSerializer(serializers.Serializer):
                 'knowledge_custom_sql': QuerySet(
                     model=get_dynamics_model({'knowledge.id': models.CharField()})
                 ).filter(**{'knowledge.id': self.data.get("knowledge_id")}),
-                'folder_query_set': QuerySet(KnowledgeFolder)
             }
             if not workspace_manage:
                 query_set_dict['workspace_user_resource_permission_query_set'] = QuerySet(

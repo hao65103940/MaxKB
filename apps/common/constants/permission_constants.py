@@ -88,6 +88,10 @@ class Group(Enum):
     OVERVIEW = "OVERVIEW"
     OPERATION_LOG = "OPERATION_LOG"
 
+    APPLICATION_FOLDER = "APPLICATION_FOLDER"
+    KNOWLEDGE_FOLDER = "KNOWLEDGE_FOLDER"
+    TOOL_FOLDER = "TOOL_FOLDER"
+
 
 class SystemGroup(Enum):
     """
@@ -203,8 +207,11 @@ class ResourcePermission(models.TextChoices):
 
 class Resource(models.TextChoices):
     KNOWLEDGE = Group.KNOWLEDGE.value
+    KNOWLEDGE_FOLDER = Group.KNOWLEDGE_FOLDER.value
     APPLICATION = Group.APPLICATION.value
+    APPLICATION_FOLDER = Group.APPLICATION_FOLDER.value
     TOOL = Group.TOOL.value
+    TOOL_FOLDER = Group.TOOL_FOLDER.value
     MODEL = Group.MODEL.value
 
     def __eq__(self, other):
@@ -222,10 +229,16 @@ class ResourcePermissionGroup:
 
 class ResourcePermissionConst:
     KNOWLEDGE_MANGE = ResourcePermissionGroup(Resource.KNOWLEDGE, ResourcePermission.MANAGE)
+    KNOWLEDGE_FOLDER_MANGE = ResourcePermissionGroup(Resource.KNOWLEDGE_FOLDER, ResourcePermission.MANAGE)
+    KNOWLEDGE_FOLDER_VIEW = ResourcePermissionGroup(Resource.KNOWLEDGE_FOLDER, ResourcePermission.VIEW)
     KNOWLEDGE_VIEW = ResourcePermissionGroup(Resource.KNOWLEDGE, ResourcePermission.VIEW)
     APPLICATION_MANGE = ResourcePermissionGroup(Resource.APPLICATION, ResourcePermission.MANAGE)
+    APPLICATION_FOLDER_MANGE = ResourcePermissionGroup(Resource.APPLICATION_FOLDER, ResourcePermission.MANAGE)
+    APPLICATION_FOLDER_VIEW = ResourcePermissionGroup(Resource.APPLICATION_FOLDER, ResourcePermission.VIEW)
     APPLICATION_VIEW = ResourcePermissionGroup(Resource.APPLICATION, ResourcePermission.VIEW)
     TOOL_MANGE = ResourcePermissionGroup(Resource.TOOL, ResourcePermission.MANAGE)
+    TOOL_FOLDER_MANGE = ResourcePermissionGroup(Resource.TOOL_FOLDER, ResourcePermission.MANAGE)
+    TOOL_FOLDER_VIEW = ResourcePermissionGroup(Resource.TOOL_FOLDER, ResourcePermission.VIEW)
     TOOL_VIEW = ResourcePermissionGroup(Resource.TOOL, ResourcePermission.VIEW)
     MODEL_MANGE = ResourcePermissionGroup(Resource.MODEL, ResourcePermission.MANAGE)
     MODEL_VIEW = ResourcePermissionGroup(Resource.MODEL, ResourcePermission.VIEW)
@@ -436,6 +449,30 @@ class PermissionConstants(Enum):
     )
     TOOL = Permission(
         group=Group.TOOL, operate=Operate.SELF, role_list=[RoleConstants.ADMIN, RoleConstants.USER],
+    )
+    APPLICATION_FOLDER_READ = Permission(
+        group=Group.APPLICATION_FOLDER, operate=Operate.READ, role_list=[RoleConstants.ADMIN, RoleConstants.USER],
+        resource_permission_group_list=[ResourcePermissionConst.APPLICATION_VIEW]
+    )
+    APPLICATION_FOLDER_EDIT = Permission(
+        group=Group.APPLICATION_FOLDER, operate=Operate.EDIT, role_list=[RoleConstants.ADMIN, RoleConstants.USER],
+        resource_permission_group_list=[ResourcePermissionConst.APPLICATION_MANGE]
+    )
+    KNOWLEDGE_FOLDER_READ = Permission(
+        group=Group.KNOWLEDGE_FOLDER, operate=Operate.READ, role_list=[RoleConstants.ADMIN, RoleConstants.USER],
+        resource_permission_group_list=[ResourcePermissionConst.KNOWLEDGE_VIEW]
+    )
+    KNOWLEDGE_FOLDER_EDIT = Permission(
+        group=Group.KNOWLEDGE_FOLDER, operate=Operate.EDIT, role_list=[RoleConstants.ADMIN, RoleConstants.USER],
+        resource_permission_group_list=[ResourcePermissionConst.KNOWLEDGE_MANGE]
+    )
+    TOOL_FOLDER_READ = Permission(
+        group=Group.TOOL_FOLDER, operate=Operate.READ, role_list=[RoleConstants.ADMIN, RoleConstants.USER],
+        resource_permission_group_list=[ResourcePermissionConst.TOOL_VIEW]
+    )
+    TOOL_FOLDER_EDIT = Permission(
+        group=Group.TOOL_FOLDER, operate=Operate.EDIT, role_list=[RoleConstants.ADMIN, RoleConstants.USER],
+        resource_permission_group_list=[ResourcePermissionConst.TOOL_MANGE]
     )
 
     USER_READ = Permission(

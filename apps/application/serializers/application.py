@@ -347,14 +347,15 @@ class Query(serializers.Serializer):
         application_custom_sql_query_set = application_query_set
         application_query_set = application_query_set.order_by("-create_time")
 
-        return {'folder_query_set': folder_query_set,
-                'application_query_set': application_query_set,
-                'workspace_user_resource_permission_query_set': QuerySet(WorkspaceUserResourcePermission).filter(
+        resource_and_folder_query_set = QuerySet(WorkspaceUserResourcePermission).filter(
                     auth_target_type="APPLICATION",
                     workspace_id=workspace_id,
-                    user_id=user_id)} if (
+                    user_id=user_id)
+
+        return {'application_query_set': application_query_set,
+                'workspace_user_resource_permission_query_set': resource_and_folder_query_set,
+                } if (
             not workspace_manage) else {
-            'folder_query_set': folder_query_set,
             'application_query_set': application_query_set,
             'application_custom_sql': application_custom_sql_query_set
         }

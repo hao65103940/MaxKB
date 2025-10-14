@@ -2,7 +2,7 @@
 
 import uuid_utils.compat as uuid
 from django.db import transaction
-from django.db.models import QuerySet, Q
+from django.db.models import QuerySet, Q, Func, F
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
@@ -269,7 +269,8 @@ class FolderTreeSerializer(serializers.Serializer):
                 return True  # 需要重建
         return False
 
-    def get_folder_tree(self, name=None):
+    def get_folder_tree(self,
+                        current_user, name=None):
         self.is_valid(raise_exception=True)
         Folder = get_folder_type(self.data.get('source'))  # noqa
 
@@ -280,15 +281,21 @@ class FolderTreeSerializer(serializers.Serializer):
         if self._check_tree_integrity(workspace_folders):
             Folder.objects.rebuild()
 
+        workspace_manage = is_workspace_manage(current_user.id, self.data.get('workspace_id'))
+
+        base_q = Q(workspace_id=self.data.get('workspace_id'))
+
         if name is not None:
-            nodes = Folder.objects.filter(
-                Q(workspace_id=self.data.get('workspace_id')) &
-                Q(name__contains=name)
-            ).get_cached_trees()
-        else:
-            nodes = Folder.objects.filter(
-                Q(workspace_id=self.data.get('workspace_id'))
-            ).get_cached_trees()
+            base_q &= Q(name__contains=name)
+        if not workspace_manage:
+            base_q &= Q(id__in=WorkspaceUserResourcePermission.objects.filter(user_id=current_user.id,
+                                                                          auth_target_type=self.data.get('source'),
+                                                                          workspace_id=self.data.get('workspace_id'),
+                                                                          permission_list__contains=['VIEW'])
+                .values_list(
+                    'target', flat=True))
+
+        nodes = Folder.objects.filter(base_q).get_cached_trees()
 
         TreeSerializer = get_folder_tree_serializer(self.data.get('source'))  # noqa
         serializer = TreeSerializer(nodes, many=True)

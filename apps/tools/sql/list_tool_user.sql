@@ -25,27 +25,5 @@ FROM (SELECT tool."id"::text,
                           ${workspace_user_resource_permission_query_set}
                             AND 'VIEW' = ANY (permission_list))) AS tool
                LEFT JOIN "user" ON "user".id = user_id
-
-      UNION
-      SELECT tool_folder."id",
-             tool_folder."name",
-             tool_folder."desc",
-             'folder'                AS "tool_type",
-             ''                      AS scope,
-             'folder'                AS "resource_type",
-             tool_folder."workspace_id",
-             tool_folder."parent_id" AS "folder_id",
-             tool_folder."user_id",
-             "user".nick_name        AS "nick_name",
-             ''                      AS "icon",
-             ''                      AS label,
-             ''                      AS "template_id",
-             tool_folder."create_time",
-             tool_folder."update_time",
-             '[]'::jsonb             AS init_field_list,
-             '[]'::jsonb             AS input_field_list,
-             ''                      AS version,
-             'true'                  AS "is_active"
-      FROM tool_folder
-               LEFT JOIN "user" ON "user".id = user_id ${folder_query_set}) temp
+) temp
       ${default_query_set}

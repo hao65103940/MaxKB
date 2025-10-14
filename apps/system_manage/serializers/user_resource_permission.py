@@ -73,7 +73,7 @@ class UpdateUserResourcePermissionRequest(serializers.Serializer):
         illegal_target_id_list = select_list(
             get_file_content(
                 os.path.join(PROJECT_DIR, "apps", "system_manage", 'sql', 'check_member_permission_target_exists.sql')),
-            [json.dumps(user_resource_permission_list), workspace_id, workspace_id, workspace_id, workspace_id])
+            [json.dumps(user_resource_permission_list), workspace_id, workspace_id, workspace_id, workspace_id,workspace_id,workspace_id,workspace_id])
         if illegal_target_id_list is not None and len(illegal_target_id_list) > 0:
             raise AppApiException(500,
                                   _('Non-existent id[') + str(illegal_target_id_list) + ']')
@@ -85,6 +85,7 @@ m_map = {
     'MODEL': Model,
     'APPLICATION': Application,
 }
+
 sql_map = {
     "KNOWLEDGE": 'get_knowledge_user_resource_permission.sql',
     'TOOL': 'get_tool_user_resource_permission.sql',
@@ -129,6 +130,8 @@ class UserResourcePermissionSerializer(serializers.Serializer):
                         permission__in=query_p_list)
         return {
             'query_set': QuerySet(m_map.get(self.data.get('auth_target_type'))).filter(
+                workspace_id=self.data.get('workspace_id')),
+            'folder_query_set': QuerySet(m_map.get(self.data.get('auth_target_type'))).filter(
                 workspace_id=self.data.get('workspace_id')),
             'workspace_user_resource_permission_query_set': QuerySet(WorkspaceUserResourcePermission).filter(
                 workspace_id=self.data.get('workspace_id'), user=self.data.get('user_id'),
