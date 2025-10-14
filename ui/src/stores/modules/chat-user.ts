@@ -1,9 +1,9 @@
-import {defineStore} from 'pinia'
+import { defineStore } from 'pinia'
 import ChatAPI from '@/api/chat/chat'
-import type {ChatProfile, ChatUserProfile} from '@/api/type/chat'
-import type {LoginRequest} from '@/api/type/user'
-import type {Ref} from 'vue'
-import {getBrowserLang} from '@/locales/index'
+import type { ChatProfile, ChatUserProfile } from '@/api/type/chat'
+import type { LoginRequest } from '@/api/type/user'
+import type { Ref } from 'vue'
+import { getBrowserLang } from '@/locales/index'
 
 interface ChatUser {
   // 用户id
@@ -41,6 +41,7 @@ const useChatUserStore = defineStore('chat-user', {
     async getChatUserProfile() {
       const res = await ChatAPI.getChatUserProfile()
       this.chatUserProfile = res.data
+      return res.data
     },
     applicationProfile() {
       return ChatAPI.applicationProfile().then((ok) => {
@@ -148,7 +149,6 @@ const useChatUserStore = defineStore('chat-user', {
         return ok.data
       })
     },
-
   },
 })
 

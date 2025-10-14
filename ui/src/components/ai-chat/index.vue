@@ -114,6 +114,7 @@ import {
   onMounted,
   onBeforeUnmount,
   provide,
+  onBeforeMount,
 } from 'vue'
 import { useRoute } from 'vue-router'
 import applicationApi from '@/api/application/application'
@@ -169,7 +170,7 @@ const emit = defineEmits([
   'openParagraph',
   'openParagraphDocument',
 ])
-const { application, common } = useStore()
+const { application, common, chatUser } = useStore()
 const isMobile = computed(() => {
   return common.isMobile() || mode === 'embed' || mode === 'mobile'
 })
@@ -645,7 +646,16 @@ const handleScroll = () => {
     }
   }
 }
-
+onBeforeMount(() => {
+  window.chatUserProfile = () => {
+    if (props.type === 'ai-chat') {
+      if (chatUser.chat_profile?.authentication_type === 'login') {
+        return chatUser.getChatUserProfile()
+      }
+    }
+    return Promise.resolve(null)
+  }
+})
 onMounted(() => {
   if (isUserInput.value && localStorage.getItem(`${accessToken}userForm`)) {
     const userFormData = JSON.parse(localStorage.getItem(`${accessToken}userForm`) || '{}')
@@ -668,6 +678,7 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   window.sendMessage = null
+  window.userProfile = null
 })
 
 function setScrollBottom() {
