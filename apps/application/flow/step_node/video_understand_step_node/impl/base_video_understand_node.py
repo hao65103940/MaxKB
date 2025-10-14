@@ -9,7 +9,7 @@ from django.db.models import QuerySet
 from langchain_core.messages import BaseMessage, HumanMessage, SystemMessage, AIMessage
 
 from application.flow.i_step_node import NodeResult, INode
-from application.flow.step_node.image_understand_step_node.i_image_understand_node import IImageUnderstandNode
+from application.flow.step_node.video_understand_step_node.i_video_understand_node import IVideoUnderstandNode
 from knowledge.models import File
 from models_provider.tools import get_model_instance_by_model_workspace_id
 
@@ -60,11 +60,11 @@ def write_context(node_variable: Dict, workflow_variable: Dict, node: INode, wor
 def file_id_to_base64(file_id: str):
     file = QuerySet(File).filter(id=file_id).first()
     file_bytes = file.get_bytes()
-    base64_image = base64.b64encode(file_bytes).decode("utf-8")
-    return [base64_image, what(None, file_bytes)]
+    base64_video = base64.b64encode(file_bytes).decode("utf-8")
+    return [base64_video, what(None, file_bytes)]
 
 
-class BaseImageUnderstandNode(IImageUnderstandNode):
+class BaseVideoUnderstandNode(IVideoUnderstandNode):
     def save_context(self, details, workflow_manage):
         self.context['answer'] = details.get('answer')
         self.context['question'] = details.get('question')
@@ -74,13 +74,13 @@ class BaseImageUnderstandNode(IImageUnderstandNode):
     def execute(self, model_id, system, prompt, dialogue_number, dialogue_type, history_chat_record, stream, chat_id,
                 model_params_setting,
                 chat_record_id,
-                image,
+                video,
                 **kwargs) -> NodeResult:
         # 处理不正确的参数
-        if image is None or not isinstance(image, list):
-            image = []
+        if video is None or not isinstance(video, list):
+            video = []
         workspace_id = self.workflow_manage.get_body().get('workspace_id')
-        image_model = get_model_instance_by_model_workspace_id(model_id, workspace_id,
+        video_model = get_model_instance_by_model_workspace_id(model_id, workspace_id,
                                                                **model_params_setting)
         # 执行详情中的历史消息不需要图片内容
         history_message = self.get_history_message_for_details(history_chat_record, dialogue_number)
@@ -88,19 +88,19 @@ class BaseImageUnderstandNode(IImageUnderstandNode):
         question = self.generate_prompt_question(prompt)
         self.context['question'] = question.content
         # 生成消息列表, 真实的history_message
-        message_list = self.generate_message_list(image_model, system, prompt,
-                                                  self.get_history_message(history_chat_record, dialogue_number), image)
+        message_list = self.generate_message_list(video_model, system, prompt,
+                                                  self.get_history_message(history_chat_record, dialogue_number), video)
         self.context['message_list'] = message_list
-        self.context['image_list'] = image
+        self.context['video_list'] = video
         self.context['dialogue_type'] = dialogue_type
         if stream:
-            r = image_model.stream(message_list)
-            return NodeResult({'result': r, 'chat_model': image_model, 'message_list': message_list,
+            r = video_model.stream(message_list)
+            return NodeResult({'result': r, 'chat_model': video_model, 'message_list': message_list,
                                'history_message': history_message, 'question': question.content}, {},
                               _write_context=write_context_stream)
         else:
-            r = image_model.invoke(message_list)
-            return NodeResult({'result': r, 'chat_model': image_model, 'message_list': message_list,
+            r = video_model.invoke(message_list)
+            return NodeResult({'result': r, 'chat_model': video_model, 'message_list': message_list,
                                'history_message': history_message, 'question': question.content}, {},
                               _write_context=write_context)
 
@@ -115,7 +115,7 @@ class BaseImageUnderstandNode(IImageUnderstandNode):
 
     def generate_history_ai_message(self, chat_record):
         for val in chat_record.details.values():
-            if self.node.id == val['node_id'] and 'image_list' in val:
+            if self.node.id == val['node_id'] and 'video_list' in val:
                 if val['dialogue_type'] == 'WORKFLOW':
                     return chat_record.get_ai_message()
                 return AIMessage(content=val['answer'])
@@ -123,14 +123,14 @@ class BaseImageUnderstandNode(IImageUnderstandNode):
 
     def generate_history_human_message_for_details(self, chat_record):
         for data in chat_record.details.values():
-            if self.node.id == data['node_id'] and 'image_list' in data:
-                image_list = data['image_list']
-                if len(image_list) == 0 or data['dialogue_type'] == 'WORKFLOW':
+            if self.node.id == data['node_id'] and 'video_list' in data:
+                video_list = data['video_list']
+                if len(video_list) == 0 or data['dialogue_type'] == 'WORKFLOW':
                     return HumanMessage(content=chat_record.problem_text)
-                file_id_list = [image.get('file_id') for image in image_list]
+                file_id_list = [video.get('file_id') for video in video_list]
                 return HumanMessage(content=[
                     {'type': 'text', 'text': data['question']},
-                    *[{'type': 'image_url', 'image_url': {'url': f'./oss/file/{file_id}'}} for file_id in file_id_list]
+                    *[{'type': 'video_url', 'video_url': {'url': f'./oss/file/{file_id}'}} for file_id in file_id_list]
 
                 ])
         return HumanMessage(content=chat_record.problem_text)
@@ -147,42 +147,42 @@ class BaseImageUnderstandNode(IImageUnderstandNode):
     def generate_history_human_message(self, chat_record):
 
         for data in chat_record.details.values():
-            if self.node.id == data['node_id'] and 'image_list' in data:
-                image_list = data['image_list']
-                if len(image_list) == 0 or data['dialogue_type'] == 'WORKFLOW':
+            if self.node.id == data['node_id'] and 'video_list' in data:
+                video_list = data['video_list']
+                if len(video_list) == 0 or data['dialogue_type'] == 'WORKFLOW':
                     return HumanMessage(content=chat_record.problem_text)
-                image_base64_list = [file_id_to_base64(image.get('file_id')) for image in image_list]
+                video_base64_list = [file_id_to_base64(video.get('file_id')) for video in video_list]
                 return HumanMessage(
                     content=[
                         {'type': 'text', 'text': data['question']},
-                        *[{'type': 'image_url',
-                           'image_url': {'url': f'data:image/{base64_image[1]};base64,{base64_image[0]}'}} for
-                          base64_image in image_base64_list]
+                        *[{'type': 'video_url',
+                           'video_url': {'url': f'data:video/{base64_video[1]};base64,{base64_video[0]}'}} for
+                          base64_video in video_base64_list]
                     ])
         return HumanMessage(content=chat_record.problem_text)
 
     def generate_prompt_question(self, prompt):
         return HumanMessage(self.workflow_manage.generate_prompt(prompt))
 
-    def generate_message_list(self, image_model, system: str, prompt: str, history_message, image):
-        if image is not None and len(image) > 0:
+    def generate_message_list(self, video_model, system: str, prompt: str, history_message, video):
+        if video is not None and len(video) > 0:
             # 处理多张图片
-            images = []
-            for img in image:
+            videos = []
+            for img in video:
                 if isinstance(img, str) and img.startswith('http'):
-                    images.append({'type': 'image_url', 'image_url': {'url': img}})
+                    videos.append({'type': 'video_url', 'video_url': {'url': img}})
                 else:
                     file_id = img['file_id']
                     file = QuerySet(File).filter(id=file_id).first()
-                    image_bytes = file.get_bytes()
-                    base64_image = base64.b64encode(image_bytes).decode("utf-8")
-                    image_format = what(None, image_bytes)
-                    images.append(
-                        {'type': 'image_url', 'image_url': {'url': f'data:image/{image_format};base64,{base64_image}'}})
+                    video_bytes = file.get_bytes()
+                    base64_video = base64.b64encode(video_bytes).decode("utf-8")
+                    video_format = what(None, video_bytes)
+                    videos.append(
+                        {'type': 'video_url', 'video_url': {'url': f'data:video/{video_format};base64,{base64_video}'}})
             messages = [HumanMessage(
                 content=[
                     {'type': 'text', 'text': self.workflow_manage.generate_prompt(prompt)},
-                    *images
+                    *videos
                 ])]
         else:
             messages = [HumanMessage(self.workflow_manage.generate_prompt(prompt))]
@@ -224,6 +224,6 @@ class BaseImageUnderstandNode(IImageUnderstandNode):
             'answer_tokens': self.context.get('answer_tokens'),
             'status': self.status,
             'err_message': self.err_message,
-            'image_list': self.context.get('image_list'),
+            'video_list': self.context.get('video_list'),
             'dialogue_type': self.context.get('dialogue_type')
         }

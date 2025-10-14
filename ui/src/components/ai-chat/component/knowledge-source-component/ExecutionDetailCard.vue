@@ -554,6 +554,92 @@
               </div>
             </div>
           </template>
+          <!-- 视频理解 -->
+           <template v-if="data.type == WorkflowType.VideoUnderstandNode">
+            <div class="card-never border-r-6" v-if="data.type !== WorkflowType.Application">
+              <h5 class="p-8-12">
+                {{ $t('views.application.form.roleSettings.label') }}
+              </h5>
+              <div class="p-8-12 border-t-dashed lighter">
+                {{ data.system || '-' }}
+              </div>
+            </div>
+            <div class="card-never border-r-6 mt-8" v-if="data.type !== WorkflowType.Application">
+              <h5 class="p-8-12">{{ $t('chat.history') }}</h5>
+              <div class="p-8-12 border-t-dashed lighter">
+                <template v-if="data.history_message?.length > 0">
+                  <p
+                    class="mt-4 mb-4"
+                    v-for="(history, historyIndex) in data.history_message"
+                    :key="historyIndex"
+                  >
+                    <span class="color-secondary mr-4">{{ history.role }}:</span>
+
+                    <span v-if="Array.isArray(history.content)">
+                      <template v-for="(h, i) in history.content" :key="i">
+                        <el-image
+                          v-if="h.type === 'video_url'"
+                          :src="h.video_url.url"
+                          alt=""
+                          fit="cover"
+                          style="width: 40px; height: 40px; display: inline-block"
+                          class="border-r-6 mr-8"
+                        />
+
+                        <span v-else>{{ h.text }}<br /></span>
+                      </template>
+                    </span>
+
+                    <span v-else>{{ history.content }}</span>
+                  </p>
+                </template>
+                <template v-else> -</template>
+              </div>
+            </div>
+            <div class="card-never border-r-6 mt-8">
+              <h5 class="p-8-12">
+                {{ $t('chat.executionDetails.currentChat') }}
+              </h5>
+              <div class="p-8-12 border-t-dashed lighter pre-wrap">
+                <div v-if="data.video_url?.length > 0">
+                  <el-space wrap>
+                    <template v-for="(f, i) in data.video_url" :key="i">
+                      <el-image
+                        :src="f.url"
+                        alt=""
+                        fit="cover"
+                        style="width: 40px; height: 40px; display: block"
+                        class="border-r-6"
+                      />
+                    </template>
+                  </el-space>
+                </div>
+                <div>
+                  {{ data.question || '-' }}
+                </div>
+              </div>
+            </div>
+            <div class="card-never border-r-6 mt-8">
+              <h5 class="p-8-12">
+                {{
+                  data.type == WorkflowType.Application
+                    ? $t('common.param.outputParam')
+                    : $t('chat.executionDetails.answer')
+                }}
+              </h5>
+              <div class="p-8-12 border-t-dashed lighter">
+                <MdPreview
+                  v-if="data.answer"
+                  ref="editorRef"
+                  editorId="preview-only"
+                  :modelValue="data.answer"
+                  style="background: none"
+                  noImgZoomIn
+                />
+                <template v-else> -</template>
+              </div>
+            </div>
+          </template>
           <!-- 图片生成 -->
           <template v-if="data.type == WorkflowType.ImageGenerateNode">
             <div class="card-never border-r-6 mt-8">

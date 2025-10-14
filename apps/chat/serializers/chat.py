@@ -375,6 +375,7 @@ class ChatSerializers(serializers.Serializer):
         chat_user_type = self.data.get('chat_user_type')
         form_data = instance.get('form_data')
         image_list = instance.get('image_list')
+        video_list = instance.get('video_list')
         document_list = instance.get('document_list')
         audio_list = instance.get('audio_list')
         other_list = instance.get('other_list')
@@ -401,6 +402,7 @@ class ChatSerializers(serializers.Serializer):
                                            'application_id': str(chat_info.application_id)},
                                           WorkFlowPostHandler(chat_info),
                                           base_to_response, form_data, image_list, document_list, audio_list,
+                                          video_list,
                                           other_list,
                                           instance.get('runtime_node_id'),
                                           instance.get('node_data'), chat_record, instance.get('child_node'))

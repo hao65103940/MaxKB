@@ -33,6 +33,7 @@ export enum WorkflowType {
   LoopContinueNode = 'loop-continue-node',
   LoopBreakNode = 'loop-break-node',
   VariableSplittingNode = 'variable-splitting-node',
+  VideoUnderstandNode = 'video-understand-node',
 }
 export enum WorkflowMode {
   // 应用工作流

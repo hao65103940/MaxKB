@@ -32,6 +32,7 @@ from .tool_lib_node import *
 from .tool_node import *
 from .variable_assign_node import BaseVariableAssignNode
 from .variable_splitting_node import BaseVariableSplittingNode
+from .video_understand_step_node import BaseVideoUnderstandNode
 
 node_list = [BaseStartStepNode, BaseChatNode, BaseSearchKnowledgeNode, BaseQuestionNode,
              BaseConditionNode, BaseReplyNode,
@@ -39,6 +40,7 @@ node_list = [BaseStartStepNode, BaseChatNode, BaseSearchKnowledgeNode, BaseQuest
              BaseDocumentExtractNode,
              BaseImageUnderstandNode, BaseFormNode, BaseSpeechToTextNode, BaseTextToSpeechNode,
              BaseImageGenerateNode, BaseVariableAssignNode, BaseMcpNode, BaseTextToVideoNode, BaseImageToVideoNode,
+             BaseVideoUnderstandNode,
              BaseIntentNode, BaseLoopNode, BaseLoopStartStepNode,
              BaseLoopContinueNode,
              BaseLoopBreakNode, BaseVariableSplittingNode]

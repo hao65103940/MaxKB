@@ -112,6 +112,7 @@ export default {
           documentText: '需要使用“文档内容提取”节点解析文档内容',
           imageText: '需要使用“视觉模型”节点解析图片内容',
           audioText: '需要使用“语音转文本”节点解析音频内容',
+          videoText: '需要使用“视频理解”节点解析视频内容',
           otherText: '需要自行解析该类型文件',
         },
       },
@@ -284,6 +285,19 @@ export default {
         label: '提示词(负向)',
         tooltip: '反向提示词，用来描述不希望在视频中看到的内容，可以对视频进行限制。',
         placeholder: '请描述不想生成的视频内容，比如：颜色、血腥内容',
+      },
+    },
+    videoUnderstandNode: {
+      label: '视频理解',
+      text: '识别出视频中的对象、场景等信息回答用户问题',
+      answer: 'AI 回答内容',
+      model: {
+        label: '视觉模型',
+        requiredMessage: '请选择视觉模型',
+      },
+      image: {
+        label: '选择视频',
+        requiredMessage: '请选择视频',
       },
     },
     imageToVideoGenerate: {

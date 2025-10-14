@@ -109,6 +109,7 @@ export default {
           label: '上傳的文件類型',
           documentText: '需要使用「文檔內容提取」節點解析文檔內容',
           imageText: '需要使用「圖片理解」節點解析圖片內容',
+          videoText: '需要使用「視頻理解」節點解析視頻內容',
           audioText: '需要使用「語音轉文本」節點解析音頻內容',
         },
       },

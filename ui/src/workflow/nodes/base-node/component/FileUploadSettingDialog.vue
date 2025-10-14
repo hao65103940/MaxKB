@@ -127,6 +127,33 @@
             <el-checkbox v-model="form_data.audio" @change="form_data.audio = !form_data.audio" />
           </div>
         </el-card>
+         <el-card
+          shadow="hover"
+          class="card-checkbox cursor w-full mb-8"
+          :class="form_data.video ? 'active' : ''"
+          style="--el-card-padding: 8px 16px"
+          @click.stop="form_data.video = !form_data.video"
+        >
+          <div class="flex-between">
+            <div class="flex align-center">
+              <img class="mr-12" src="@/assets/workflow/icon_file-video.svg" alt="" />
+              <div>
+                <p class="line-height-22 mt-4">
+                  {{ $t('common.fileUpload.video') }}
+                  <el-text class="color-secondary"
+                  >{{
+                      $t(
+                        'views.applicationWorkflow.nodes.baseNode.FileUploadSetting.fileUploadType.videoText'
+                      )
+                    }}
+                  </el-text>
+                </p>
+                <p>{{ videoExtensions.join('、') }}</p>
+              </div>
+            </div>
+            <el-checkbox v-model="form_data.video" @change="form_data.video = !form_data.video" />
+          </div>
+        </el-card>
         <el-card
           shadow="hover"
           class="card-checkbox cursor w-full mb-8"
@@ -215,6 +242,7 @@ const InputRef = ref<InputInstance>()
 const documentExtensions = ['TXT', 'MD', 'DOCX', 'HTML', 'CSV', 'XLSX', 'XLS', 'PDF']
 const imageExtensions = ['JPG', 'JPEG', 'PNG', 'GIF']
 const audioExtensions = ['MP3', 'WAV', 'OGG', 'ACC', 'M4A']
+const videoExtensions: any = ['MP4', 'MOV', 'AVI']
 
 const form_data = ref({
   maxFiles: 3,
