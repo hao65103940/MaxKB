@@ -23,13 +23,13 @@ const permissionOptions = [
 ]
 
  
-const getPermissionOptions = (isFodler = false, isRootFolder = false) => {
-  if (isFodler && isRootFolder) {
+const getPermissionOptions = (isFolder = false, isRootFolder = false) => {
+  if (isFolder && isRootFolder) {
     return permissionOptions.filter(
       item => item.value === AuthorizationEnum.VIEW || item.value === AuthorizationEnum.MANAGE
     )
   }
-  if (isFodler) {
+  if (isFolder) {
     return permissionOptions
   }
   if (hasPermission([EditionConst.IS_EE, EditionConst.IS_PE], 'OR')) { 
