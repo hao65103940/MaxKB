@@ -73,7 +73,8 @@ class UpdateUserResourcePermissionRequest(serializers.Serializer):
         illegal_target_id_list = select_list(
             get_file_content(
                 os.path.join(PROJECT_DIR, "apps", "system_manage", 'sql', 'check_member_permission_target_exists.sql')),
-            [json.dumps(user_resource_permission_list), workspace_id, workspace_id, workspace_id, workspace_id,workspace_id,workspace_id,workspace_id])
+            [json.dumps(user_resource_permission_list), workspace_id, workspace_id, workspace_id, workspace_id,
+             workspace_id, workspace_id, workspace_id])
         if illegal_target_id_list is not None and len(illegal_target_id_list) > 0:
             raise AppApiException(500,
                                   _('Non-existent id[') + str(illegal_target_id_list) + ']')
@@ -192,7 +193,7 @@ class UserResourcePermissionSerializer(serializers.Serializer):
         cache.delete(key, version=version)
         return True
 
-    def auth_resource(self, resource_id: str):
+    def auth_resource(self, resource_id: str, is_folder=False):
         self.is_valid(raise_exception=True)
         auth_target_type = self.data.get('auth_target_type')
         workspace_id = self.data.get('workspace_id')
@@ -206,11 +207,12 @@ class UserResourcePermissionSerializer(serializers.Serializer):
             target=resource_id,
             auth_target_type=auth_target_type,
             permission_list=[ResourcePermission.VIEW,
-                             ResourcePermission.MANAGE] if auth_type == ResourceAuthType.RESOURCE_PERMISSION_GROUP else [
+                             ResourcePermission.MANAGE] if (
+                        auth_type == ResourceAuthType.RESOURCE_PERMISSION_GROUP or is_folder) else [
                 ResourcePermissionRole.ROLE],
             workspace_id=workspace_id,
             user_id=user_id,
-            auth_type=auth_type
+            auth_type=ResourceAuthType.RESOURCE_PERMISSION_GROUP if is_folder else auth_type
         ).save()
         # 刷新缓存
         version = Cache_Version.PERMISSION_LIST.get_version()
@@ -358,7 +360,7 @@ class ResourceUserPermissionSerializer(serializers.Serializer):
                         permission__in=query_p_list)
         workspace_user_role_mapping_model = DatabaseModelManage.get_model("workspace_user_role_mapping")
         if workspace_user_role_mapping_model:
-            user_query_set=user_query_set.filter(
+            user_query_set = user_query_set.filter(
                 id__in=QuerySet(workspace_user_role_mapping_model).filter(
                     workspace_id=self.data.get('workspace_id')).values("user_id"))
 

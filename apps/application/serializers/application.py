@@ -333,7 +333,7 @@ class Query(serializers.Serializer):
             folder_query_set = folder_query_set.filter(workspace_id=workspace_id)
             application_query_set = application_query_set.filter(workspace_id=workspace_id)
         folder_id = instance.get('folder_id')
-        if folder_id is not None:
+        if folder_id is not None and folder_id != workspace_id:
             folder_query_set = folder_query_set.filter(parent=folder_id)
             application_query_set = application_query_set.filter(folder_id=folder_id)
         if name is not None:

@@ -148,7 +148,7 @@ class KnowledgeSerializer(serializers.Serializer):
             if "workspace_id" in self.data and self.data.get('workspace_id') is not None:
                 query_set = query_set.filter(**{'temp.workspace_id': self.data.get("workspace_id")})
                 folder_query_set = folder_query_set.filter(**{'workspace_id': self.data.get("workspace_id")})
-            if "folder_id" in self.data and self.data.get('folder_id') is not None:
+            if "folder_id" in self.data and self.data.get('folder_id') is not None and self.data.get('workspace_id') != self.data.get('folder_id'):
                 query_set = query_set.filter(**{'temp.folder_id': self.data.get("folder_id")})
                 folder_query_set = folder_query_set.filter(**{'parent_id': self.data.get("folder_id")})
             if "scope" in self.data and self.data.get('scope') is not None:
