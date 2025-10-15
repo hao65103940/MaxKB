@@ -27,7 +27,7 @@ export default {
     RERANKER: '重排模型',
     STT: '語音辨識',
     TTS: '語音合成',
-    IMAGE: '圖片理解',
+    IMAGE: '視覺理解',
     TTI: '圖片生成',
     TTV: '文生視頻',
     ITV: '圖生視頻',

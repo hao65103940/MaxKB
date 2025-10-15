@@ -180,8 +180,9 @@
                 <video
                   v-if="item.url"
                   :src="item.url"
-                  controls style="width: 40px; height: 40px; display: block"
+                  controls style="width: 100px; display: block"
                   class="border-r-6"
+                  autoplay
                 />
               </div>
             </template>
