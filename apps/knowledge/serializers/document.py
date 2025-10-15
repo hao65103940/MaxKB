@@ -1456,7 +1456,7 @@ class DocumentSerializers(serializers.Serializer):
             document_id = self.data.get('document_id')
             tag_ids = self.data.get('tag_ids')
             existing_tag_ids = set(
-                QuerySet(DocumentTag).filter(
+                str(tag_id) for tag_id in QuerySet(DocumentTag).filter(
                     document_id=document_id, tag_id__in=tag_ids
                 ).values_list('tag_id', flat=True)
             )
