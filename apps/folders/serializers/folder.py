@@ -296,12 +296,13 @@ class FolderTreeSerializer(serializers.Serializer):
         if name is not None:
             base_q &= Q(name__contains=name)
         if not workspace_manage:
-            base_q &= Q(id__in=WorkspaceUserResourcePermission.objects.filter(user_id=current_user.id,
-                                                                          auth_target_type=self.data.get('source'),
-                                                                          workspace_id=self.data.get('workspace_id'),
-                                                                          permission_list__contains=['VIEW'])
-                .values_list(
-                    'target', flat=True))
+            base_q &= (Q(id__in=WorkspaceUserResourcePermission.objects.filter(user_id=current_user.id,
+                                                                               auth_target_type=self.data.get('source'),
+                                                                               workspace_id=self.data.get(
+                                                                                   'workspace_id'),
+                                                                               permission_list__contains=['VIEW'])
+            .values_list(
+                'target', flat=True)) | Q(id=self.data.get('workspace_id')))
 
         nodes = Folder.objects.filter(base_q).get_cached_trees()
 
