@@ -246,7 +246,7 @@ class ToolSerializer(serializers.Serializer):
             if workspace_id is not None:
                 folder_query_set = folder_query_set.filter(workspace_id=workspace_id)
                 default_query_set = default_query_set.filter(workspace_id=workspace_id)
-            if folder_id is not None:
+            if folder_id is not None and folder_id != workspace_id:
                 folder_query_set = folder_query_set.filter(parent=folder_id)
                 default_query_set = default_query_set.filter(folder_id=folder_id)
             if name is not None:
@@ -267,7 +267,6 @@ class ToolSerializer(serializers.Serializer):
                 tool_query_set = tool_query_set.filter(tool_type=tool_type)
 
             query_set_dict = {
-                'folder_query_set': folder_query_set,
                 'tool_query_set': tool_query_set,
                 'default_query_set': default_query_set,
             }
