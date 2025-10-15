@@ -678,7 +678,7 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   window.sendMessage = null
-  window.userProfile = null
+  window.chatUserProfile = null
 })
 
 function setScrollBottom() {
