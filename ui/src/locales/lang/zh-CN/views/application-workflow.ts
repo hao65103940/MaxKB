@@ -147,6 +147,27 @@ export default {
         requiredMessage: '请选择检索问题',
       },
     },
+    searchDocumentNode: {
+      label: '文档检索',
+      text: '从设定的检索范围中，根据文档标签检索出满足条件的文档',
+      selectKnowledge: '检索范围',
+      searchSetting: '检索设置',
+      custom: '手动',
+      auto: '自动',
+      document_list: '文档列表',
+      knowledge_list: '知识库列表',
+      result: '检索结果',
+      searchParam: '检索参数',
+      showKnowledge: {
+        label: '结果显示在知识来源中',
+        requiredMessage: '请设置参数',
+      },
+      searchQuestion: {
+        label: '检索问题',
+        placeholder: '请选择检索问题',
+        requiredMessage: '请选择检索问题',
+      },
+    },
     questionNode: {
       label: '问题优化',
       text: '根据历史聊天记录优化完善当前问题，更利于匹配知识库分段',

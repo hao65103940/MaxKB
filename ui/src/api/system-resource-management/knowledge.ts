@@ -205,6 +205,13 @@ const putLarkKnowledge: (
   return put(`${prefix}/lark/${knowledge_id}`, data, undefined, loading)
 }
 
+const getAllTags: (params: any, loading?: Ref<boolean>) => Promise<Result<any>> = (
+  params,
+  loading,
+) => {
+  return get(`${prefix}/tags`, params, loading)
+}
+
 const getTags: (knowledge_id: string, params: any, loading?: Ref<boolean>) => Promise<Result<any>> = (
   knowledge_id,
   params,
@@ -263,6 +270,7 @@ export default {
   putSyncWebKnowledge,
   getKnowledgeModel,
   putLarkKnowledge,
+  getAllTags,
   getTags,
   postTags,
   putTag,

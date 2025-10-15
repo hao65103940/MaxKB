@@ -23,6 +23,7 @@ from .loop_start_node import *
 from .mcp_node import BaseMcpNode
 from .question_node import *
 from .reranker_node import *
+from .search_document_node import BaseSearchDocumentNode
 from .search_knowledge_node import *
 from .speech_to_text_step_node import BaseSpeechToTextNode
 from .start_node import *
@@ -34,7 +35,7 @@ from .variable_assign_node import BaseVariableAssignNode
 from .variable_splitting_node import BaseVariableSplittingNode
 from .video_understand_step_node import BaseVideoUnderstandNode
 
-node_list = [BaseStartStepNode, BaseChatNode, BaseSearchKnowledgeNode, BaseQuestionNode,
+node_list = [BaseStartStepNode, BaseChatNode, BaseSearchKnowledgeNode, BaseSearchDocumentNode, BaseQuestionNode,
              BaseConditionNode, BaseReplyNode,
              BaseToolNodeNode, BaseToolLibNodeNode, BaseRerankerNode, BaseApplicationNode,
              BaseDocumentExtractNode,

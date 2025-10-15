@@ -1,5 +1,5 @@
-import {WorkflowType, WorkflowMode} from '@/enums/application'
-import {t} from '@/locales'
+import { WorkflowType, WorkflowMode } from '@/enums/application'
+import { t } from '@/locales'
 
 export const startNode = {
   id: WorkflowType.Start,
@@ -120,6 +120,32 @@ export const searchKnowledgeNode = {
     },
   },
 }
+
+/**
+ * 知识库检索配置数据
+ */
+export const searchDocumentNode = {
+  type: WorkflowType.SearchDocument,
+  text: t('views.applicationWorkflow.nodes.searchDocumentNode.text'),
+  label: t('views.applicationWorkflow.nodes.searchDocumentNode.label'),
+  height: 355,
+  properties: {
+    stepName: t('views.applicationWorkflow.nodes.searchDocumentNode.label'),
+    config: {
+      fields: [
+        {
+          label: t( 'views.applicationWorkflow.nodes.searchDocumentNode.knowledge_list'),
+          value: 'knowledge_list',
+        },
+        {
+          label: t('views.applicationWorkflow.nodes.searchDocumentNode.document_list'),
+          value: 'document_list',
+        },
+      ],
+    },
+  },
+}
+
 export const questionNode = {
   type: WorkflowType.Question,
   text: t('views.applicationWorkflow.nodes.questionNode.text'),
@@ -573,7 +599,10 @@ export const menuNodes = [
       questionNode,
     ],
   },
-  {label: t('views.knowledge.title'), list: [searchKnowledgeNode, rerankerNode]},
+  {
+    label: t('views.knowledge.title'),
+    list: [searchKnowledgeNode, searchDocumentNode, rerankerNode]
+  },
   {
     label: t('views.applicationWorkflow.nodes.classify.businessLogic'),
     list: [conditionNode, formNode, variableAssignNode, replyNode, loopNode],
@@ -603,7 +632,10 @@ export const applicationLoopMenuNodes = [
       imageToVideoNode,
     ],
   },
-  {label: t('views.knowledge.title'), list: [searchKnowledgeNode, rerankerNode]},
+  {
+    label: t('views.knowledge.title'),
+    list: [searchKnowledgeNode, searchDocumentNode, rerankerNode]
+  },
   {
     label: t('views.applicationWorkflow.nodes.classify.businessLogic'),
     list: [conditionNode, formNode, variableAssignNode, replyNode, loopContinueNode, loopBreakNode],
@@ -688,6 +720,7 @@ export const compareList = [
 export const nodeDict: any = {
   [WorkflowType.AiChat]: aiChatNode,
   [WorkflowType.SearchKnowledge]: searchKnowledgeNode,
+  [WorkflowType.SearchDocument]: searchDocumentNode,
   [WorkflowType.Question]: questionNode,
   [WorkflowType.Condition]: conditionNode,
   [WorkflowType.Base]: baseNode,

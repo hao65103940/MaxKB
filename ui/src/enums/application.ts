@@ -9,6 +9,7 @@ export enum WorkflowType {
   Start = 'start-node',
   AiChat = 'ai-chat-node',
   SearchKnowledge = 'search-knowledge-node',
+  SearchDocument = 'search-document-node',
   Question = 'question-node',
   Condition = 'condition-node',
   Reply = 'reply-node',

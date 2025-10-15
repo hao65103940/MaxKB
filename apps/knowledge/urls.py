@@ -12,6 +12,7 @@ urlpatterns = [
     path('workspace/<str:workspace_id>/knowledge/web', views.KnowledgeWebView.as_view()),
     path('workspace/<str:workspace_id>/knowledge/model', views.KnowledgeView.Model.as_view()),
     path('workspace/<str:workspace_id>/knowledge/embedding_model', views.KnowledgeView.EmbeddingModel.as_view()),
+    path('workspace/<str:workspace_id>/knowledge/tags', views.KnowledgeView.Tags.as_view()),
     path('workspace/<str:workspace_id>/knowledge/<str:knowledge_id>', views.KnowledgeView.Operate.as_view()),
     path('workspace/<str:workspace_id>/knowledge/<str:knowledge_id>/sync', views.KnowledgeView.SyncWeb.as_view()),
     path('workspace/<str:workspace_id>/knowledge/<str:knowledge_id>/generate_related', views.KnowledgeView.GenerateRelated.as_view()),
