@@ -40,7 +40,7 @@
         <div
           v-show="!isPcCollapse"
           class="flex-between p-8 pb-0 color-secondary mt-8"
-          v-if="applicationDetail.show_history || user.isCE()"
+          v-if="showHistory"
         >
           <span>{{ $t('chat.history') }}</span>
           <el-tooltip effect="dark" :content="$t('chat.clearChat')" placement="right">
@@ -53,7 +53,7 @@
       <div
         v-show="!isPcCollapse"
         class="left-height"
-        v-if="applicationDetail.show_history || user.isCE()"
+        v-if="showHistory"
       >
         <el-scrollbar>
           <div class="p-16 pt-0">
@@ -114,7 +114,7 @@
       <el-sub-menu
         v-show="isPcCollapse"
         index="2"
-        v-if="applicationDetail.show_history || user.isCE()"
+        v-if="showHistory"
       >
         <template #title>
           <AppIcon iconName="app-history-outlined" />
@@ -172,10 +172,11 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { isAppIcon } from '@/utils/common'
 import EditTitleDialog from './EditTitleDialog.vue'
 import useStore from '@/stores'
+import { c } from 'vite/dist/node/moduleRunnerTransport.d-CXw_Ws6P'
 
 const { user } = useStore()
 const props = defineProps<{
@@ -186,6 +187,13 @@ const props = defineProps<{
   isPcCollapse?: boolean
 }>()
 const emit = defineEmits(['newChat', 'clickLog', 'deleteLog', 'refreshFieldTitle', 'clearChat'])
+
+const showHistory = computed(() => {
+  console.log(props.applicationDetail?.show_history)
+  return props.applicationDetail?.show_history != null || undefined
+    ? props.applicationDetail?.show_history
+    : true
+})
 
 const EditTitleDialogRef = ref()
 
