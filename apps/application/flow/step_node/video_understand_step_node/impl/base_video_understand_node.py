@@ -1,5 +1,6 @@
 # coding=utf-8
 import base64
+import mimetypes
 import time
 from functools import reduce
 from imghdr import what
@@ -76,9 +77,6 @@ class BaseVideoUnderstandNode(IVideoUnderstandNode):
                 chat_record_id,
                 video,
                 **kwargs) -> NodeResult:
-        # 处理不正确的参数
-        if video is None or not isinstance(video, list):
-            video = []
         workspace_id = self.workflow_manage.get_body().get('workspace_id')
         video_model = get_model_instance_by_model_workspace_id(model_id, workspace_id,
                                                                **model_params_setting)
@@ -91,7 +89,7 @@ class BaseVideoUnderstandNode(IVideoUnderstandNode):
         message_list = self.generate_message_list(video_model, system, prompt,
                                                   self.get_history_message(history_chat_record, dialogue_number), video)
         self.context['message_list'] = message_list
-        self.context['video_list'] = video
+        self.generate_context_video(video)
         self.context['dialogue_type'] = dialogue_type
         if stream:
             r = video_model.stream(message_list)
@@ -103,6 +101,12 @@ class BaseVideoUnderstandNode(IVideoUnderstandNode):
             return NodeResult({'result': r, 'chat_model': video_model, 'message_list': message_list,
                                'history_message': history_message, 'question': question.content}, {},
                               _write_context=write_context)
+
+    def generate_context_video(self, video):
+        if isinstance(video, str) and video.startswith('http'):
+            self.context['video_list'] = [{'url': video}]
+        elif video is not None and len(video) > 0:
+            self.context['video_list'] = video
 
     def get_history_message_for_details(self, history_chat_record, dialogue_number):
         start_index = len(history_chat_record) - dialogue_number
@@ -164,28 +168,29 @@ class BaseVideoUnderstandNode(IVideoUnderstandNode):
     def generate_prompt_question(self, prompt):
         return HumanMessage(self.workflow_manage.generate_prompt(prompt))
 
+    def _process_videos(self, image):
+        videos = []
+        if isinstance(image, str) and image.startswith('http'):
+            videos.append({'type': 'video_url', 'video_url': {'url': image}})
+        elif image is not None and len(image) > 0:
+            for img in image:
+                file_id = img['file_id']
+                file = QuerySet(File).filter(id=file_id).first()
+                video_bytes = file.get_bytes()
+                base64_video = base64.b64encode(video_bytes).decode("utf-8")
+                video_format = mimetypes.guess_type(file.file_name)[0]  # 获取MIME类型
+                videos.append(
+                    {'type': 'video_url', 'video_url': {'url': f'data:{video_format};base64,{base64_video}'}})
+        return videos
+
     def generate_message_list(self, video_model, system: str, prompt: str, history_message, video):
-        if video is not None and len(video) > 0:
-            # 处理多张图片
-            videos = []
-            for img in video:
-                if isinstance(img, str) and img.startswith('http'):
-                    videos.append({'type': 'video_url', 'video_url': {'url': img}})
-                else:
-                    file_id = img['file_id']
-                    file = QuerySet(File).filter(id=file_id).first()
-                    video_bytes = file.get_bytes()
-                    base64_video = base64.b64encode(video_bytes).decode("utf-8")
-                    video_format = what(None, video_bytes)
-                    videos.append(
-                        {'type': 'video_url', 'video_url': {'url': f'data:video/{video_format};base64,{base64_video}'}})
-            messages = [HumanMessage(
-                content=[
-                    {'type': 'text', 'text': self.workflow_manage.generate_prompt(prompt)},
-                    *videos
-                ])]
+        prompt_text = self.workflow_manage.generate_prompt(prompt)
+        videos = self._process_videos(video)
+
+        if videos:
+            messages = [HumanMessage(content=[{'type': 'text', 'text': prompt_text}, *videos])]
         else:
-            messages = [HumanMessage(self.workflow_manage.generate_prompt(prompt))]
+            messages = [HumanMessage(prompt_text)]
 
         if system is not None and len(system) > 0:
             return [

@@ -102,6 +102,21 @@
                     </template>
                   </el-space>
                 </div>
+                <div v-if="data.video_list?.length > 0">
+                  <p class="mb-8 color-secondary">{{ $t('common.fileUpload.image') }}:</p>
+
+                  <el-space wrap>
+                    <template v-for="(f, i) in data.video_list" :key="i">
+                      <video
+                        :src="f.url"
+                        style="width: 170px; display: block"
+                        controls
+                        autoplay
+                        class="border-r-6"
+                      />
+                    </template>
+                  </el-space>
+                </div>
                 <div v-if="data.other_list?.length > 0">
                   <p class="mb-8 color-secondary">{{ $t('common.fileUpload.document') }}:</p>
 
@@ -581,8 +596,6 @@
                         <video
                           v-if="h.type === 'video_url'"
                           :src="h.video_url.url"
-                          alt=""
-                          fit="cover"
                           style="width: 40px; height: 40px; display: inline-block"
                           class="border-r-6 mr-8"
                         />

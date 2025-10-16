@@ -807,6 +807,7 @@ const getQuestion = () => {
       uploadImageList.value.length > 0,
       uploadDocumentList.value.length > 0,
       uploadAudioList.value.length > 0,
+      uploadVideoList.value.length > 0,
       uploadOtherList.value.length > 0,
     ]
     if (fileLength.filter((f) => f).length > 1) {
@@ -818,6 +819,8 @@ const getQuestion = () => {
     } else if (fileLength[2]) {
       return t('chat.uploadFile.audioMessage')
     } else if (fileLength[3]) {
+      return t('chat.uploadFile.videoMessage')
+    } else if (fileLength[4]) {
       return t('chat.uploadFile.otherMessage')
     }
   }
