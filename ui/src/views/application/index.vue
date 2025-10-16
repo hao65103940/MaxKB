@@ -155,7 +155,7 @@
         >
           <el-row v-if="applicationList.length > 0" :gutter="15" class="w-full">
             <template v-for="(item, index) in applicationList" :key="index">
-              <el-col
+              <!-- <el-col
                 v-if="item.resource_type === 'folder'"
                 :xs="24"
                 :sm="12"
@@ -181,8 +181,8 @@
                     </el-text>
                   </template>
                 </CardBox>
-              </el-col>
-              <el-col v-else :xs="24" :sm="12" :md="12" :lg="8" :xl="6" class="mb-16">
+              </el-col> -->
+              <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="6" class="mb-16">
                 <CardBox
                   :title="item.name"
                   :description="item.desc"

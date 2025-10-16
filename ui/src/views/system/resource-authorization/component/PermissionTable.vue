@@ -56,19 +56,21 @@
         ref="multipleTableRef"
         class="mt-16"
         :data="props.data"
-        :pagination-config="paginationConfig"
-        @sizeChange="handleSizeChange"
-        @changePage="props.getData"
         @selection-change="handleSelectionChange"
-        :maxTableHeight="320"
+        :maxTableHeight="260"
         :row-key="(row: any) => row.id"
+        :expand-row-keys="defaultExpandKeys"
       >
         <el-table-column type="selection" width="55" :reserve-selection="true" />
         <el-table-column prop="name" :label="$t('common.name')">
           <template #default="{ row }">
             <el-space :size="8">
               <!--  文件夹 icon -->
-              <AppIcon v-if="row.resource_type === 'folder'" iconName="app-folder" style="font-size: 20px"></AppIcon> 
+              <AppIcon
+                v-if="row.resource_type === 'folder'"
+                iconName="app-folder"
+                style="font-size: 20px"
+              ></AppIcon>
               <!--  知识库 icon -->
               <KnowledgeIcon :size="20" v-else-if="isKnowledge" :type="row.icon" />
               <!--  应用/工具 自定义 icon -->
@@ -156,6 +158,7 @@ const props = defineProps<{
 }>()
 const emit = defineEmits(['submitPermissions'])
 
+const defaultExpandKeys = computed(() => (props.data?.length > 0 ? [props.data[0]?.id] : []))
 const permissionOptionMap = computed(() => {
   return {
     rootFolder: getPermissionOptions(true, true),
@@ -164,18 +167,16 @@ const permissionOptionMap = computed(() => {
   }
 })
 
-
 const getRowPermissionOptions = (row: any) => {
   const isFolder = row.resource_type === 'folder'
   const isRoot = isFolder && row.folder_id === null
   if (isRoot) {
     return permissionOptionMap.value.rootFolder
-  } 
+  }
   if (isFolder) {
     return permissionOptionMap.value.folder
   }
   return permissionOptionMap.value.resource
-
 }
 
 const permissionOptions = computed(() => {
@@ -239,20 +240,7 @@ const search_type_change = () => {
   searchForm.value = { name: '', permission: undefined }
 }
 
-const paginationConfig = reactive({
-  current_page: 1,
-  page_size: 20,
-  total: 0,
-})
-
-function handleSizeChange() {
-  paginationConfig.current_page = 1
-  if (props.getData) {
-    props.getData()
-  }
-}
 function searchHandle() {
-  paginationConfig.current_page = 1
   if (props.getData) {
     props.getData()
   }
@@ -319,7 +307,7 @@ onMounted(() => {
 })
 
 defineExpose({
-  paginationConfig,
+  // paginationConfig,
   searchForm,
   searchType,
 })
