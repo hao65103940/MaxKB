@@ -11,7 +11,8 @@ FROM (
                 user_id,
                 workspace_id,
                 icon,
-                folder_id
+                folder_id,
+                create_time
          FROM application
          ${query_set}
          UNION
@@ -22,7 +23,8 @@ FROM (
                 application_folder."user_id",
                 application_folder."workspace_id",
                 NULL                           AS "icon",
-                application_folder."parent_id" AS "folder_id"
+                application_folder."parent_id" AS "folder_id",
+                application_folder."create_time"
          FROM application_folder
          ${folder_query_set}
      ) resource_or_folder
@@ -42,3 +44,4 @@ LEFT JOIN (
 ) wurp
 ON wurp.target::text = resource_or_folder.id
 ${resource_query_set}
+ORDER BY resource_or_folder.create_time DESC

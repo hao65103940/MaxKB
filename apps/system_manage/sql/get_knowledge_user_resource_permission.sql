@@ -12,7 +12,8 @@ FROM (
             user_id,
             workspace_id,
             "type"::varchar AS "icon",
-            folder_id
+            folder_id,
+            create_time
         FROM knowledge
             ${query_set}
         UNION
@@ -23,7 +24,8 @@ FROM (
                     knowledge_folder."user_id",
                     knowledge_folder."workspace_id",
                     NULL                           AS "icon",
-                    knowledge_folder."parent_id" AS "folder_id"
+                    knowledge_folder."parent_id" AS "folder_id",
+                    knowledge_folder."create_time"
         FROM knowledge_folder
         ${folder_query_set}
     ) resource_or_folder
@@ -45,3 +47,4 @@ LEFT JOIN (
 ) wurp
 ON wurp.target::text = resource_or_folder.id
 ${resource_query_set}
+ORDER BY resource_or_folder.create_time DESC

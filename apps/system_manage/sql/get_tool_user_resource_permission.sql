@@ -12,7 +12,8 @@ FROM (
                 workspace_id,
                 icon,
                 folder_id,
-                tool_type
+                tool_type,
+                create_time
         FROM tool
         ${query_set}
         UNION
@@ -24,7 +25,8 @@ FROM (
                tool_folder."workspace_id",
                NULL                    AS "icon",
                tool_folder."parent_id" AS "folder_id",
-               NULL                    AS "tool_type"
+               NULL                    AS "tool_type",
+               tool_folder."create_time"
         FROM tool_folder
         ${folder_query_set}
     ) resource_or_folder
@@ -45,4 +47,5 @@ LEFT JOIN (
 ) wurp
 ON wurp.target::text = resource_or_folder."id"
 ${resource_query_set}
+ORDER BY resource_or_folder.create_time DESC
 

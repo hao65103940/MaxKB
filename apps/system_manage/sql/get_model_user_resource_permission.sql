@@ -14,7 +14,8 @@ FROM (
         user_id,
         workspace_id,
         provider as icon,
-        'default' as folder_id
+        'default' as folder_id,
+        create_time
     FROM
         model
         ${query_set}
@@ -27,7 +28,8 @@ FROM (
         user_id,
         workspace_id,
         provider as icon,
-        'default' as folder_id
+        'default' as folder_id,
+        create_time
     FROM model
     ${folder_query_set}
     AND 1=0
@@ -50,3 +52,4 @@ LEFT JOIN (
 ) wurp
 ON wurp.target = resource_or_folder."id"
 ${resource_query_set}
+ORDER BY resource_or_folder.create_time DESC

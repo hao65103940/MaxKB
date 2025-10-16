@@ -57,3 +57,4 @@ class WorkspaceUserResourcePermission(models.Model):
 
     class Meta:
         db_table = "workspace_user_resource_permission"
+        unique_together = ('workspace_id', 'user', 'auth_target_type', 'target')
