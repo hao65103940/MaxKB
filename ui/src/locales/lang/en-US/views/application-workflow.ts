@@ -139,6 +139,28 @@ export default {
         requiredMessage: 'Please select a search question',
       },
     },
+    searchDocumentNode: {
+      label: 'Document Search',
+      text: 'Search for documents that meet the conditions based on the document label within the specified search scope',
+      selectKnowledge: 'Search Scope',
+      searchSetting: 'Search Settings',
+      custom: 'Manual',
+      auto: 'Automatic',
+      document_list: 'Document List',
+      knowledge_list: 'Knowledge Base List',
+      result: 'Search Results',
+      searchParam: 'Search Parameters',
+      select_variable: 'Select Variable',
+      showKnowledge: {
+        label: 'Results are displayed in the knowledge source',
+        requiredMessage: 'Please set parameters',
+      },
+      searchQuestion: {
+        label: 'Search Question',
+        placeholder: 'Please select a search question',
+        requiredMessage: 'Please select a search question',
+      },
+    },
     questionNode: {
       label: 'Question Optimization',
       text: 'Optimize and improve the current question based on historical chat records to better match knowledge segments',

@@ -77,7 +77,7 @@
               <template #label>
                 <div class="flex-between">
                   <span>
-                    {{ $t('选择变量') }}
+                    {{ $t('views.applicationWorkflow.nodes.searchDocumentNode.select_variable') }}
                   </span>
                   <span>
                     <el-select

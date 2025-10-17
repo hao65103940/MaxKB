@@ -158,6 +158,7 @@ export default {
       knowledge_list: '知识库列表',
       result: '检索结果',
       searchParam: '检索参数',
+      select_variable: '选择变量',
       showKnowledge: {
         label: '结果显示在知识来源中',
         requiredMessage: '请设置参数',
