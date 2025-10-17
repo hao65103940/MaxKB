@@ -225,6 +225,9 @@ class LoopWorkFlowPostHandler(WorkFlowPostHandler):
 class BaseLoopNode(ILoopNode):
     def save_context(self, details, workflow_manage):
         self.context['result'] = details.get('result')
+        for key, value in details['context'].items():
+            if key not in self.context:
+                self.context[key] = value
         self.answer_text = str(details.get('result'))
 
     def get_answer_list(self) -> List[Answer] | None:
@@ -262,7 +265,13 @@ class BaseLoopNode(ILoopNode):
                           _write_context=get_write_context(loop_type, array, number, loop_body, stream),
                           _is_interrupt=_is_interrupt_exec)
 
+    def get_loop_context_data(self):
+        fields = self.node.properties.get('config', []).get('fields', []) or []
+        return {f.get('value'): self.context.get(f.get('value')) for f in fields if
+                self.context.get(f.get('value')) is not None}
+
     def get_details(self, index: int, **kwargs):
+
         return {
             'name': self.node.properties.get('stepName'),
             "index": index,
@@ -276,6 +285,7 @@ class BaseLoopNode(ILoopNode):
             "current_item": self.context.get("item"),
             'loop_type': self.node_params_serializer.data.get('loop_type'),
             'status': self.status,
+            'loop_context_data': self.get_loop_context_data(),
             'loop_node_data': self.context.get("loop_node_data"),
             'loop_answer_data': self.context.get("loop_answer_data"),
             'err_message': self.err_message

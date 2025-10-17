@@ -202,6 +202,9 @@ class WorkflowManage:
                     {**self.start_node.node_params, 'form_data': start_node_data}, self.start_node.workflow_params)
                 if self.start_node.type == 'loop-node':
                     loop_node_data = node_details.get('loop_node_data', {})
+                    for k, v in node_details.get('loop_context_data').items():
+                        if v is not None:
+                            self.start_node.context[k] = v
                     self.start_node.context['loop_node_data'] = loop_node_data
                     self.start_node.context['current_index'] = node_details.get('current_index')
                     self.start_node.context['current_item'] = node_details.get('current_item')
