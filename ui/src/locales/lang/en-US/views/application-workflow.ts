@@ -429,6 +429,20 @@ You are a master of problem optimization, adept at accurately inferring user int
         placeholder: 'Please enter expression',
       },
     },
+    parameterExtractionNode: {
+      label: '參數提取',
+      text: '利用 AI 模型提取結構化參數',
+      result: '結果',
+      selectVariables: {
+        label: '選擇變數',
+        placeholder: '請選擇變數',
+      },
+      extractParameters: {
+        label: '提取參數',
+        desc: '描述',
+        parameterType: '參數類型',
+      },
+    },
   },
   compare: {
     is_null: 'Is null',

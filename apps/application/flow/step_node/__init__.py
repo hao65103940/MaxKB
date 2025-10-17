@@ -21,6 +21,7 @@ from .loop_continue_node import BaseLoopContinueNode
 from .loop_node import *
 from .loop_start_node import *
 from .mcp_node import BaseMcpNode
+from .parameter_extraction_node import BaseParameterExtractionNode
 from .question_node import *
 from .reranker_node import *
 from .search_document_node import BaseSearchDocumentNode
@@ -44,7 +45,7 @@ node_list = [BaseStartStepNode, BaseChatNode, BaseSearchKnowledgeNode, BaseSearc
              BaseVideoUnderstandNode,
              BaseIntentNode, BaseLoopNode, BaseLoopStartStepNode,
              BaseLoopContinueNode,
-             BaseLoopBreakNode, BaseVariableSplittingNode]
+             BaseLoopBreakNode, BaseVariableSplittingNode, BaseParameterExtractionNode]
 
 
 def get_node(node_type):

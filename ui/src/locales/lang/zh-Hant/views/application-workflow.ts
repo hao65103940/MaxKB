@@ -415,6 +415,20 @@ export default {
         placeholder: '請輸入表達式',
       },
     },
+    parameterExtractionNode: {
+      label: 'Parameter Extraction',
+      text: 'Extract structured parameters using AI model',
+      result: 'Result',
+      selectVariables: {
+        label: 'Select Variables',
+        placeholder: 'Please select variables',
+      },
+      extractParameters: {
+        label: 'Extract Parameters',
+        desc: 'Description',
+        parameterType: 'Parameter Type',
+      },
+    },
   },
   compare: {
     is_null: '為空',

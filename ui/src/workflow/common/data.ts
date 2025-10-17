@@ -17,7 +17,7 @@ export const startNode = {
         },
       ],
       globalFields: [
-        {label: t('views.applicationWorkflow.nodes.startNode.currentTime'), value: 'time'},
+        { label: t('views.applicationWorkflow.nodes.startNode.currentTime'), value: 'time' },
         {
           label: t('views.application.form.historyRecord.label'),
           value: 'history_context',
@@ -28,9 +28,9 @@ export const startNode = {
         },
       ],
     },
-    fields: [{label: t('views.applicationWorkflow.nodes.startNode.question'), value: 'question'}],
+    fields: [{ label: t('views.applicationWorkflow.nodes.startNode.question'), value: 'question' }],
     globalFields: [
-      {label: t('views.applicationWorkflow.nodes.startNode.currentTime'), value: 'time'},
+      { label: t('views.applicationWorkflow.nodes.startNode.currentTime'), value: 'time' },
     ],
     showNode: true,
   },
@@ -53,7 +53,7 @@ export const baseNode = {
     },
     config: {},
     showNode: true,
-    user_input_config: {title: t('chat.userInput')},
+    user_input_config: { title: t('chat.userInput') },
     user_input_field_list: [],
   },
 }
@@ -174,6 +174,24 @@ export const variableSplittingNode = {
       fields: [
         {
           label: t('views.applicationWorkflow.nodes.variableSplittingNode.result', '结果'),
+          value: 'result',
+        },
+      ],
+    },
+  },
+}
+
+export const parameterExtractionNode = {
+  type: WorkflowType.ParameterExtractionNode,
+  text: t('views.applicationWorkflow.nodes.parameterExtractionNode.text', '变量拆分'),
+  label: t('views.applicationWorkflow.nodes.parameterExtractionNode.label', '变量拆分'),
+  height: 345,
+  properties: {
+    stepName: t('views.applicationWorkflow.nodes.parameterExtractionNode.label', '变量拆分'),
+    config: {
+      fields: [
+        {
+          label: t('views.applicationWorkflow.nodes.parameterExtractionNode.result', '结果'),
           value: 'result',
         },
       ],
@@ -314,7 +332,6 @@ export const videoUnderstandNode = {
     },
   },
 }
-
 
 export const variableAssignNode = {
   type: WorkflowType.VariableAssignNode,
@@ -609,7 +626,7 @@ export const menuNodes = [
   },
   {
     label: t('views.applicationWorkflow.nodes.classify.dataProcessing', '数据处理'),
-    list: [variableSplittingNode],
+    list: [variableSplittingNode, parameterExtractionNode],
   },
   {
     label: t('views.applicationWorkflow.nodes.classify.other'),
@@ -699,22 +716,22 @@ export const applicationNode = {
 }
 
 export const compareList = [
-  {value: 'is_null', label: t('views.applicationWorkflow.compare.is_null')},
-  {value: 'is_not_null', label: t('views.applicationWorkflow.compare.is_not_null')},
-  {value: 'contain', label: t('views.applicationWorkflow.compare.contain')},
-  {value: 'not_contain', label: t('views.applicationWorkflow.compare.not_contain')},
-  {value: 'eq', label: t('views.applicationWorkflow.compare.eq')},
-  {value: 'ge', label: t('views.applicationWorkflow.compare.ge')},
-  {value: 'gt', label: t('views.applicationWorkflow.compare.gt')},
-  {value: 'le', label: t('views.applicationWorkflow.compare.le')},
-  {value: 'lt', label: t('views.applicationWorkflow.compare.lt')},
-  {value: 'len_eq', label: t('views.applicationWorkflow.compare.len_eq')},
-  {value: 'len_ge', label: t('views.applicationWorkflow.compare.len_ge')},
-  {value: 'len_gt', label: t('views.applicationWorkflow.compare.len_gt')},
-  {value: 'len_le', label: t('views.applicationWorkflow.compare.len_le')},
-  {value: 'len_lt', label: t('views.applicationWorkflow.compare.len_lt')},
-  {value: 'is_true', label: t('views.applicationWorkflow.compare.is_true')},
-  {value: 'is_not_true', label: t('views.applicationWorkflow.compare.is_not_true')},
+  { value: 'is_null', label: t('views.applicationWorkflow.compare.is_null') },
+  { value: 'is_not_null', label: t('views.applicationWorkflow.compare.is_not_null') },
+  { value: 'contain', label: t('views.applicationWorkflow.compare.contain') },
+  { value: 'not_contain', label: t('views.applicationWorkflow.compare.not_contain') },
+  { value: 'eq', label: t('views.applicationWorkflow.compare.eq') },
+  { value: 'ge', label: t('views.applicationWorkflow.compare.ge') },
+  { value: 'gt', label: t('views.applicationWorkflow.compare.gt') },
+  { value: 'le', label: t('views.applicationWorkflow.compare.le') },
+  { value: 'lt', label: t('views.applicationWorkflow.compare.lt') },
+  { value: 'len_eq', label: t('views.applicationWorkflow.compare.len_eq') },
+  { value: 'len_ge', label: t('views.applicationWorkflow.compare.len_ge') },
+  { value: 'len_gt', label: t('views.applicationWorkflow.compare.len_gt') },
+  { value: 'len_le', label: t('views.applicationWorkflow.compare.len_le') },
+  { value: 'len_lt', label: t('views.applicationWorkflow.compare.len_lt') },
+  { value: 'is_true', label: t('views.applicationWorkflow.compare.is_true') },
+  { value: 'is_not_true', label: t('views.applicationWorkflow.compare.is_not_true') },
 ]
 
 export const nodeDict: any = {
@@ -748,6 +765,7 @@ export const nodeDict: any = {
   [WorkflowType.LoopContinueNode]: loopContinueNode,
   [WorkflowType.VariableSplittingNode]: variableSplittingNode,
   [WorkflowType.VideoUnderstandNode]: videoUnderstandNode,
+  [WorkflowType.ParameterExtractionNode]: parameterExtractionNode,
 }
 
 export function isWorkFlow(type: string | undefined) {
