@@ -316,7 +316,7 @@
       </div>
     </div>
 
-    <div class="text-center" v-if="applicationDetails.disclaimer" style="margin-top: 8px">
+    <div class="text-center mt-8" v-if="applicationDetails.disclaimer">
       <el-text type="info" v-if="applicationDetails.disclaimer" style="font-size: 12px">
         <auto-tooltip :content="applicationDetails.disclaimer_value">
           {{ applicationDetails.disclaimer_value }}

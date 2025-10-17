@@ -5,7 +5,6 @@
     :class="type"
     :style="{
       height: firsUserInput ? '100%' : undefined,
-      paddingBottom: applicationDetails.disclaimer ? '20px' : 0,
     }"
   >
     <div
