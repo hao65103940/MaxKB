@@ -450,18 +450,18 @@ export default {
         placeholder: '请输入表达式',
       },
     },
-    parameterExtractionNode: {
-      label: '参数提取',
-      text: '利用 AI 模型提取结构化参数',
-      result: '结果',
+   parameterExtractionNode: {
+      label: '參數提取',
+      text: '利用 AI 模型提取結構化參數',
+      result: '結果',
       selectVariables: {
-        label: '选择变量',
-        placeholder: '请选择变量',
+        label: '選擇變量',
+        placeholder: '請選擇變量',
       },
       extractParameters: {
-        label: '提取参数',
+        label: '提取參數',
         desc: '描述',
-        parameterType: '参数类型',
+        parameterType: '參數類型',
       },
     },
   },

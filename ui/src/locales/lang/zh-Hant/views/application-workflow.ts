@@ -424,16 +424,16 @@ export default {
       },
     },
     parameterExtractionNode: {
-      label: 'Parameter Extraction',
-      text: 'Extract structured parameters using AI model',
-      result: 'Result',
+      label: '參數提取',
+      text: ' ',
+      result: '結果',
       selectVariables: {
-        label: 'Select Variables',
-        placeholder: 'Please select variables',
+        label: ' ',
+        placeholder: '請選擇要提取的參數',
       },
       extractParameters: {
-        label: 'Extract Parameters',
-        desc: 'Description',
+        label: '提取參數',
+        desc: '從文本中提取參數',
         parameterType: 'Parameter Type',
       },
     },

@@ -685,8 +685,8 @@ import { TaskType, State } from '@/utils/status'
 import { t } from '@/locales'
 import permissionMap from '@/permission'
 import { loadSharedApi } from '@/utils/dynamics-api/shared-api'
-import TagDrawer from "./component/TagDrawer.vue";
-import TagSettingDrawer from "./component/TagSettingDrawer.vue";
+import TagDrawer from "./tag/TagDrawer.vue";
+import TagSettingDrawer from "./tag/TagSettingDrawer.vue";
 import AddTagDialog from "@/views/document/component/AddTagDialog.vue";
 
 const route = useRoute()
