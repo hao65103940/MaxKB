@@ -681,6 +681,7 @@ class DocumentSerializers(serializers.Serializer):
             delete_problems_and_mappings([document_id])
             # 删除向量库
             delete_embedding_by_document(document_id)
+            QuerySet(model=DocumentTag).filter(document_id=document_id).delete()
             QuerySet(model=Document).filter(id=document_id).delete()
             return True
 
@@ -1209,6 +1210,7 @@ class DocumentSerializers(serializers.Serializer):
             QuerySet(File).filter(id__in=source_file_ids).delete()
             QuerySet(Document).filter(id__in=document_id_list).delete()
             QuerySet(Paragraph).filter(document_id__in=document_id_list).delete()
+            QuerySet(DocumentTag).filter(document_id__in=document_id_list).delete()
             delete_problems_and_mappings(document_id_list)
             # 删除向量库
             delete_embedding_by_document_list(document_id_list)
