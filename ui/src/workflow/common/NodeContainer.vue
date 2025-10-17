@@ -320,6 +320,7 @@ function clickNodes(item: any) {
     sourceNodeId: props.nodeModel.id,
     sourceAnchorId: anchorData.value?.id,
     targetNodeId: nodeModel.id,
+    targetAnchorId: nodeModel.id + '_left',
   })
 
   closeNodeMenu()
