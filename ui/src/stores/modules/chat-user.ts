@@ -1,9 +1,9 @@
-import { defineStore } from 'pinia'
+import {defineStore} from 'pinia'
 import ChatAPI from '@/api/chat/chat'
-import type { ChatProfile, ChatUserProfile } from '@/api/type/chat'
-import type { LoginRequest } from '@/api/type/user'
-import type { Ref } from 'vue'
-import { getBrowserLang } from '@/locales/index'
+import type {ChatProfile, ChatUserProfile} from '@/api/type/chat'
+import type {LoginRequest} from '@/api/type/user'
+import type {Ref} from 'vue'
+import {getBrowserLang} from '@/locales/index'
 
 interface ChatUser {
   // 用户id
@@ -121,8 +121,8 @@ const useChatUserStore = defineStore('chat-user', {
         return this.token
       })
     },
-    async dingOauth2Callback(code: string) {
-      return ChatAPI.getDingOauth2Callback(code).then((ok) => {
+    async dingOauth2Callback(code: string, accessToken: string) {
+      return ChatAPI.getDingOauth2Callback(code, accessToken).then((ok) => {
         this.setToken(ok.data.token)
         return this.token
       })
@@ -133,8 +133,8 @@ const useChatUserStore = defineStore('chat-user', {
         return this.token
       })
     },
-    async larkCallback(code: string) {
-      return ChatAPI.getLarkCallback(code).then((ok) => {
+    async larkCallback(code: string, accessToken: string) {
+      return ChatAPI.getLarkCallback(code, accessToken).then((ok) => {
         this.setToken(ok.data.token)
         return this.token
       })
