@@ -85,6 +85,7 @@ export default {
       aiCapability: 'AI能力',
       businessLogic: '业务逻辑',
       other: '其他',
+      dataProcessing: '数据处理',
     },
     startNode: {
       label: '开始',
@@ -153,12 +154,15 @@ export default {
       selectKnowledge: '检索范围',
       searchSetting: '检索设置',
       custom: '手动',
+      customTooltip: '手动设置标签过滤条件',
       auto: '自动',
+      autoTooltip: '根据检索问题自动匹配文档标签',
       document_list: '文档列表',
       knowledge_list: '知识库列表',
       result: '检索结果',
       searchParam: '检索参数',
       select_variable: '选择变量',
+      valueMessage: `值或{变量}`,
       showKnowledge: {
         label: '结果显示在知识来源中',
         requiredMessage: '请设置参数',

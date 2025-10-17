@@ -3,7 +3,7 @@
     <div class="flex-between cursor" @click="data['show'] = !data['show']">
       <div class="flex align-center">
         <el-icon class="mr-8 arrow-icon" :class="data['show'] ? 'rotate-90' : ''">
-          <CaretRight/>
+          <CaretRight />
         </el-icon>
         <component
           :is="iconComponent(`${data.type}-icon`)"
@@ -24,14 +24,14 @@
             data.type === WorkflowType.Application ||
             data.type == WorkflowType.IntentNode
           "
-        >{{ data?.message_tokens + data?.answer_tokens }} tokens</span
+          >{{ data?.message_tokens + data?.answer_tokens }} tokens</span
         >
         <span class="mr-16 color-secondary">{{ data?.run_time?.toFixed(2) || 0.0 }} s</span>
         <el-icon class="color-success" :size="16" v-if="data.status === 200">
-          <CircleCheck/>
+          <CircleCheck />
         </el-icon>
         <el-icon class="color-danger" :size="16" v-else>
-          <CircleClose/>
+          <CircleClose />
         </el-icon>
       </div>
     </div>
@@ -64,7 +64,7 @@
                     <template v-for="(f, i) in data.document_list" :key="i">
                       <el-card shadow="never" style="--el-card-padding: 8px" class="file cursor">
                         <div class="flex align-center">
-                          <img :src="getImgUrl(f && f?.name)" alt="" width="24"/>
+                          <img :src="getImgUrl(f && f?.name)" alt="" width="24" />
                           <div class="ml-4 ellipsis" :title="f && f?.name">
                             {{ f && f?.name }}
                           </div>
@@ -124,7 +124,7 @@
                     <template v-for="(f, i) in data.other_list" :key="i">
                       <el-card shadow="never" style="--el-card-padding: 8px" class="file cursor">
                         <div class="flex align-center">
-                          <img :src="getImgUrl(f && f?.name)" alt="" width="24"/>
+                          <img :src="getImgUrl(f && f?.name)" alt="" width="24" />
                           <div class="ml-4 ellipsis" :title="f && f?.name">
                             {{ f && f?.name }}
                           </div>
@@ -463,8 +463,7 @@
           <template v-if="data.type === WorkflowType.FormNode">
             <div class="card-never border-r-6">
               <h5 class="p-8-12">
-                {{
-                  $t('common.param.outputParam')
+                {{ $t('common.param.outputParam')
                 }}<span style="color: #f54a45">{{
                   data.is_submit ? '' : `(${$t('chat.executionDetails.noSubmit')})`
                 }}</span>
@@ -516,7 +515,7 @@
                           class="border-r-6 mr-8"
                         />
 
-                        <span v-else>{{ h.text }}<br/></span>
+                        <span v-else>{{ h.text }}<br /></span>
                       </template>
                     </span>
 
@@ -600,7 +599,7 @@
                           class="border-r-6 mr-8"
                         />
 
-                        <span v-else>{{ h.text }}<br/></span>
+                        <span v-else>{{ h.text }}<br /></span>
                       </template>
                     </span>
 
@@ -919,7 +918,7 @@
               <template v-if="data.type === WorkflowType.LoopNode">
                 <el-radio-group v-model="currentLoopNode" class="app-radio-button-group mb-8">
                   <template v-for="(loop, loopIndex) in data.loop_node_data" :key="loopIndex">
-                    <el-radio-button :label="loopIndex" :value="loopIndex"/>
+                    <el-radio-button :label="loopIndex" :value="loopIndex" />
                   </template>
                 </el-radio-group>
                 <template
@@ -994,6 +993,24 @@
               </div>
             </div>
           </template>
+          <!-- 文档检索 -->
+          <template v-if="data.type === WorkflowType.SearchDocument">
+            <div class="card-never border-r-6">
+              <h5 class="p-8-12 flex align-center">
+                <span class="mr-4"> {{ $t('common.param.outputParam') }}</span>
+              </h5>
+              <div class="p-8-12 border-t-dashed lighter">
+                <div class="mb-8">
+                  <span class="color-secondary"> knowledge_list:</span>
+                  {{ data.knowledge_items?.map((v:any) => v.name).join(',') }}
+                </div>
+                <div class="mb-8">
+                  <span class="color-secondary"> document_list:</span>
+                  {{ data.document_items?.map((v:any)  => v.name).join(',')  }}
+                </div>
+              </div>
+            </div>
+          </template>
           <slot></slot>
         </template>
         <template v-else>
@@ -1007,16 +1024,15 @@
   </el-card>
 </template>
 <script setup lang="ts">
-import {ref, computed} from 'vue'
-import ParagraphCard
-  from '@/components/ai-chat/component/knowledge-source-component/ParagraphCard.vue'
+import { ref, computed } from 'vue'
+import ParagraphCard from '@/components/ai-chat/component/knowledge-source-component/ParagraphCard.vue'
 import DynamicsForm from '@/components/dynamics-form/index.vue'
-import {iconComponent} from '@/workflow/icons/utils'
-import {WorkflowType} from '@/enums/application'
-import {getImgUrl} from '@/utils/common'
-import {arraySort} from '@/utils/array'
+import { iconComponent } from '@/workflow/icons/utils'
+import { WorkflowType } from '@/enums/application'
+import { getImgUrl } from '@/utils/common'
+import { arraySort } from '@/utils/array'
 
-import {t} from '@/locales'
+import { t } from '@/locales'
 
 const props = defineProps<{
   data: any

@@ -136,7 +136,7 @@
         >
           <div class="flex-between">
             <div class="flex align-center">
-              <img class="mr-12" src="@/assets/workflow/icon_file-video.svg" alt="" />
+              <img class="mr-12" width="32" src="@/assets/workflow/icon_file-video.svg" alt="" />
               <div>
                 <p class="line-height-22 mt-4">
                   {{ $t('common.fileUpload.video') }}

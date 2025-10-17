@@ -6,7 +6,7 @@
         @submit.prevent
         :model="form_data"
         label-position="top"
-        require-asterisk-position="right"
+        hide-required-asterisk
         label-width="auto"
         ref="knowledgeNodeFormRef"
       >
@@ -17,8 +17,11 @@
                 {{ $t('views.applicationWorkflow.nodes.searchDocumentNode.selectKnowledge') }}
               </span>
               <span>
-                <el-button v-if="form_data.search_scope_type === 'custom'"
-                  type="primary" link @click="openKnowledgeDialog"
+                <el-button
+                  v-if="form_data.search_scope_type === 'custom'"
+                  type="primary"
+                  link
+                  @click="openKnowledgeDialog"
                 >
                   <AppIcon iconName="app-add-outlined"></AppIcon>
                 </el-button>
@@ -59,7 +62,7 @@
                 </div>
                 <el-button text @click="removeKnowledge(item)">
                   <el-icon>
-                    <Close/>
+                    <Close />
                   </el-icon>
                 </el-button>
               </div>
@@ -78,7 +81,8 @@
                 <div class="flex-between">
                   <span>
                     {{ $t('views.applicationWorkflow.nodes.searchDocumentNode.select_variable') }}
-                  </span>
+                    <span class="color-danger">*</span></span
+                  >
                   <span>
                     <el-select
                       :teleported="false"
@@ -88,11 +92,15 @@
                       @change="form_data.search_scope_reference = []"
                     >
                       <el-option
-                        :label="$t('views.applicationWorkflow.nodes.searchDocumentNode.knowledge_list')"
+                        :label="
+                          $t('views.applicationWorkflow.nodes.searchDocumentNode.knowledge_list')
+                        "
                         value="knowledge"
                       />
                       <el-option
-                        :label="$t('views.applicationWorkflow.nodes.searchDocumentNode.document_list')"
+                        :label="
+                          $t('views.applicationWorkflow.nodes.searchDocumentNode.document_list')
+                        "
                         value="document"
                       />
                     </el-select>
@@ -110,19 +118,31 @@
           </div>
         </el-form-item>
         <el-form-item
-          :label="$t('views.applicationWorkflow.nodes.searchDocumentNode.searchSetting')">
+          :label="$t('views.applicationWorkflow.nodes.searchDocumentNode.searchSetting')"
+        >
           <el-radio-group v-model="form_data.search_mode">
             <el-radio value="auto">
-              {{ $t('views.applicationWorkflow.nodes.searchDocumentNode.auto') }}
-              <el-tooltip content="根据检索问题自动匹配文档标签" placement="top">
-                <AppIcon iconName="app-warning" class="app-warning-icon"></AppIcon>
-              </el-tooltip>
+              <span class="flex align-center">
+                {{ $t('views.applicationWorkflow.nodes.searchDocumentNode.auto') }}
+                <el-tooltip
+                  :content="$t('views.applicationWorkflow.nodes.searchDocumentNode.autoTooltip')"
+                  placement="top"
+                >
+                  <AppIcon iconName="app-warning" class="app-warning-icon ml-4"></AppIcon>
+                </el-tooltip>
+              </span>
             </el-radio>
-            <el-radio value="custom">
-              {{ $t('views.applicationWorkflow.nodes.searchDocumentNode.custom') }}
-              <el-tooltip content="手动设置标签过滤条件" placement="top">
-                <AppIcon iconName="app-warning" class="app-warning-icon"></AppIcon>
-              </el-tooltip>
+            <el-radio value="custom" v-if="form_data.search_scope_type === 'custom'">
+              <span class="flex align-center">
+                {{ $t('views.applicationWorkflow.nodes.searchDocumentNode.custom') }}
+                <el-tooltip
+                  c
+                  :content="$t('views.applicationWorkflow.nodes.searchDocumentNode.customTooltip')"
+                  placement="top"
+                >
+                  <AppIcon iconName="app-warning" class="app-warning-icon ml-4"></AppIcon>
+                </el-tooltip>
+              </span>
             </el-radio>
           </el-radio-group>
         </el-form-item>
@@ -150,36 +170,60 @@
             />
           </el-form-item>
           <div v-else>
-            <div>
-              <span>
+            <div class="flex align-center mb-8">
+              <el-text type="info" class="lighter" size="small">
                 {{ $t('views.applicationWorkflow.nodes.conditionNode.conditions.info') }}
-              </span>
-              <el-select v-model="form_data.search_condition_type" size="small"
-                         style="width: 60px; margin: 0 8px">
-                <el-option
-                  :label="$t('views.applicationWorkflow.condition.AND')"
-                  value="AND"
-                />
-                <el-option :label="$t('views.applicationWorkflow.condition.OR')" value="OR"/>
+              </el-text>
+              <el-select
+                v-model="form_data.search_condition_type"
+                size="small"
+                style="width: 60px; margin: 0 8px"
+              >
+                <el-option :label="$t('views.applicationWorkflow.condition.AND')" value="AND" />
+                <el-option :label="$t('views.applicationWorkflow.condition.OR')" value="OR" />
               </el-select>
-              <span>
+              <el-text type="info" class="lighter" size="small">
                 {{ $t('views.applicationWorkflow.nodes.conditionNode.conditions.label') }}
-              </span>
+              </el-text>
             </div>
             <div v-for="(c, index) in form_data.search_condition_list" :key="index">
-              <el-select v-model="c.key" style="width: 70px;" size="small">
-                <el-option v-for="tag in form_data.knowledge_tags" :key="tag" :label="tag.key" :value="tag.key"/>
-              </el-select>
-              <el-select v-model="c.compare" style="width: 60px;" size="small">
-                <el-option v-for="item in compareList" :key="item.value" :value="item.value"
-                           :label="item.label"/>
-              </el-select>
-              <el-input v-model="c.value" style="width: 80px" size="small"></el-input>
-              <el-button text @click="delCondition(index)">
-                <AppIcon iconName="app-delete"></AppIcon>
-              </el-button>
+              <el-row :gutter="8" class="mb-8">
+                <el-col :span="8">
+                  <el-select v-model="c.key" filterable>
+                    <el-option
+                      v-for="tag in form_data.knowledge_tags"
+                      :key="tag"
+                      :label="tag.key"
+                      :value="tag.key"
+                    />
+                  </el-select>
+                </el-col>
+                <el-col :span="7">
+                  <el-select v-model="c.compare">
+                    <el-option
+                      v-for="item in compareList"
+                      :key="item.value"
+                      :value="item.value"
+                      :label="item.label"
+                    />
+                  </el-select>
+                </el-col>
+                <el-col :span="8">
+                  <el-input
+                    v-model="c.value"
+                    :placeholder="
+                      $t('views.applicationWorkflow.nodes.searchDocumentNode.valueMessage')
+                    "
+                  ></el-input>
+                </el-col>
+                <el-col :span="1">
+                  <el-button link @click="delCondition(index)" type="info" class="mt-4">
+                    <AppIcon iconName="app-delete"></AppIcon>
+                  </el-button>
+                </el-col>
+              </el-row>
             </div>
-            <el-button link type="primary" @click="addCondition" class="mt-4">
+            <el-button link type="primary" @click="addCondition" class="mt-8">
               <AppIcon iconName="app-add-outlined" class="mr-4"></AppIcon>
               {{ $t('views.applicationWorkflow.nodes.conditionNode.addCondition') }}
             </el-button>
@@ -204,8 +248,8 @@ import AddKnowledgeDialog from '@/views/application/component/AddKnowledgeDialog
 import type { FormInstance } from 'element-plus'
 import { computed, onMounted, ref, watch } from 'vue'
 import { relatedObject } from '@/utils/array'
-import { t } from "@/locales";
-import AppIcon from "@/components/app-icon/AppIcon.vue";
+import { t } from '@/locales'
+import AppIcon from '@/components/app-icon/AppIcon.vue'
 import { loadSharedApi } from '@/utils/dynamics-api/shared-api'
 import { useRoute } from 'vue-router'
 
@@ -214,9 +258,9 @@ const route = useRoute()
 const props = defineProps<{ nodeModel: any }>()
 const nodeCascaderRef = ref()
 const compareList = [
-  {value: 'contain', label: t('views.applicationWorkflow.compare.contain')},
-  {value: 'not_contain', label: t('views.applicationWorkflow.compare.not_contain')},
-  {value: 'eq', label: t('views.applicationWorkflow.compare.eq')},
+  { value: 'contain', label: t('views.applicationWorkflow.compare.contain') },
+  { value: 'not_contain', label: t('views.applicationWorkflow.compare.not_contain') },
+  { value: 'eq', label: t('views.applicationWorkflow.compare.eq') },
 ]
 
 const apiType = computed(() => {
@@ -268,7 +312,11 @@ function removeKnowledge(id: any) {
 }
 
 function addKnowledge(val: Array<any>) {
-  set(props.nodeModel.properties.node_data, 'knowledge_id_list', val.map((item) => item.id))
+  set(
+    props.nodeModel.properties.node_data,
+    'knowledge_id_list',
+    val.map((item) => item.id),
+  )
   set(props.nodeModel.properties.node_data, 'knowledge_list', val)
   knowledgeList.value = val
 }
@@ -295,25 +343,23 @@ function delCondition(index: number) {
   set(form_data.value, 'search_condition_list', list)
 }
 
-
 function getAllTags(knowledge_ids: any) {
   if (knowledge_ids.length === 0) {
     set(form_data.value, 'knowledge_tags', [])
     return
   }
-  loadSharedApi({type: 'knowledge', systemType: apiType.value})
-    .getAllTags({knowledge_ids: knowledge_ids}, {})
+  loadSharedApi({ type: 'knowledge', systemType: apiType.value })
+    .getAllTags({ knowledge_ids: knowledge_ids }, {})
     .then((res: any) => {
       set(form_data.value, 'knowledge_tags', res.data)
     })
 }
 
-
 watch(
   () => form_data.value.knowledge_id_list,
   (val) => {
     getAllTags(val)
-  }
+  },
 )
 
 const validate = () => {
@@ -321,7 +367,7 @@ const validate = () => {
     nodeCascaderRef.value?.validate(),
     knowledgeNodeFormRef.value?.validate(),
   ]).catch((err) => {
-    return Promise.reject({node: props.nodeModel, errMessage: err})
+    return Promise.reject({ node: props.nodeModel, errMessage: err })
   })
 }
 

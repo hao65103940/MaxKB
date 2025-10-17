@@ -82,6 +82,7 @@ export default {
       aiCapability: 'AI capability',
       businessLogic: 'Business logic',
       other: 'Other',
+      dataProcessing: 'Data Processing',
     },
     startNode: {
       label: 'Start',
@@ -145,12 +146,15 @@ export default {
       selectKnowledge: 'Search Scope',
       searchSetting: 'Search Settings',
       custom: 'Manual',
+      customTooltip: 'Manually set tag filtering conditions',
       auto: 'Automatic',
+      autoTooltip: 'Automatically filter setting tag conditions based on the search question',
       document_list: 'Document List',
       knowledge_list: 'Knowledge Base List',
       result: 'Search Results',
       searchParam: 'Search Parameters',
       select_variable: 'Select Variable',
+      valueMessage: `Value or {variable} `,
       showKnowledge: {
         label: 'Results are displayed in the knowledge source',
         requiredMessage: 'Please set parameters',

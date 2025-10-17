@@ -130,6 +130,7 @@ export const searchDocumentNode = {
   label: t('views.applicationWorkflow.nodes.searchDocumentNode.label'),
   height: 355,
   properties: {
+    width: 600,
     stepName: t('views.applicationWorkflow.nodes.searchDocumentNode.label'),
     config: {
       fields: [
@@ -625,7 +626,7 @@ export const menuNodes = [
     list: [conditionNode, formNode, variableAssignNode, replyNode, loopNode],
   },
   {
-    label: t('views.applicationWorkflow.nodes.classify.dataProcessing', '数据处理'),
+    label: t('views.applicationWorkflow.nodes.classify.dataProcessing'),
     list: [variableSplittingNode, parameterExtractionNode],
   },
   {
