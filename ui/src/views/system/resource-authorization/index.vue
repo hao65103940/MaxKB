@@ -156,10 +156,6 @@ const PermissionTableRef = ref()
 const getPermissionList = () => {
   const workspaceId = currentWorkspaceId.value || user.getWorkspaceId() || 'default'
   const params: any = {}
-  if (PermissionTableRef.value.searchForm[PermissionTableRef.value.searchType]) {
-    params[PermissionTableRef.value.searchType] =
-      PermissionTableRef.value.searchForm[PermissionTableRef.value.searchType]
-  }
   AuthorizationApi.getResourceAuthorization(
     workspaceId,
     currentUser.value,

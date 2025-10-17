@@ -29,7 +29,6 @@
           <el-input
             v-if="searchType === 'name'"
             v-model="searchForm.name"
-            @change="searchHandle"
             :placeholder="$t('common.searchBar.placeholder')"
             style="width: 220px"
             clearable
@@ -37,7 +36,6 @@
           <el-select
             v-else-if="searchType === 'permission'"
             v-model="searchForm.permission"
-            @change="searchHandle"
             filterable
             clearable
             multiple
@@ -55,7 +53,7 @@
       <app-table
         ref="multipleTableRef"
         class="mt-16"
-        :data="props.data"
+        :data="filteredData"
         @selection-change="handleSelectionChange"
         :maxTableHeight="260"
         :row-key="(row: any) => row.id"
@@ -158,7 +156,28 @@ const props = defineProps<{
 }>()
 const emit = defineEmits(['submitPermissions'])
 
-const defaultExpandKeys = computed(() => (props.data?.length > 0 ? [props.data[0]?.id] : []))
+const defaultExpandKeys = computed(() => {
+    const searchName = searchForm.value.name || ''
+  const searchPermissions = searchForm.value.permission ?? []
+  if (!searchName && (!searchPermissions || searchPermissions.length === 0)) {
+      return (props.data?.length > 0 ? [props.data[0]?.id] : [])
+    }
+  const expandIds: string[] = []
+  // 传入过滤后的数据
+  const collectExpandIds = (nodes: any[]) => {
+    nodes.forEach(
+      node => {
+        if (node.children && node.children.length > 0) {
+          expandIds.push(node.id)
+          collectExpandIds(node.children)
+        }
+      })
+  }
+  collectExpandIds(filteredData.value)
+  return expandIds
+}
+  )
+
 const permissionOptionMap = computed(() => {
   return {
     rootFolder: getPermissionOptions(true, true),
@@ -240,11 +259,60 @@ const search_type_change = () => {
   searchForm.value = { name: '', permission: undefined }
 }
 
-function searchHandle() {
+const paginationConfig = reactive({
+  current_page: 1,
+  page_size: 20,
+  total: 0,
+})
+
+function handleSizeChange() {
+  paginationConfig.current_page = 1
   if (props.getData) {
     props.getData()
   }
 }
+
+const filterTreeData = () => {
+  const searchName = searchForm.value.name || ''
+  const searchPermissions = searchForm.value.permission ?? []
+
+  if (!searchName && (!searchPermissions || searchPermissions.length === 0)) {
+    return props.data
+  }
+
+  const filterNodes = (treeData: any[], name: string, permissions: any[]): any[] => {
+    if (!treeData || treeData.length === 0) return []
+
+    const result: any[] = []
+
+    for (const node of treeData) {
+      const cloneNode = { ...node }
+
+      let isMatch = false
+      if (searchType.value === 'name') {
+        isMatch = node.name.toLowerCase().includes(name.toLowerCase())
+      } else if (searchType.value === 'permission') {
+        isMatch = node.permission && permissions.includes(node.permission)
+      }
+
+      let filteredChildren: any[] = []
+      if (node.children && node.children.length > 0) {
+        filteredChildren = filterNodes(node.children, name, permissions)
+      }
+      if (isMatch || filteredChildren.length > 0) {
+        cloneNode.children = filteredChildren
+        result.push(cloneNode)
+      }
+    }
+    return result
+  }
+  return filterNodes(props.data, searchName, searchPermissions)
+}
+
+const filteredData = computed(() => {
+  return filterTreeData()
+})
+
 
 const multipleSelection = ref<any[]>([])
 
