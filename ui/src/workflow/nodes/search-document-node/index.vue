@@ -17,7 +17,9 @@
                 {{ $t('views.applicationWorkflow.nodes.searchDocumentNode.selectKnowledge') }}
               </span>
               <span>
-                <el-button type="primary" link @click="openKnowledgeDialog">
+                <el-button v-if="form_data.search_scope_type === 'custom'"
+                  type="primary" link @click="openKnowledgeDialog"
+                >
                   <AppIcon iconName="app-add-outlined"></AppIcon>
                 </el-button>
                 <el-select
@@ -78,9 +80,6 @@
                     {{ $t('选择变量') }}
                   </span>
                   <span>
-                    <el-button type="primary" link @click="openKnowledgeDialog">
-                      <AppIcon iconName="app-add-outlined"></AppIcon>
-                    </el-button>
                     <el-select
                       :teleported="false"
                       size="small"
@@ -89,11 +88,11 @@
                       @change="form_data.search_scope_reference = []"
                     >
                       <el-option
-                        :label="$t('知识库列表')"
+                        :label="$t('views.applicationWorkflow.nodes.searchDocumentNode.knowledge_list')"
                         value="knowledge"
                       />
                       <el-option
-                        :label="$t('文档列表')"
+                        :label="$t('views.applicationWorkflow.nodes.searchDocumentNode.document_list')"
                         value="document"
                       />
                     </el-select>

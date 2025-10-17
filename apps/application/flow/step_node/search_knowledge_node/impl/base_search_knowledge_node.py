@@ -68,11 +68,27 @@ class BaseSearchKnowledgeNode(ISearchKnowledgeStepNode):
              result])[0:knowledge_setting.get('max_paragraph_char_number', 5000)]
         self.context['directly_return'] = directly_return
 
-    def execute(self, knowledge_id_list, knowledge_setting, question, show_knowledge,
+    def get_reference_content(self, fields: List[str]):
+        return self.workflow_manage.get_reference_field(fields[0], fields[1:])
+
+    def execute(self, knowledge_id_list, knowledge_setting, question, show_knowledge, search_scope_type,
+                search_scope_source,
+                search_scope_reference,
                 exclude_paragraph_id_list=None,
                 **kwargs) -> NodeResult:
         self.context['question'] = question
         self.context['show_knowledge'] = show_knowledge
+
+        if search_scope_type == 'referencing':  # 引用上一步知识库/文档
+            if search_scope_source == 'knowledge':  # 知识库
+                knowledge_id_list = self.get_reference_content(search_scope_reference)
+            else:  # 文档
+                knowledge_id_list = QuerySet(Document).filter(
+                    id__in=self.get_reference_content(search_scope_reference)
+                ).values_list(
+                    'knowledge_id', flat=True
+                ).distinct()
+
         get_knowledge_list_of_authorized = DatabaseModelManage.get_model('get_knowledge_list_of_authorized')
         chat_user_type = self.workflow_manage.get_body().get('chat_user_type')
         if get_knowledge_list_of_authorized is not None and RoleConstants.CHAT_USER.value.name == chat_user_type:

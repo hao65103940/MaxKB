@@ -7,6 +7,8 @@ from django.db.models import QuerySet
 
 from application.flow.i_step_node import NodeResult
 from application.flow.step_node.search_document_node.i_search_document_node import ISearchDocumentStepNode
+from common.constants.permission_constants import RoleConstants
+from common.database_model_manage.database_model_manage import DatabaseModelManage
 from knowledge.models import Document, DocumentTag, Knowledge
 
 
@@ -38,6 +40,23 @@ class BaseSearchDocumentNode(ISearchDocumentStepNode):
                 document_id_list = QuerySet(Document).filter(
                     knowledge_id__in=self.get_reference_content(search_scope_reference)
                 ).values_list('id', flat=True)
+
+        # 权限过滤
+        get_knowledge_list_of_authorized = DatabaseModelManage.get_model('get_knowledge_list_of_authorized')
+        chat_user_type = self.workflow_manage.get_body().get('chat_user_type')
+
+        if get_knowledge_list_of_authorized is not None and RoleConstants.CHAT_USER.value.name == chat_user_type:
+            # 获取授权的知识库ID列表
+            authorized_knowledge_ids = get_knowledge_list_of_authorized(
+                self.workflow_manage.get_body().get('chat_user_id'),
+                knowledge_id_list
+            )
+
+            # 过滤出授权知识库下的文档
+            document_id_list = QuerySet(Document).filter(
+                id__in=document_id_list,
+                knowledge_id__in=authorized_knowledge_ids
+            ).values_list('id', flat=True)
 
         if search_mode == 'auto':  # 通过问题自动检索
             matched_doc_ids = self.handle_auto_tags(document_id_list, question_reference)
