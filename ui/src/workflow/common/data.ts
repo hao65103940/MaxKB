@@ -134,7 +134,7 @@ export const searchDocumentNode = {
     config: {
       fields: [
         {
-          label: t( 'views.applicationWorkflow.nodes.searchDocumentNode.knowledge_list'),
+          label: t('views.applicationWorkflow.nodes.searchDocumentNode.knowledge_list'),
           value: 'knowledge_list',
         },
         {
@@ -618,7 +618,7 @@ export const menuNodes = [
   },
   {
     label: t('views.knowledge.title'),
-    list: [searchKnowledgeNode, searchDocumentNode, rerankerNode]
+    list: [searchKnowledgeNode, searchDocumentNode, rerankerNode],
   },
   {
     label: t('views.applicationWorkflow.nodes.classify.businessLogic'),
@@ -651,7 +651,7 @@ export const applicationLoopMenuNodes = [
   },
   {
     label: t('views.knowledge.title'),
-    list: [searchKnowledgeNode, searchDocumentNode, rerankerNode]
+    list: [searchKnowledgeNode, searchDocumentNode, rerankerNode],
   },
   {
     label: t('views.applicationWorkflow.nodes.classify.businessLogic'),
@@ -659,7 +659,7 @@ export const applicationLoopMenuNodes = [
   },
   {
     label: t('views.applicationWorkflow.nodes.classify.dataProcessing', '数据处理'),
-    list: [variableSplittingNode],
+    list: [variableSplittingNode, parameterExtractionNode],
   },
   {
     label: t('views.applicationWorkflow.nodes.classify.other'),
