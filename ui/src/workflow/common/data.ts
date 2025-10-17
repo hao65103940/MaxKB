@@ -639,8 +639,6 @@ export const menuNodes = [
   {
     label: t('views.applicationWorkflow.nodes.classify.dataProcessing', '数据处理'),
     list: [variableSplittingNode, parameterExtractionNode, variableAggregationNode],
-    label: t('views.applicationWorkflow.nodes.classify.dataProcessing'),
-    list: [variableSplittingNode, parameterExtractionNode],
   },
   {
     label: t('views.applicationWorkflow.nodes.classify.other'),
