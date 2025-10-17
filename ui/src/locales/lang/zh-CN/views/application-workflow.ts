@@ -261,6 +261,10 @@ export default {
         requiredMessage: '请选择图片',
       },
     },
+    variableAggregationNode: {
+      label: '变量聚合',
+      text: '对多个分支的输出进行聚合处理',
+    },
     variableAssignNode: {
       label: '变量赋值',
       text: '更新全局变量的值',

@@ -34,6 +34,7 @@ export enum WorkflowType {
   LoopContinueNode = 'loop-continue-node',
   LoopBreakNode = 'loop-break-node',
   VariableSplittingNode = 'variable-splitting-node',
+  VariableAggregationNode = 'variable-aggregation-node',
   VideoUnderstandNode = 'video-understand-node',
   ParameterExtractionNode = 'parameter-extraction-node',
 }

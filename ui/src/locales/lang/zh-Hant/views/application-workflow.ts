@@ -259,6 +259,10 @@ export default {
       text: '更新全域變數的值',
       assign: '賦值',
     },
+    variableAggregationNode: {
+      label: '變量聚合',
+      text: '對多個分支的輸出進行聚合處理',
+    },
     mcpNode: {
       label: 'MCP 調用',
       text: '通過SSE/Streamable HTTP方式執行MCP服務中的工具',

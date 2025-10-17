@@ -333,6 +333,17 @@ export const videoUnderstandNode = {
     },
   },
 }
+export const variableAggregationNode = {
+  type: WorkflowType.VariableAggregationNode,
+  text: t('views.applicationWorkflow.nodes.variableAggregationNode.text'),
+  label: t('views.applicationWorkflow.nodes.variableAggregationNode.label'),
+  height: 252,
+  properties: {
+    stepName: t('views.applicationWorkflow.nodes.variableAggregationNode.label'),
+    config: {},
+  },
+}
+
 
 export const variableAssignNode = {
   type: WorkflowType.VariableAssignNode,
@@ -626,6 +637,8 @@ export const menuNodes = [
     list: [conditionNode, formNode, variableAssignNode, replyNode, loopNode],
   },
   {
+    label: t('views.applicationWorkflow.nodes.classify.dataProcessing', '数据处理'),
+    list: [variableSplittingNode, parameterExtractionNode, variableAggregationNode],
     label: t('views.applicationWorkflow.nodes.classify.dataProcessing'),
     list: [variableSplittingNode, parameterExtractionNode],
   },
@@ -767,6 +780,7 @@ export const nodeDict: any = {
   [WorkflowType.VariableSplittingNode]: variableSplittingNode,
   [WorkflowType.VideoUnderstandNode]: videoUnderstandNode,
   [WorkflowType.ParameterExtractionNode]: parameterExtractionNode,
+  [WorkflowType.VariableAggregationNode]: variableAggregationNode,
 }
 
 export function isWorkFlow(type: string | undefined) {

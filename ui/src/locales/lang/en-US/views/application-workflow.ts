@@ -259,6 +259,10 @@ You are a master of problem optimization, adept at accurately inferring user int
       text: 'Update the value of the global variable',
       assign: 'Set Value',
     },
+    variableAggregationNode: {
+      label: 'Variable Aggregation',
+      text: 'Perform aggregation processing on the outputs of multiple branches',
+    },
     mcpNode: {
       label: 'MCP Node',
       text: 'Call external MCP services to process data',

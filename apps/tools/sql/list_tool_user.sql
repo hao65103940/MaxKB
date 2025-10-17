@@ -20,7 +20,7 @@ FROM (SELECT tool."id"::text,
              tool."is_active"
       FROM (SELECT tool.*
             FROM tool tool ${tool_query_set}
-             AND tool.id IN (SELECT target
+             AND tool.id::text IN (SELECT target
                           FROM workspace_user_resource_permission
                           ${workspace_user_resource_permission_query_set}
                             AND 'VIEW' = ANY (permission_list))) AS tool
