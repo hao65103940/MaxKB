@@ -208,11 +208,11 @@
                       <el-divider direction="vertical" />
                       <span class="bold mr-4">{{ numberFormat(item?.char_length) || 0 }}</span>
                       <span class="color-secondary">{{ $t('common.character') }}</span>
-                      <el-divider direction="vertical" />
+                      <!-- <el-divider direction="vertical" />
                       <span class="bold mr-4">{{ item?.application_mapping_count || 0 }}</span>
                       <span class="color-secondary">{{
                         $t('views.knowledge.relatedApp_count')
-                      }}</span>
+                      }}</span> -->
                     </div>
                   </div>
                 </template>
