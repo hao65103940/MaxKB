@@ -115,42 +115,51 @@ interface LoadScriptOptions {
 }
 
 export const loadScript = (url: string, options: LoadScriptOptions = {}): Promise<void> => {
-  const {jsId, forceReload = false} = options
-  const scriptId = jsId || `script-${btoa(url).slice(0, 12)}` // 生成唯一 ID
+  const { jsId, forceReload = false } = options;
+  const scriptId = jsId || `script-${btoa(url).slice(0, 12)}`;
+
+  const cleanupScript = (script: HTMLScriptElement) => {
+    if (script && script.parentElement) {
+      script.parentElement.removeChild(script);
+    }
+  };
 
   return new Promise((resolve, reject) => {
-    // 检查是否已存在且无需强制加载
-    const existingScript = document.getElementById(scriptId) as HTMLScriptElement | null
+    if (typeof document === 'undefined') {
+      reject(new Error('Cannot load script in non-browser environment'));
+      return;
+    }
+
+    const existingScript = document.getElementById(scriptId) as HTMLScriptElement | null;
+
     if (existingScript && !forceReload) {
       if (existingScript.src === url) {
-        existingScript.onload = () => resolve() // 复用现有脚本
-        return
+        console.log(`[loadScript] Reuse existing script: ${url}`);
+        resolve();
+        return;
       }
-      // URL 不同则移除旧脚本
-      existingScript.parentElement?.removeChild(existingScript)
+      existingScript.remove();
     }
 
-    // 创建新脚本
-    const script = document.createElement('script')
-    script.id = scriptId
-    script.src = url
-    script.async = true // 明确启用异步加载
+    const script = document.createElement('script');
+    script.id = scriptId;
+    script.src = url;
+    script.async = true;
 
-    // 成功回调
     script.onload = () => {
-      resolve()
-    }
+      console.log(`[loadScript] Script loaded: ${url}`);
+      resolve();
+    };
 
-    // 错误处理（兼容性增强）
     script.onerror = () => {
-      reject(new Error(`Failed to load script: ${url}`))
-      cleanupScript(script)
-    }
+      console.error(`[loadScript] Failed to load: ${url}`);
+      cleanupScript(script);
+      reject(new Error(`Failed to load script: ${url}`));
+    };
 
-    // 插入到 <head> 确保加载顺序
-    document.head.appendChild(script)
-  })
-}
+    document.head.appendChild(script);
+  });
+};
 
 // 清理脚本（可选）
 const cleanupScript = (script: HTMLScriptElement) => {

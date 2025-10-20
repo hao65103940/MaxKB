@@ -425,7 +425,7 @@ onBeforeMount(() => {
   }
 })
 declare const window: any
-onMounted(() => {
+onBeforeMount(() => {
   const route = useRoute()
   const currentUrl = ref(route.fullPath)
   const params = new URLSearchParams(currentUrl.value.split('?')[1])
@@ -437,7 +437,6 @@ onMounted(() => {
       dd.runtime.permission.requestAuthCode({corpId: code}).then((res) => {
         console.log('DingTalk client request success:', res)
         chatUser.dingOauth2Callback(res.code, accessToken).then(() => {
-          router.push({name: 'home'})
         })
       })
     }
@@ -450,7 +449,11 @@ onMounted(() => {
         appId: appId,
         success: (res: any) => {
           chatUser.larkCallback(res.code, accessToken).then(() => {
-            router.push({name: 'home'})
+            router.push({
+              name: 'chat',
+              params: {accessToken: accessToken},
+              query: route.query,
+            })
           })
         },
         fail: (error: any) => {
@@ -459,18 +462,22 @@ onMounted(() => {
       })
     }
 
-    loadScript('https://lf-scm-cn.feishucdn.com/lark/op/h5-js-sdk-1.5.35.js', {
+    loadScript('https://lf-scm-cn.feishucdn.com/lark/op/h5-js-sdk-1.5.44.js', {
       jsId: 'lark-sdk',
       forceReload: true,
     })
       .then(() => {
         if (window.tt) {
-          window.tt.requestAccess({
+          window.tt?.requestAccess({
             appID: appId,
             scopeList: [],
             success: (res: any) => {
               chatUser.larkCallback(res.code, accessToken).then(() => {
-                router.push({name: 'home'})
+                router.push({
+                  name: 'chat',
+                  params: {accessToken: accessToken},
+                  query: route.query,
+                })
               })
             },
             fail: (error: any) => {
