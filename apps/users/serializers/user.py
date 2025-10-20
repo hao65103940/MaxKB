@@ -143,7 +143,7 @@ class UserManageSerializer(serializers.Serializer):
             min_length=4,
             validators=[
                 validators.RegexValidator(
-                    regex=re.compile("^.{4,20}$"),
+                    regex=re.compile("^[^\u4e00-\u9fa5]{4,20}$"),
                     message=_('Username must be 4-20 characters long')
                 )
             ]
