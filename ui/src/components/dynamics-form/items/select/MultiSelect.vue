@@ -3,6 +3,7 @@
     class="m-2"
     multiple
     filterable
+    allow-create
     clearable
     v-bind="$attrs"
     v-model="_modelValue"
@@ -43,7 +44,7 @@ const _modelValue = computed({
   },
   set($event) {
     emit('update:modelValue', $event)
-  }
+  },
 })
 const textField = computed(() => {
   return props.formField.text_field ? props.formField.text_field : 'key'
