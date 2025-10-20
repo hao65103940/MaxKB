@@ -1233,7 +1233,7 @@ function addTags(tags: any) {
 
 const knowledgeTags = ref<any[]>([])
 function getTags() {
-  loadSharedApi({type: 'knowledge', systemType: apiType.value})
+  loadSharedApi({type: 'knowledge', systemType: apiType.value, isShared: isShared.value})
     .getTags(id, {}, loading)
     .then((res: any) => {
       knowledgeTags.value = res.data

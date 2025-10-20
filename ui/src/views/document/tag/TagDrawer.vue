@@ -6,7 +6,7 @@
     <div class="flex-between mb-16">
       <div>
         <el-button type="primary" @click="openCreateTagDialog()"
-          >{{ $t('views.document.tag.create') }}
+        >{{ $t('views.document.tag.create') }}
         </el-button>
         <el-button :disabled="multipleSelection.length === 0" @click="batchDelete">
           {{ $t('common.delete') }}
@@ -27,7 +27,7 @@
       v-loading="loading"
       @selection-change="handleSelectionChange"
     >
-      <el-table-column type="selection" width="55" />
+      <el-table-column type="selection" width="55"/>
       <el-table-column :label="$t('views.document.tag.key')">
         <template #default="{ row }">
           <div class="flex-between">
@@ -41,10 +41,10 @@
                 />
               </el-button>
               <el-button link>
-                <AppIcon iconName="app-edit" class="mr-4" @click="editTagKey(row)" />
+                <AppIcon iconName="app-edit" class="mr-4" @click="editTagKey(row)"/>
               </el-button>
               <el-button link>
-                <AppIcon iconName="app-delete" class="mr-4" @click="delTag(row)" />
+                <AppIcon iconName="app-delete" class="mr-4" @click="delTag(row)"/>
               </el-button>
             </div>
           </div>
@@ -56,10 +56,10 @@
             {{ row.value }}
             <div>
               <el-button link>
-                <AppIcon iconName="app-edit" class="mr-4" @click="editTagValue(row)" />
+                <AppIcon iconName="app-edit" class="mr-4" @click="editTagValue(row)"/>
               </el-button>
               <el-button link>
-                <AppIcon iconName="app-delete" class="mr-4" @click="delTagValue(row)" />
+                <AppIcon iconName="app-delete" class="mr-4" @click="delTagValue(row)"/>
               </el-button>
             </div>
           </div>
@@ -67,8 +67,8 @@
       </el-table-column>
     </el-table>
   </el-drawer>
-  <CreateTagDialog ref="createTagDialogRef" @refresh="getList" />
-  <EditTagDialog ref="editTagDialogRef" @refresh="getList" />
+  <CreateTagDialog ref="createTagDialogRef" @refresh="getList"/>
+  <EditTagDialog ref="editTagDialogRef" @refresh="getList"/>
 </template>
 
 <script setup lang="ts">
@@ -84,8 +84,12 @@ const emit = defineEmits(['refresh'])
 
 const route = useRoute()
 const {
-  params: { id }, // id为knowledgeID
+  params: {id, folderId}, // id为knowledgeID
 } = route as any
+
+const isShared = computed(() => {
+  return folderId === 'share'
+})
 
 const apiType = computed(() => {
   if (route.path.includes('shared')) {
@@ -121,7 +125,7 @@ const tableData = computed(() => {
 })
 
 // 合并单元格方法
-const spanMethod = ({ row, column, rowIndex, columnIndex }: any) => {
+const spanMethod = ({row, column, rowIndex, columnIndex}: any) => {
   if (columnIndex === 0 || columnIndex === 1) {
     // key列 (由于添加了选择列，索引变为1)
     if (row.keyIndex === 0) {
@@ -213,9 +217,9 @@ function delTagValue(row: any) {
 
 function getList() {
   const params = {
-    ...(filterText.value && { name: filterText.value }),
+    ...(filterText.value && {name: filterText.value}),
   }
-  loadSharedApi({ type: 'knowledge', systemType: apiType.value })
+  loadSharedApi({type: 'knowledge', systemType: apiType.value, isShared: isShared.value})
     .getTags(id, params, loading)
     .then((res: any) => {
       tags.value = res.data
