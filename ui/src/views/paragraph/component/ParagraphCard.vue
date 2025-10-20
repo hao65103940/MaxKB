@@ -169,8 +169,12 @@ const props = defineProps<{
 const route = useRoute()
 const {
   params: { id, documentId },
-  query: { from },
+  query: { from, isShared },
 } = route as any
+
+const shareDisabled = computed(() => {
+  return isShared === 'true'
+})
 
 const apiType = computed(() => {
   return from as 'systemShare' | 'workspace' | 'systemManage'
@@ -223,7 +227,7 @@ async function changeState(row: any) {
     })
 }
 function getDetail() {
-  loadSharedApi({ type: 'knowledge', systemType: apiType.value })
+  loadSharedApi({ type: 'knowledge', systemType: apiType.value, isShared: shareDisabled.value})
     .getKnowledgeDetail(id, loading)
     .then((res: any) => {
       knowledgeDetail.value = res.data

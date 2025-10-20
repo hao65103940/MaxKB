@@ -352,7 +352,7 @@ function getDetail() {
       documentDetail.value = res.data
     })
 
-  loadSharedApi({ type: 'knowledge', isShared: isShared.value, systemType: apiType.value })
+  loadSharedApi({ type: 'knowledge', isShared: shareDisabled.value, systemType: apiType.value })
     .getKnowledgeDetail(id, loading)
     .then((res: any) => {
       knowledgeDetail.value = res.data

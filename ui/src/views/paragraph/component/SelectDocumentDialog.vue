@@ -37,7 +37,12 @@ const props = defineProps<{
 const route = useRoute()
 const {
   params: { id, documentId }, // id为knowledgeID
+  query: { from, isShared },
 } = route as any
+
+const shareDisabled = computed(() => {
+  return isShared === 'true'
+})
 
 const emit = defineEmits(['refresh'])
 const SelectKnowledgeDocumentRef = ref()
@@ -80,7 +85,7 @@ const submitForm = async () => {
 }
 
 function getDetail() {
-  loadSharedApi({ type: 'knowledge', systemType: props.apiType })
+  loadSharedApi({ type: 'knowledge', systemType: props.apiType, isShared: shareDisabled.value })
     .getKnowledgeDetail(id, loading)
     .then((res: any) => {
       knowledgeDetail.value = res.data
