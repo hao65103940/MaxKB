@@ -64,7 +64,6 @@
 </template>
 <script setup lang="ts">
 import { ref } from 'vue'
-import AppIcon from '@/components/app-icon/AppIcon.vue'
 
 const emit = defineEmits(['addTags'])
 const props = defineProps({

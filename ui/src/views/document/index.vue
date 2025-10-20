@@ -62,7 +62,7 @@
                   :disabled="multipleSelection.length === 0"
                   v-if="permissionPrecise.doc_edit(id)"
                 >
-                  {{ $t('views.document.tag.add') }}
+                  {{ $t('views.document.tag.addTag') }}
                 </el-button>
                 <el-dropdown v-if="MoreFilledPermission0(id)">
                   <el-button class="ml-12 mr-12">
@@ -687,7 +687,7 @@ import permissionMap from '@/permission'
 import { loadSharedApi } from '@/utils/dynamics-api/shared-api'
 import TagDrawer from "./tag/TagDrawer.vue";
 import TagSettingDrawer from "./tag/TagSettingDrawer.vue";
-import AddTagDialog from "@/views/document/component/AddTagDialog.vue";
+import AddTagDialog from "@/views/document/tag/MulAddTagDialog.vue";
 
 const route = useRoute()
 const router = useRouter()

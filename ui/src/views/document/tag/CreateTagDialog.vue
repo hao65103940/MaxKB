@@ -1,5 +1,9 @@
 <template>
-  <el-dialog v-model="dialogVisible" :title="$t('views.document.tag.create')" :before-close="close">
+  <el-dialog
+    v-model="dialogVisible"
+    :title="currentTagKey ? $t('views.document.tag.addValue') : $t('views.document.tag.create')"
+    :before-close="close"
+  >
     <el-form
       ref="FormRef"
       :model="{ tags }"
@@ -76,7 +80,6 @@
 </template>
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import AppIcon from '@/components/app-icon/AppIcon.vue'
 import { useRoute } from 'vue-router'
 import { loadSharedApi } from '@/utils/dynamics-api/shared-api.ts'
 import { cloneDeep } from 'lodash'

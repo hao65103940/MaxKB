@@ -6,7 +6,7 @@
     <div class="flex-between">
       <div>
         <el-button type="primary" @click="openAddTagDialog()">
-          {{ $t('views.document.tag.add') }}
+          {{ $t('views.document.tag.addTag') }}
         </el-button>
         <el-button :disabled="multipleSelection.length === 0" @click="batchDelete">
           {{ $t('common.delete') }}
@@ -57,7 +57,7 @@ import { useRoute } from 'vue-router'
 import { loadSharedApi } from "@/utils/dynamics-api/shared-api.ts"
 import { MsgConfirm } from "@/utils/message.ts";
 import { t } from "@/locales";
-import AddTagDialog from "@/views/document/component/AddTagDialog.vue";
+import AddTagDialog from "@/views/document/tag/MulAddTagDialog.vue";
 
 const emit = defineEmits(['refresh'])
 const props = defineProps({
