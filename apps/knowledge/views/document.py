@@ -686,6 +686,31 @@ class DocumentView(APIView):
                 'workspace_id': workspace_id, 'document_id': document_id, 'knowledge_id': knowledge_id
             }).download_source_file()
 
+    class ReplaceSourceFile(APIView):
+        authentication_classes = [TokenAuth]
+
+        @extend_schema(
+            summary=_('Replace source file'),
+            operation_id=_('Replace source file'),  # type: ignore
+            parameters=DocumentDownloadSourceAPI.get_parameters(),
+            responses=DocumentDownloadSourceAPI.get_response(),
+            tags=[_('Knowledge Base/Documentation')]  # type: ignore
+        )
+        @has_permissions(
+            PermissionConstants.KNOWLEDGE_DOCUMENT_EDIT.get_workspace_knowledge_permission(),
+            PermissionConstants.KNOWLEDGE_DOCUMENT_EDIT.get_workspace_permission_workspace_manage_role(),
+            RoleConstants.WORKSPACE_MANAGE.get_workspace_role(),
+            ViewPermission([RoleConstants.USER.get_workspace_role()],
+                           [PermissionConstants.KNOWLEDGE.get_workspace_knowledge_permission()], CompareConstants.AND),
+        )
+        def post(self, request: Request, workspace_id: str, knowledge_id: str, document_id: str):
+            return result.success(DocumentSerializers.ReplaceSourceFile(data={
+                'workspace_id': workspace_id,
+                'document_id': document_id,
+                'knowledge_id': knowledge_id,
+                'file': request.FILES.get('file')
+            }).replace())
+
     class Tags(APIView):
         authentication_classes = [TokenAuth]
 

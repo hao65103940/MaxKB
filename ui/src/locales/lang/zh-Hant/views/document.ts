@@ -14,6 +14,7 @@ export default {
     cancelGenerate: '取消生成',
     export: '匯出',
     download: '下載原文件',
+    replace: '替換原文件',
   },
   tip: {
     saveMessage: '當前的更改尚未保存，確認退出嗎?',

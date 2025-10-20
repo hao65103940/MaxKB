@@ -46,6 +46,7 @@ urlpatterns = [
     path('workspace/<str:workspace_id>/knowledge/<str:knowledge_id>/document/<str:document_id>/export', views.DocumentView.Export.as_view()),
     path('workspace/<str:workspace_id>/knowledge/<str:knowledge_id>/document/<str:document_id>/export_zip', views.DocumentView.ExportZip.as_view()),
     path('workspace/<str:workspace_id>/knowledge/<str:knowledge_id>/document/<str:document_id>/download_source_file', views.DocumentView.DownloadSourceFile.as_view()),
+    path('workspace/<str:workspace_id>/knowledge/<str:knowledge_id>/document/<str:document_id>/replace_source_file', views.DocumentView.ReplaceSourceFile.as_view()),
     path('workspace/<str:workspace_id>/knowledge/<str:knowledge_id>/document/<str:document_id>/tags', views.DocumentView.Tags.as_view()),
     path('workspace/<str:workspace_id>/knowledge/<str:knowledge_id>/document/<str:document_id>/tags/batch_delete', views.DocumentView.Tags.BatchDelete.as_view()),
     path('workspace/<str:workspace_id>/knowledge/<str:knowledge_id>/document/<str:document_id>/paragraph', views.ParagraphView.as_view()),

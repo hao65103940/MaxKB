@@ -28,6 +28,7 @@ from common.db.search import native_search, get_dynamics_model, native_page_sear
 from common.event import ListenerManagement
 from common.event.common import work_thread_pool
 from common.exception.app_exception import AppApiException
+from common.field.common import UploadedFileField
 from common.handle.impl.qa.csv_parse_qa_handle import CsvParseQAHandle
 from common.handle.impl.qa.xls_parse_qa_handle import XlsParseQAHandle
 from common.handle.impl.qa.xlsx_parse_qa_handle import XlsxParseQAHandle
@@ -1502,6 +1503,38 @@ class DocumentSerializers(serializers.Serializer):
                 document_id=document_id,
                 tag_id__in=tag_ids
             ).delete()
+
+    class ReplaceSourceFile(serializers.Serializer):
+        workspace_id = serializers.CharField(required=True, label=_('workspace id'))
+        knowledge_id = serializers.UUIDField(required=True, label=_('knowledge id'))
+        document_id = serializers.UUIDField(required=True, label=_('document id'))
+        file = UploadedFileField(required=True, label=_("file"))
+
+        def is_valid(self, *, raise_exception=False):
+            super().is_valid(raise_exception=True)
+            workspace_id = self.data.get('workspace_id')
+            query_set = QuerySet(Knowledge).filter(id=self.data.get('knowledge_id'))
+            if workspace_id and workspace_id != 'None':
+                query_set = query_set.filter(workspace_id=workspace_id)
+            if not query_set.exists():
+                raise AppApiException(500, _('Knowledge id does not exist'))
+            if not QuerySet(Document).filter(
+                    id=self.data.get('document_id'),
+                    knowledge_id=self.data.get('knowledge_id')
+            ).exists():
+                raise AppApiException(500, _('Document id does not exist'))
+
+        def replace(self):
+            self.is_valid(raise_exception=True)
+            file = self.data.get('file')
+            source_file = QuerySet(File).filter(source_id=self.data.get('document_id')).first()
+
+            if not source_file:
+                raise AppApiException(500, _('Source file not found'))
+
+            source_file.save(file.read())
+
+            return True
 
 
 class FileBufferHandle:

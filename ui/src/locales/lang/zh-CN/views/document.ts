@@ -14,6 +14,7 @@ export default {
     cancelGenerate: '取消生成',
     export: '导出',
     download: '下载原文档',
+    replace: '替换原文档',
   },
   tip: {
     saveMessage: '当前的更改尚未保存，确认退出吗?',

@@ -14,6 +14,7 @@ export default {
     cancelGenerate: 'Cancel Generation',
     export: 'Export to',
     download: 'Download',
+    replace: 'Replace',
   },
 
   tip: {
