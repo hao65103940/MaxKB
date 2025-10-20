@@ -344,7 +344,6 @@ export const variableAggregationNode = {
   },
 }
 
-
 export const variableAssignNode = {
   type: WorkflowType.VariableAssignNode,
   text: t('views.applicationWorkflow.nodes.variableAssignNode.text'),
@@ -744,6 +743,8 @@ export const compareList = [
   { value: 'len_lt', label: t('views.applicationWorkflow.compare.len_lt') },
   { value: 'is_true', label: t('views.applicationWorkflow.compare.is_true') },
   { value: 'is_not_true', label: t('views.applicationWorkflow.compare.is_not_true') },
+  { value: 'start_with', label: 'startWith' },
+  { value: 'end_with', label: 'endWith' },
 ]
 
 export const nodeDict: any = {
