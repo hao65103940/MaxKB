@@ -102,6 +102,7 @@ export default {
     addValue: '添加标签值',
     setting: '标签设置',
     create: '创建标签',
+    createValue: '创建标签值',
     edit: '编辑标签',
     editValue: '编辑标签值',
     deleteConfirm: '是否删除标签: ',
@@ -169,7 +170,7 @@ export default {
     },
     allow_download: {
       label: '允许在知识库来源中下载',
-    }
+    },
   },
   hitHandlingMethod: {
     optimization: '模型优化',

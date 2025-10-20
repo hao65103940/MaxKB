@@ -219,7 +219,7 @@
               <template #dropdown>
                 <el-dropdown-menu>
                   <el-dropdown-item
-                    @click.stop="openAuthorization(row)"
+                    @click.stop="openParamSetting(row)"
                     v-if="
                       (row.model_type === 'TTS' ||
                         row.model_type === 'LLM' ||

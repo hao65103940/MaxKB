@@ -106,10 +106,12 @@ export default {
     addTag: 'Add Tag',
     setting: 'Tag Settings',
     create: 'Create Tag',
+    createValue: 'Create Tag Value',
     edit: 'Edit Tag',
     editValue: 'Edit Tag Value',
     deleteConfirm: 'Confirm delete tag: ',
-    deleteTip: 'After deletion, resources using this tag will have the tag removed. Please proceed with caution!',
+    deleteTip:
+      'After deletion, resources using this tag will have the tag removed. Please proceed with caution!',
     requiredMessage1: 'Please enter a tag',
     requiredMessage2: 'Please enter a value',
   },
@@ -174,8 +176,8 @@ export default {
       requiredMessage: 'Please enter similarity value',
     },
     allow_download: {
-     label: 'Allow download in knowledge base source',
-    }
+      label: 'Allow download in knowledge base source',
+    },
   },
   hitHandlingMethod: {
     optimization: 'Model optimization',

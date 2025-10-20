@@ -104,6 +104,7 @@ export default {
     addTag: '添加標籤',
     setting: '標籤設置',
     create: '創建標籤',
+    createValue: '創建標籤值',
     edit: '編輯標籤',
     editValue: '編輯標籤值',
     deleteConfirm: '是否刪除標籤: ',
@@ -170,8 +171,8 @@ export default {
       requiredMessage: '请输入相似度',
     },
     allow_download: {
-     label: '允許在知識庫來源下載',
-    }
+      label: '允許在知識庫來源下載',
+    },
   },
   hitHandlingMethod: {
     optimization: '模型優化',

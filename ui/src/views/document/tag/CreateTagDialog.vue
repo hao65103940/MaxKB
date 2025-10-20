@@ -3,6 +3,7 @@
     v-model="dialogVisible"
     :title="currentTagKey ? $t('views.document.tag.addValue') : $t('views.document.tag.create')"
     :before-close="close"
+    append-to-body
   >
     <el-form
       ref="FormRef"
@@ -12,7 +13,7 @@
       @submit.prevent
     >
       <el-scrollbar>
-        <el-row :gutter="8" align="bottom" style="margin-right: 10px" class="tag-list-max-list">
+        <el-row :gutter="8" style="margin-right: 10px" class="tag-list-max-list">
           <template v-for="(tag, index) in tags" :key="tag">
             <el-col :span="12">
               <el-form-item
@@ -26,7 +27,7 @@
               >
                 <el-input
                   v-model="tag.key"
-                  :disabled="currentTagKey"
+                  :disabled="currentTagKey? true : false"
                   class="w-full"
                   :placeholder="$t('views.document.tag.requiredMessage1')"
                 ></el-input>
@@ -55,7 +56,7 @@
                 link
                 type="info"
                 @click="deleteTag(index)"
-                class="mb-24"
+                :style="{ marginTop: index === 0 ? '35px' : '5px' }"
               >
                 <AppIcon iconName="app-delete"></AppIcon>
               </el-button>
@@ -124,7 +125,7 @@ const submit = () => {
       .postTags(id, tags.value, loading)
       .then((res: any) => {
         close()
-        emit('refresh')
+        emit('refresh', currentTagKey.value)
       })
   })
 }

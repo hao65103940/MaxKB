@@ -57,13 +57,7 @@
                 >
                   {{ $t('common.setting') }}
                 </el-button>
-                <el-button
-                  @click="openAddTagDialog()"
-                  :disabled="multipleSelection.length === 0"
-                  v-if="permissionPrecise.doc_edit(id)"
-                >
-                  {{ $t('views.document.tag.addTag') }}
-                </el-button>
+
                 <el-dropdown v-if="MoreFilledPermission0(id)">
                   <el-button class="ml-12 mr-12">
                     <AppIcon iconName="app-more"></AppIcon>
@@ -76,6 +70,12 @@
                         v-if="permissionPrecise.doc_migrate(id)"
                       >
                         {{ $t('views.document.setting.migration') }}
+                      </el-dropdown-item>
+                      <el-dropdown-item
+                        @click="openAddTagDialog()"
+                        :disabled="multipleSelection.length === 0"
+                        v-if="permissionPrecise.doc_edit(id)"
+                        >{{ $t('views.document.tag.addTag') }}
                       </el-dropdown-item>
                       <el-dropdown-item
                         divided
@@ -91,6 +91,7 @@
                         v-if="knowledgeDetail?.type === 2 && permissionPrecise.doc_sync(id)"
                         >{{ $t('views.document.syncDocument') }}
                       </el-dropdown-item>
+
                       <el-dropdown-item
                         divided
                         @click="deleteMulDocument"
@@ -459,9 +460,9 @@
                             ></AppIcon>
                             {{ $t('views.document.generateQuestion.title') }}
                           </el-dropdown-item>
-                          <el-dropdown-item
-                            @click="openTagSettingDrawer(row)"
-                          >
+                          <el-dropdown-item @click="openTagSettingDrawer(row)">
+                            <AppIcon iconName="app-tag" class="color-secondary"></AppIcon>
+
                             {{ $t('views.document.tag.setting') }}
                           </el-dropdown-item>
                           <el-dropdown-item
@@ -676,15 +677,15 @@
       :workspaceId="knowledgeDetail?.workspace_id"
     />
     <GenerateRelatedDialog ref="GenerateRelatedDialogRef" @refresh="getList" :apiType="apiType" />
-    <TagDrawer ref="tagDrawerRef"/>
-    <TagSettingDrawer ref="tagSettingDrawerRef" :knowledge-tags="knowledgeTags"/>
-    <AddTagDialog ref="addTagDialogRef" @addTags="addTags" :knowledge-tags="knowledgeTags"/>
+    <TagDrawer ref="tagDrawerRef" />
+    <TagSettingDrawer ref="tagSettingDrawerRef" />
+    <AddTagDialog ref="addTagDialogRef" @addTags="addTags" :apiType="apiType" />
   </div>
 </template>
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount, computed } from 'vue'
 import { useRouter, useRoute, onBeforeRouteLeave, onBeforeRouteUpdate } from 'vue-router'
-import { ElTable } from 'element-plus'
+import type { ElTable } from 'element-plus'
 import ImportDocumentDialog from './component/ImportDocumentDialog.vue'
 import SyncWebDialog from '@/views/knowledge/component/SyncWebDialog.vue'
 import SelectKnowledgeDialog from './component/SelectKnowledgeDialog.vue'
@@ -700,9 +701,9 @@ import { TaskType, State } from '@/utils/status'
 import { t } from '@/locales'
 import permissionMap from '@/permission'
 import { loadSharedApi } from '@/utils/dynamics-api/shared-api'
-import TagDrawer from "./tag/TagDrawer.vue";
-import TagSettingDrawer from "./tag/TagSettingDrawer.vue";
-import AddTagDialog from "@/views/document/tag/MulAddTagDialog.vue";
+import TagDrawer from './tag/TagDrawer.vue'
+import TagSettingDrawer from './tag/TagSettingDrawer.vue'
+import AddTagDialog from '@/views/document/tag/MulAddTagDialog.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -1020,15 +1021,14 @@ function syncMulDocument() {
     confirmButtonClass: 'danger',
   })
     .then(() => {
-      loadSharedApi({type: 'document', systemType: apiType.value})
+      loadSharedApi({ type: 'document', systemType: apiType.value })
         .putMulSyncDocument(id, arr, loading)
         .then(() => {
           MsgSuccess(t('views.document.sync.successMessage'))
           getList()
         })
     })
-    .catch(() => {
-    })
+    .catch(() => {})
 }
 
 function syncLarkMulDocument() {
@@ -1239,7 +1239,7 @@ function openTagDrawer() {
 
 const tagSettingDrawerRef = ref()
 function openTagSettingDrawer(doc: any) {
- tagSettingDrawerRef.value.open(doc)
+  tagSettingDrawerRef.value.open(doc)
 }
 
 const addTagDialogRef = ref()
@@ -1251,21 +1251,12 @@ function openAddTagDialog() {
 function addTags(tags: any) {
   const arr: string[] = multipleSelection.value.map((v) => v.id)
 
-  loadSharedApi({type: 'document', systemType: apiType.value})
-    .postMulDocumentTags(id, {tag_ids: tags, document_ids: arr}, loading)
+  loadSharedApi({ type: 'document', systemType: apiType.value })
+    .postMulDocumentTags(id, { tag_ids: tags, document_ids: arr }, loading)
     .then(() => {
       addTagDialogRef.value?.close()
       getList()
       clearSelection()
-    })
-}
-
-const knowledgeTags = ref<any[]>([])
-function getTags() {
-  loadSharedApi({type: 'knowledge', systemType: apiType.value, isShared: isShared.value})
-    .getTags(id, {}, loading)
-    .then((res: any) => {
-      knowledgeTags.value = res.data
     })
 }
 
@@ -1279,7 +1270,6 @@ onMounted(() => {
     filterMethod.value = beforeSearch.value['filterMethod']
   }
   getList()
-  getTags()
   // 初始化定时任务
   initInterval()
 })
