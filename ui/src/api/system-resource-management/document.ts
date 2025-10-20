@@ -134,6 +134,16 @@ const getDownloadSourceFile: (knowledge_id: string, document_id: string, documen
   return exportFile(document_name, `${prefix}/${knowledge_id}/document/${document_id}/download_source_file`, {}, undefined)
 }
 
+const postReplaceSourceFile: (knowledge_id: string, document_id: string, data: any) => Promise<Result<any>> = (
+  knowledge_id,
+  document_id,
+  data,
+) => {
+  return post(`${prefix}/${knowledge_id}/document/${document_id}/replace_source_file`, data, {}, undefined)
+}
+
+
+
 /**
  * 导出文档
  * @param document_name 文档名称
@@ -567,6 +577,7 @@ export default {
   putBatchCancelTask,
   putCancelTask,
   getDownloadSourceFile,
+  postReplaceSourceFile,
   exportDocument,
   exportDocumentZip,
   putDocumentRefresh,
