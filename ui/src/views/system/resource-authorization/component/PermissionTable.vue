@@ -43,7 +43,7 @@
             collapse-tags-tooltip
             style="width: 220px"
           >
-            <template v-for="(item, index) in permissionOptions" :key="index">
+            <template v-for="(item, index) in getPermissionOptions()" :key="index">
               <el-option :label="item.label" :value="item.value" />
             </template>
           </el-select>
@@ -58,11 +58,13 @@
         :maxTableHeight="260"
         :row-key="(row: any) => row.id"
         :expand-row-keys="defaultExpandKeys"
+        style="min-width: 600px"
+        show-overflow-tooltip
       >
         <el-table-column type="selection" width="55" :reserve-selection="true" />
         <el-table-column prop="name" :label="$t('common.name')">
           <template #default="{ row }">
-            <el-space :size="8">
+            <span style="vertical-align: sub">
               <!--  文件夹 icon -->
               <AppIcon
                 v-if="row.resource_type === 'folder'"
@@ -90,10 +92,8 @@
                 style="width: 20px; height: 20px; display: inline-block"
                 :innerHTML="getProviderIcon(row)"
               ></span>
-              <span :title="row?.name" class="ellipsis-1">
-                {{ row?.name }}
-              </span>
-            </el-space>
+            </span>
+            {{ row?.name }}
           </template>
         </el-table-column>
         <el-table-column :label="$t('views.model.modelForm.permissionType.label')" align="left">
@@ -157,26 +157,24 @@ const props = defineProps<{
 const emit = defineEmits(['submitPermissions'])
 
 const defaultExpandKeys = computed(() => {
-    const searchName = searchForm.value.name || ''
+  const searchName = searchForm.value.name || ''
   const searchPermissions = searchForm.value.permission ?? []
   if (!searchName && (!searchPermissions || searchPermissions.length === 0)) {
-      return (props.data?.length > 0 ? [props.data[0]?.id] : [])
-    }
+    return props.data?.length > 0 ? [props.data[0]?.id] : []
+  }
   const expandIds: string[] = []
   // 传入过滤后的数据
   const collectExpandIds = (nodes: any[]) => {
-    nodes.forEach(
-      node => {
-        if (node.children && node.children.length > 0) {
-          expandIds.push(node.id)
-          collectExpandIds(node.children)
-        }
-      })
+    nodes.forEach((node) => {
+      if (node.children && node.children.length > 0) {
+        expandIds.push(node.id)
+        collectExpandIds(node.children)
+      }
+    })
   }
   collectExpandIds(filteredData.value)
   return expandIds
-}
-  )
+})
 
 const permissionOptionMap = computed(() => {
   return {
@@ -199,7 +197,17 @@ const getRowPermissionOptions = (row: any) => {
 }
 
 const permissionOptions = computed(() => {
-  return getPermissionOptions()
+  if (
+    multipleSelection.value.some(
+      (item) => item.resource_type === 'folder' && item.folder_id == null,
+    )
+  ) {
+    return permissionOptionMap.value.rootFolder
+  } else if (multipleSelection.value.some((item) => item.resource_type === 'folder')) {
+    return permissionOptionMap.value.folder
+  } else {
+    return permissionOptionMap.value.resource
+  }
 })
 const permissionObj = ref<any>({
   APPLICATION: new ComplexPermission(
@@ -259,19 +267,6 @@ const search_type_change = () => {
   searchForm.value = { name: '', permission: undefined }
 }
 
-const paginationConfig = reactive({
-  current_page: 1,
-  page_size: 20,
-  total: 0,
-})
-
-function handleSizeChange() {
-  paginationConfig.current_page = 1
-  if (props.getData) {
-    props.getData()
-  }
-}
-
 const filterTreeData = () => {
   const searchName = searchForm.value.name || ''
   const searchPermissions = searchForm.value.permission ?? []
@@ -312,7 +307,6 @@ const filterTreeData = () => {
 const filteredData = computed(() => {
   return filterTreeData()
 })
-
 
 const multipleSelection = ref<any[]>([])
 
@@ -375,7 +369,6 @@ onMounted(() => {
 })
 
 defineExpose({
-  // paginationConfig,
   searchForm,
   searchType,
 })

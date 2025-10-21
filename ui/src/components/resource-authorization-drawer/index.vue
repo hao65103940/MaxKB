@@ -122,22 +122,29 @@
     <!-- 单个资源授权提示框 -->
     <el-dialog
       v-model="singleSelectDialogVisible"
-      :title="$t('views.system.resourceAuthorization.setting.configure')"
+      :title="$t('views.system.resourceAuthorization.setting.effectiveResource')"
       destroy-on-close
       @close="closeSingleSelectDialog"
+      width="500px"
     >
       <el-radio-group v-model="authAllChildren" class="radio-block">
-      <el-radio :value="false">
-        <p class="color-text-primary lighter">{{ $t('views.system.resourceAuthorization.setting.currentOnly') }}</p>
-      </el-radio>
-      <el-radio :value="true">
-        <p class="color-text-primary lighter">{{ $t('views.system.resourceAuthorization.setting.includeAll') }}</p>
-      </el-radio>
+        <el-radio :value="false">
+          <p class="color-text-primary lighter">
+            {{ $t('views.system.resourceAuthorization.setting.currentOnly') }}
+          </p>
+        </el-radio>
+        <el-radio :value="true">
+          <p class="color-text-primary lighter">
+            {{ $t('views.system.resourceAuthorization.setting.includeAll') }}
+          </p>
+        </el-radio>
       </el-radio-group>
       <template #footer>
         <div class="dialog-footer mt-24">
           <el-button @click="closeSingleSelectDialog">{{ $t('common.cancel') }}</el-button>
-          <el-button type="primary" @click="confirmSinglePermission">{{ $t('common.confirm') }}</el-button>
+          <el-button type="primary" @click="confirmSinglePermission">{{
+            $t('common.confirm')
+          }}</el-button>
         </div>
       </template>
     </el-dialog>
@@ -148,6 +155,7 @@
       :title="$t('views.system.resourceAuthorization.setting.configure')"
       destroy-on-close
       @close="closeDialog"
+      width="500px"
     >
       <el-radio-group v-model="radioPermission" class="radio-block">
         <template v-for="(item, index) in getFolderPermissionOptions()" :key="index">
@@ -160,15 +168,21 @@
       <!-- 如果是文件夹，显示子资源选项 -->
       <div v-if="isFolder" class="mt-16">
         <el-divider />
-    <div class="color-text-primary mb-8">{{ $t('views.system.resourceAuthorization.setting.effectiveResource') }}</div>
-    <el-radio-group v-model="batchAuthAllChildren" class="radio-block">
-      <el-radio :value="false">
-        <p class="color-text-primary lighter">{{ $t('views.system.resourceAuthorization.setting.currentOnly') }}</p>
-      </el-radio>
-      <el-radio :value="true">
-        <p class="color-text-primary lighter">{{ $t('views.system.resourceAuthorization.setting.includeAll') }}</p>
-      </el-radio>
-    </el-radio-group>
+        <div class="color-text-primary mb-8">
+          {{ $t('views.system.resourceAuthorization.setting.effectiveResource') }}
+        </div>
+        <el-radio-group v-model="batchAuthAllChildren" class="radio-block">
+          <el-radio :value="false">
+            <p class="color-text-primary lighter">
+              {{ $t('views.system.resourceAuthorization.setting.currentOnly') }}
+            </p>
+          </el-radio>
+          <el-radio :value="true">
+            <p class="color-text-primary lighter">
+              {{ $t('views.system.resourceAuthorization.setting.includeAll') }}
+            </p>
+          </el-radio>
+        </el-radio-group>
       </div>
       <template #footer>
         <div class="dialog-footer mt-24">
@@ -211,14 +225,13 @@ const apiType = computed(() => {
 const folderType = computed(() => {
   if (route.path.includes('application')) {
     return 'application'
-  }
-  else if (route.path.includes('knowledge')) {
+  } else if (route.path.includes('knowledge')) {
     return 'knowledge'
-  }
-  else if (route.path.includes('tool')) {
+  } else if (route.path.includes('tool')) {
     return 'tool'
+  } else {
+    return 'application'
   }
-  else {return 'application'}
 })
 
 const permissionPrecise = computed(() => {
@@ -228,14 +241,16 @@ const permissionPrecise = computed(() => {
 // 取出文件夹id
 function getAllFolderIds(data: any) {
   if (!data) return []
-  return [data.id,...(data.children?.flatMap((child: any) => getAllFolderIds(child)) || [])]
+  return [data.id, ...(data.children?.flatMap((child: any) => getAllFolderIds(child)) || [])]
 }
 
 const RESOURCE_PERMISSION_MAP = {
-  application: PermissionConst.APPLICATION_RESOURCE_AUTHORIZATION.getWorkspacePermissionWorkspaceManageRole,
-  knowledge: PermissionConst.KNOWLEDGE_RESOURCE_AUTHORIZATION.getWorkspacePermissionWorkspaceManageRole,
+  application:
+    PermissionConst.APPLICATION_RESOURCE_AUTHORIZATION.getWorkspacePermissionWorkspaceManageRole,
+  knowledge:
+    PermissionConst.KNOWLEDGE_RESOURCE_AUTHORIZATION.getWorkspacePermissionWorkspaceManageRole,
   tool: PermissionConst.TOOL_RESOURCE_AUTHORIZATION.getWorkspacePermissionWorkspaceManageRole,
-} 
+}
 
 const resourceAuthorizationOfManager = computed(() => {
   return RESOURCE_PERMISSION_MAP[folderType.value]
@@ -243,18 +258,16 @@ const resourceAuthorizationOfManager = computed(() => {
 
 // 过滤没有Manage权限的文件夹ID
 function filterHasPermissionFolderIds(folderIds: string[]) {
-  if (hasPermission(
-    [
-      RoleConst.WORKSPACE_MANAGE.getWorkspaceRole,
-      resourceAuthorizationOfManager.value
-    ],'OR'
-  )) {
+  if (
+    hasPermission(
+      [RoleConst.WORKSPACE_MANAGE.getWorkspaceRole, resourceAuthorizationOfManager.value],
+      'OR',
+    )
+  ) {
     return folderIds
+  } else {
+    return folderIds.filter((id) => permissionPrecise.value.folderManage(id))
   }
-  else {
-    return folderIds.filter(id => permissionPrecise.value.folderManage(id))
-  }
-  
 }
 
 function confirmSinglePermission() {
@@ -270,7 +283,7 @@ function confirmSinglePermission() {
       user_id: row.id,
       permission: val,
       include_children: authAllChildren.value,
-      ...(folderIds.length > 0 && {folder_ids: folderIds})
+      ...(folderIds.length > 0 && { folder_ids: folderIds }),
     },
   ]
   submitPermissions(obj)
@@ -354,7 +367,7 @@ const handleSelectionChange = (val: any[]) => {
 
 const dialogVisible = ref(false)
 const singleSelectDialogVisible = ref(false)
-const pendingPermissionChange = ref<{ val: any; row: any; } | null>(null)
+const pendingPermissionChange = ref<{ val: any; row: any } | null>(null)
 const radioPermission = ref('')
 const authAllChildren = ref(false)
 function openMulConfigureDialog() {
@@ -379,7 +392,7 @@ function submitDialog() {
     user_id: item.id,
     permission: radioPermission.value,
     include_children: batchAuthAllChildren.value,
-    ...(folderIds.length > 0 && { folder_ids: folderIds })
+    ...(folderIds.length > 0 && { folder_ids: folderIds }),
   }))
   submitPermissions(obj)
   closeDialog()
@@ -403,7 +416,7 @@ function closeDialog() {
 function permissionsHandle(val: any, row: any) {
   if (props.isFolder) {
     singleSelectDialogVisible.value = true
-    pendingPermissionChange.value = {val, row}
+    pendingPermissionChange.value = { val, row }
     return
   }
   const obj = [
@@ -415,7 +428,7 @@ function permissionsHandle(val: any, row: any) {
   submitPermissions(obj)
 }
 
-function submitPermissions( obj: any) {
+function submitPermissions(obj: any) {
   const workspaceId = user.getWorkspaceId() || 'default'
   loadSharedApi({ type: 'resourceAuthorization', systemType: apiType.value })
     .putResourceAuthorization(workspaceId, targetId.value, props.type, obj, loading)
@@ -440,12 +453,13 @@ const getPermissionList = () => {
       loading,
     )
     .then((res: any) => {
-      permissionData.value = res.data.records.map((item: any) => {
-        if (props.isRootFolder && item.permission === 'NOT_AUTH') {
-          return {...item, permission: 'VIEW'}
-        }
-        return item
-      }) || []
+      permissionData.value =
+        res.data.records.map((item: any) => {
+          if (props.isRootFolder && item.permission === 'NOT_AUTH') {
+            return { ...item, permission: 'VIEW' }
+          }
+          return item
+        }) || []
       paginationConfig.total = res.data.total || 0
     })
 }
