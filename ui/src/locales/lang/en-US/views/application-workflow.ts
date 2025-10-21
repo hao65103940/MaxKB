@@ -154,7 +154,7 @@ export default {
       result: 'Search Results',
       searchParam: 'Search Parameters',
       select_variable: 'Select Variable',
-      valueMessage: `Value or {variable} `,
+      valueMessage: `Value or {name} `,
       showKnowledge: {
         label: 'Results are displayed in the knowledge source',
         requiredMessage: 'Please set parameters',

@@ -162,7 +162,7 @@ export default {
       result: '检索结果',
       searchParam: '检索参数',
       select_variable: '选择变量',
-      valueMessage: `值或{变量}`,
+      valueMessage: `值或{name}`,
       showKnowledge: {
         label: '结果显示在知识来源中',
         requiredMessage: '请设置参数',
