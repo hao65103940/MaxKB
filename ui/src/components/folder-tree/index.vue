@@ -273,7 +273,7 @@ const currentNode = ref<Tree | null>(null)
 const ResourceAuthorizationDrawerRef = ref()
 function openAuthorization(data: any) {
   currentNode.value = data
-  ResourceAuthorizationDrawerRef.value.open(data.id)
+  ResourceAuthorizationDrawerRef.value.open(data.id, data)
 }
 
 function refreshFolder() {

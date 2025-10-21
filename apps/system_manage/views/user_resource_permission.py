@@ -164,7 +164,7 @@ class WorkspaceResourceUserPermissionView(APIView):
     def put(self, request: Request, workspace_id: str, target: str, resource: str):
         return result.success(ResourceUserPermissionSerializer(
             data={'workspace_id': workspace_id, "target": target, 'auth_target_type': resource, })
-                              .edit(instance=request.data))
+                              .edit(instance=request.data, current_user_id=request.user.id))
 
     class Page(APIView):
         authentication_classes = [TokenAuth]

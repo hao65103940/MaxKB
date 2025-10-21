@@ -123,6 +123,9 @@ export default {
       roleDesc: 'Authorize users based on their roles to access this resource',
       notAuthorized: 'Not Authorized',
       configure: 'Configure Permission',
+      currentOnly: 'Current resource only',
+      includeAll: 'Include all sub-resources',
+      effectiveResource: 'Effective Resource',
     },
   },
   resource_management: {

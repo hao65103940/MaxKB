@@ -11,7 +11,8 @@ import os
 
 from django.core.cache import cache
 from django.db import models
-from django.db.models import QuerySet, Q
+from django.db.models import QuerySet, Q, TextField
+from django.db.models.functions import Cast
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
@@ -208,7 +209,7 @@ class UserResourcePermissionSerializer(serializers.Serializer):
             auth_target_type=auth_target_type,
             permission_list=[ResourcePermission.VIEW,
                              ResourcePermission.MANAGE] if (
-                        auth_type == ResourceAuthType.RESOURCE_PERMISSION_GROUP or is_folder) else [
+                    auth_type == ResourceAuthType.RESOURCE_PERMISSION_GROUP or is_folder) else [
                 ResourcePermissionRole.ROLE],
             workspace_id=workspace_id,
             user_id=user_id,
@@ -326,6 +327,12 @@ class ResourceUserPermissionSerializer(serializers.Serializer):
     auth_target_type = serializers.CharField(required=True, label=_('resource'))
     users_permission = ResourceUserPermissionEditRequest(required=False, many=True, label=_('users_permission'))
 
+    RESOURCE_MODEL_MAP = {
+        'APPLICATION': Application,
+        'KNOWLEDGE': Knowledge,
+        'TOOL': Tool
+    }
+
     def get_queryset(self, instance):
 
         user_query_set = QuerySet(model=get_dynamics_model({
@@ -392,7 +399,28 @@ class ResourceUserPermissionSerializer(serializers.Serializer):
                                                                 ))
         return resource_user_permission_page_list
 
-    def edit(self, instance, with_valid=True):
+    def get_has_manage_permission_resource_under_folders(self, current_user_id, folder_ids):
+
+        workspace_id = self.data.get("workspace_id")
+        auth_target_type = self.data.get("auth_target_type")
+        workspace_manage = is_workspace_manage(current_user_id, workspace_id)
+        resource_model = self.RESOURCE_MODEL_MAP[auth_target_type]
+
+        if workspace_manage:
+            current_user_managed_resources_ids = QuerySet(resource_model).filter(workspace_id=workspace_id, folder__in=folder_ids).annotate(
+                    id_str=Cast('id', TextField())
+                ).values_list("id", flat=True)
+        else:
+            current_user_managed_resources_ids = QuerySet(WorkspaceUserResourcePermission).filter(
+                workspace_id=workspace_id, user_id=current_user_id, auth_target_type=auth_target_type,
+                target__in=QuerySet(resource_model).filter(workspace_id=workspace_id, folder__in=folder_ids).annotate(
+                    id_str=Cast('id', TextField())
+                ).values_list("id", flat=True),
+                permission_list__contains=['MANAGE']).values_list('target', flat=True)
+
+        return current_user_managed_resources_ids
+
+    def edit(self, instance, with_valid=True, current_user_id=None):
         if with_valid:
             self.is_valid(raise_exception=True)
             ResourceUserPermissionEditRequest(data=instance, many=True).is_valid(
@@ -404,27 +432,36 @@ class ResourceUserPermissionSerializer(serializers.Serializer):
         users_permission = instance
 
         users_id = [item["user_id"] for item in users_permission]
+        include_children = users_permission[0].get('include_children')
+        folder_ids = users_permission[0].get('folder_ids')
         # 删除已存在的对应的用户在该资源下的权限
+
+        if include_children:
+            managed_resource_ids = list(
+                self.get_has_manage_permission_resource_under_folders(current_user_id, folder_ids)) + folder_ids
+
+        else:
+            managed_resource_ids = [target]
         QuerySet(WorkspaceUserResourcePermission).filter(
             workspace_id=workspace_id,
-            target=target,
+            target__in=managed_resource_ids,
             auth_target_type=auth_target_type,
             user_id__in=users_id
         ).delete()
 
-        save_list = []
-        for item in users_permission:
-            permission = item['permission']
-            auth_type, permission_list = permission_map[permission]
-
-            save_list.append(WorkspaceUserResourcePermission(
-                target=target,
+        save_list = [
+            WorkspaceUserResourcePermission(
+                target=resource_id,
                 auth_target_type=auth_target_type,
                 workspace_id=workspace_id,
-                auth_type=auth_type,
+                auth_type=permission_map[item['permission']][0],
                 user_id=item["user_id"],
-                permission_list=permission_list
-            ))
+                permission_list=permission_map[item['permission']][1]
+            )
+            for resource_id in managed_resource_ids
+            for item in users_permission
+        ]
+
         if save_list:
             QuerySet(WorkspaceUserResourcePermission).bulk_create(save_list)
 
