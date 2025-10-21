@@ -437,6 +437,11 @@ onBeforeMount(() => {
       dd.runtime.permission.requestAuthCode({corpId: code}).then((res) => {
         console.log('DingTalk client request success:', res)
         chatUser.dingOauth2Callback(res.code, accessToken).then(() => {
+          router.push({
+              name: 'chat',
+              params: {accessToken: accessToken},
+              query: route.query,
+            })
         })
       })
     }
