@@ -155,6 +155,11 @@ except Exception as e:
         return f"""
 import os
 import sys
+import logging
+logging.basicConfig(level=logging.WARNING)
+logging.getLogger("mcp").setLevel(logging.ERROR)
+logging.getLogger("mcp.server").setLevel(logging.ERROR)
+
 path_to_exclude = ['/opt/py3/lib/python3.11/site-packages', '/opt/maxkb-app/apps']
 sys.path = [p for p in sys.path if p not in path_to_exclude]
 sys.path += {python_paths}
