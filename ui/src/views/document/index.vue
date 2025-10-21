@@ -104,15 +104,34 @@
                 </el-dropdown>
               </template>
             </div>
-            <div>
-              <el-input
-                v-model="filterText"
-                :placeholder="$t('common.searchBar.placeholder')"
-                prefix-icon="Search"
-                class="w-240"
-                @change="getList"
-                clearable
-              />
+            <div class="flex">
+              <div class="flex-between complex-search">
+                <el-select
+                  class="complex-search__left"
+                  v-model="search_type"
+                  style="width: 120px"
+                  @change="search_type_change"
+                >
+                  <el-option :label="$t('dynamicsForm.tag.label')" value="tag" />
+                  <el-option :label="$t('views.tool.form.toolName.label')" value="name" />
+                </el-select>
+                <el-input
+                  v-if="search_type === 'name'"
+                  v-model="search_form.name"
+                  @change="refresh"
+                  :placeholder="$t('common.searchBar.placeholder')"
+                  style="width: 220px"
+                  clearable
+                />
+                <el-input
+                  v-if="search_type === 'tag'"
+                  v-model="search_form.tag"
+                  @change="refresh"
+                  :placeholder="$t('views.document.tag.requiredMessage3')"
+                  style="width: 220px"
+                  clearable
+                />
+              </div>
               <el-button @click="openTagDrawer" class="ml-12">
                 {{ $t('views.document.tag.label') }}
               </el-button>
@@ -781,6 +800,12 @@ const getTaskState = (status: string, taskType: number) => {
   return taskType - 1 > statusList.length + 1 ? 'n' : statusList[taskType - 1]
 }
 
+const search_type = ref('name')
+const search_form = ref<any>({
+  name: '',
+  tag: '',
+})
+
 const beforePagination = computed(() => common.paginationConfig[storeKey])
 const beforeSearch = computed(() => common.search[storeKey])
 const embeddingContentDialogRef = ref<InstanceType<typeof EmbeddingContentDialog>>()
@@ -1184,10 +1209,12 @@ function handleSortChange({ prop, order }: { prop: string; order: string }) {
 
 function getList(bool?: boolean) {
   const param = {
-    ...(filterText.value && { name: filterText.value }),
     ...filterMethod.value,
     order_by: orderBy.value,
     folder_id: folderId,
+  }
+  if (search_form.value[search_type.value]) {
+    param[search_type.value] = search_form.value[search_type.value]
   }
   loadSharedApi({ type: 'document', isShared: isShared.value, systemType: apiType.value })
     .getDocumentPage(id as string, paginationConfig.value, param, bool ? undefined : loading)
@@ -1195,6 +1222,10 @@ function getList(bool?: boolean) {
       documentData.value = res.data.records
       paginationConfig.value.total = res.data.total
     })
+}
+
+const search_type_change = () => {
+  search_form.value = { name: '', tag: '' }
 }
 
 function getDetail() {

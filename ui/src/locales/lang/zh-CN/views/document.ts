@@ -109,6 +109,7 @@ export default {
     deleteTip: '删除后使用该标签的资源将会删除该标签，请谨慎操作!',
     requiredMessage1: '请输入标签',
     requiredMessage2: '请输入标签值',
+    requiredMessage3: '请输入标签或标签值',
   },
   table: {
     name: '文件名称',

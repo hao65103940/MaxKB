@@ -597,6 +597,7 @@ class DocumentView(APIView):
                     'knowledge_id': knowledge_id,
                     'folder_id': request.query_params.get('folder_id'),
                     'name': request.query_params.get('name'),
+                    'tag': request.query_params.get('tag'),
                     'desc': request.query_params.get("desc"),
                     'user_id': request.query_params.get('user_id'),
                     'status': request.query_params.get('status'),

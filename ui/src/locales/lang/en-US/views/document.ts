@@ -114,6 +114,7 @@ export default {
       'After deletion, resources using this tag will have the tag removed. Please proceed with caution!',
     requiredMessage1: 'Please enter a tag',
     requiredMessage2: 'Please enter a value',
+    requiredMessage3: 'Please enter a tag or value',
   },
   table: {
     name: 'Document Name',

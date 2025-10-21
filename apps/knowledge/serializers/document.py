@@ -389,6 +389,7 @@ class DocumentSerializers(serializers.Serializer):
         task_type = serializers.IntegerField(required=False, label=_('task type'))
         status = serializers.CharField(required=False, label=_('status'), allow_null=True, allow_blank=True)
         order_by = serializers.CharField(required=False, label=_('order by'), allow_null=True, allow_blank=True)
+        tag = serializers.CharField(required=False, label=_('tag'), allow_null=True, allow_blank=True)
 
         def get_query_set(self):
             query_set = QuerySet(model=Document)
@@ -414,6 +415,12 @@ class DocumentSerializers(serializers.Serializer):
                         query_set = query_set.filter(status__icontains=status)
                     else:
                         query_set = query_set.filter(status__iregex='^[2n]*$')
+            if 'tag' in self.data and self.data.get('tag') not in [None, '']:
+                tag_name = self.data.get('tag')
+                document_id_list = QuerySet(DocumentTag).filter(
+                    Q(tag__key__icontains=tag_name) | Q(tag__value__icontains=tag_name)
+                ).values_list('document_id', flat=True)
+                query_set = query_set.filter(id__in=document_id_list)
             order_by = self.data.get('order_by', '')
             order_by_query_set = QuerySet(model=get_dynamics_model(
                 {'char_length': models.CharField(), 'paragraph_count': models.IntegerField(),

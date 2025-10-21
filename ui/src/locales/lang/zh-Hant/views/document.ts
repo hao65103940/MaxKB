@@ -111,6 +111,7 @@ export default {
     deleteTip: '刪除後使用該標籤的資源將會刪除該標籤，請謹慎操作!',
     requiredMessage1: '請輸入標籤',
     requiredMessage2: '請輸入標籤值',
+    requiredMessage3: '請輸入標籤或標籤值',
   },
   table: {
     name: '文件名稱',
