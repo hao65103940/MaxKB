@@ -13,12 +13,12 @@ const workspace = {
             ],
             'OR'
     ),
-    folderCreate: () => 
+    folderCreate: (folder_id: string) => 
         hasPermission(
             [
-              RoleConst.USER.getWorkspaceRole,
+              new ComplexPermission([RoleConst.USER],[PermissionConst.APPLICATION.getApplicationWorkspaceResourcePermission(folder_id)],[],'AND'),
               RoleConst.WORKSPACE_MANAGE.getWorkspaceRole,
-              PermissionConst.APPLICATION_CREATE.getWorkspacePermission,
+              PermissionConst.APPLICATION_FOLDER_EDIT.getApplicationWorkspaceResourcePermission(folder_id),
               PermissionConst.APPLICATION_CREATE.getWorkspacePermissionWorkspaceManageRole,  
             ],
             'OR'
@@ -29,7 +29,37 @@ const workspace = {
               new ComplexPermission([RoleConst.USER],[PermissionConst.APPLICATION.getApplicationWorkspaceResourcePermission(folder_id)],[],'AND'),  
               RoleConst.WORKSPACE_MANAGE.getWorkspaceRole,
               PermissionConst.APPLICATION_FOLDER_READ.getApplicationWorkspaceResourcePermission(folder_id),
-              PermissionConst.APPLICATION_FOLDER_READ.getWorkspacePermissionWorkspaceManageRole,  
+              PermissionConst.APPLICATION_READ.getWorkspacePermissionWorkspaceManageRole,  
+            ],
+            'OR'
+    ),
+    folderEdit: (folder_id: string) => 
+        hasPermission(
+            [
+              new ComplexPermission([RoleConst.USER],[PermissionConst.APPLICATION.getApplicationWorkspaceResourcePermission(folder_id)],[],'AND'),
+              RoleConst.WORKSPACE_MANAGE.getWorkspaceRole,
+              PermissionConst.APPLICATION_FOLDER_EDIT.getApplicationWorkspaceResourcePermission(folder_id),
+              PermissionConst.APPLICATION_EDIT.getWorkspacePermissionWorkspaceManageRole,
+            ],
+            'OR'
+    ),
+    folderAuth: (folder_id: string) => 
+        hasPermission(
+            [
+              new ComplexPermission([RoleConst.USER],[PermissionConst.APPLICATION.getApplicationWorkspaceResourcePermission(folder_id)],[],'AND'),  
+              RoleConst.WORKSPACE_MANAGE.getWorkspaceRole,
+              PermissionConst.APPLICATION_FOLDER_EDIT.getApplicationWorkspaceResourcePermission(folder_id),
+              PermissionConst.APPLICATION_RESOURCE_AUTHORIZATION.getWorkspacePermissionWorkspaceManageRole,  
+            ],
+            'OR'
+    ),
+    folderDelete: (folder_id: string) => 
+        hasPermission(
+            [
+              new ComplexPermission([RoleConst.USER],[PermissionConst.APPLICATION.getApplicationWorkspaceResourcePermission(folder_id)],[],'AND'),
+              RoleConst.WORKSPACE_MANAGE.getWorkspaceRole,
+              PermissionConst.APPLICATION_FOLDER_EDIT.getApplicationWorkspaceResourcePermission(folder_id),
+              PermissionConst.APPLICATION_DELETE.getWorkspacePermissionWorkspaceManageRole
             ],
             'OR'
     ),
@@ -73,16 +103,6 @@ const workspace = {
             ],
             'OR'
     ),
-    folderEdit: () => 
-        hasPermission(
-            [
-              RoleConst.USER.getWorkspaceRole,
-              RoleConst.WORKSPACE_MANAGE.getWorkspaceRole,
-              PermissionConst.APPLICATION_EDIT.getWorkspacePermissionWorkspaceManageRole,
-              PermissionConst.APPLICATION_EDIT.getWorkspacePermission
-            ],
-            'OR'
-    ),
     export: (source_id:string) => 
         hasPermission(
             [
@@ -103,16 +123,7 @@ const workspace = {
             ],
             'OR'
     ),
-    folderDelete: () => 
-        hasPermission(
-            [
-              RoleConst.USER.getWorkspaceRole,
-              RoleConst.WORKSPACE_MANAGE.getWorkspaceRole,
-              PermissionConst.APPLICATION_DELETE.getWorkspacePermissionWorkspaceManageRole,
-              PermissionConst.APPLICATION_DELETE.getWorkspacePermission
-            ],
-            'OR'
-    ),
+
     overview_embed: (source_id:string) => 
         hasPermission(
             [

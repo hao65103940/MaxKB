@@ -163,6 +163,7 @@ const systemManage = {
   folderManage: () => false,
   folderCreate: () => false,
   folderEdit: () => false,
+  folderAuth: () => false,
   folderDelete: () => false,
   hit_test: () => 
     hasPermission([

@@ -48,7 +48,7 @@
               </div>
 
               <div
-                v-if="canOperation && permissionPrecise.folderManage(data.id)"
+                v-if="canOperation && MoreFilledPermission(node, data)"
                 @click.stop
                 v-show="hoverNodeId === data.id"
                 @mouseenter.stop="handleMouseEnter(data)"
@@ -56,28 +56,28 @@
                 class="mr-16"
               >
                 <el-dropdown trigger="click" :teleported="false">
-                  <el-button text class="w-full" v-if="permissionPrecise.folderManage(data.id)">
+                  <el-button text class="w-full" v-if="MoreFilledPermission(node, data)">
                     <AppIcon iconName="app-more"></AppIcon>
                   </el-button>
                   <template #dropdown>
                     <el-dropdown-menu>
                       <el-dropdown-item
                         @click.stop="openCreateFolder(data)"
-                        v-if="node.level !== 3 && permissionPrecise.folderManage(data.id)"
+                        v-if="node.level !== 3 && permissionPrecise.folderCreate(data.id)"
                       >
                         <AppIcon iconName="app-add-folder" class="color-secondary"></AppIcon>
                         {{ $t('components.folder.addChildFolder') }}
                       </el-dropdown-item>
                       <el-dropdown-item
                         @click.stop="openEditFolder(data)"
-                        v-if="permissionPrecise.folderManage(data.id)"
+                        v-if="permissionPrecise.folderEdit(data.id)"
                       >
                         <AppIcon iconName="app-edit" class="color-secondary"></AppIcon>
                         {{ $t('common.edit') }}
                       </el-dropdown-item>
                       <el-dropdown-item
                         @click.stop="openAuthorization(data)"
-                        v-if="permissionPrecise.folderManage(data.id)"
+                        v-if="permissionPrecise.folderAuth(data.id)"
                       > 
                         <AppIcon iconName="app-resource-authorization" class="color-secondary"></AppIcon>
                         {{ $t('views.system.resourceAuthorization.title') }}
@@ -86,7 +86,7 @@
                         divided
                         @click.stop="deleteFolder(data)"
                         :disabled="!data.parent_id"
-                        v-if="permissionPrecise.folderManage(data.id)"
+                        v-if="permissionPrecise.folderDelete(data.id)"
                       >
                         <AppIcon iconName="app-delete" class="color-secondary"></AppIcon>
                         {{ $t('common.delete') }}
@@ -175,11 +175,12 @@ const permissionPrecise = computed(() => {
   return permissionMap[resourceType.value!]['workspace']
 })
 
-const MoreFilledPermission = (node: any) => {
+const MoreFilledPermission = (node: any, data: any) => {
   return (
-    (node.level !== 3 && permissionPrecise.value.folderCreate()) ||
-    permissionPrecise.value.folderEdit() ||
-    permissionPrecise.value.folderDelete()
+    (node.level !== 3 && permissionPrecise.value.folderCreate(data.id)) ||
+    permissionPrecise.value.folderEdit(data.id) ||
+    permissionPrecise.value.folderDelete(data.id) ||
+    permissionPrecise.value.folderAuth(data.id)
   )
 }
 

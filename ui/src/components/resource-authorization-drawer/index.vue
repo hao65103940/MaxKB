@@ -190,6 +190,8 @@ import permissionMap from '@/permission'
 import { loadSharedApi } from '@/utils/dynamics-api/shared-api'
 const route = useRoute()
 import useStore from '@/stores'
+import { hasPermission } from '@/utils/permission/index'
+import { PermissionConst, RoleConst } from '@/utils/permission/data'
 
 const { user } = useStore()
 const props = defineProps<{
@@ -229,9 +231,30 @@ function getAllFolderIds(data: any) {
   return [data.id,...(data.children?.flatMap((child: any) => getAllFolderIds(child)) || [])]
 }
 
+const RESOURCE_PERMISSION_MAP = {
+  application: PermissionConst.APPLICATION_RESOURCE_AUTHORIZATION.getWorkspacePermissionWorkspaceManageRole,
+  knowledge: PermissionConst.KNOWLEDGE_RESOURCE_AUTHORIZATION.getWorkspacePermissionWorkspaceManageRole,
+  tool: PermissionConst.TOOL_RESOURCE_AUTHORIZATION.getWorkspacePermissionWorkspaceManageRole,
+} 
+
+const resourceAuthorizationOfManager = computed(() => {
+  return RESOURCE_PERMISSION_MAP[folderType.value]
+})
+
 // 过滤没有Manage权限的文件夹ID
 function filterHasPermissionFolderIds(folderIds: string[]) {
-  return folderIds.filter(id => permissionPrecise.value.folderManage(id))
+  if (hasPermission(
+    [
+      RoleConst.WORKSPACE_MANAGE.getWorkspaceRole,
+      resourceAuthorizationOfManager.value
+    ],'OR'
+  )) {
+    return folderIds
+  }
+  else {
+    return folderIds.filter(id => permissionPrecise.value.folderManage(id))
+  }
+  
 }
 
 function confirmSinglePermission() {

@@ -40,34 +40,63 @@ const workspace = {
       ],
       'OR'
     ),
-  folderRead: () => true,
-  folderManage: () => true,
-  folderCreate: () =>
-    hasPermission(
-      [
-        RoleConst.WORKSPACE_MANAGE.getWorkspaceRole,
-        RoleConst.USER.getWorkspaceRole,
-        PermissionConst.TOOL_CREATE.getWorkspacePermission,
-        PermissionConst.TOOL_CREATE.getWorkspacePermissionWorkspaceManageRole
-      ],
-      'OR'
+  folderCreate: (folder_id: string) => 
+        hasPermission(
+            [
+              new ComplexPermission([RoleConst.USER],[PermissionConst.TOOL.getToolWorkspaceResourcePermission(folder_id)],[],'AND'),
+              RoleConst.WORKSPACE_MANAGE.getWorkspaceRole,
+              PermissionConst.TOOL_FOLDER_EDIT.getToolWorkspaceResourcePermission(folder_id),
+              PermissionConst.TOOL_CREATE.getWorkspacePermissionWorkspaceManageRole,  
+            ],
+            'OR'
     ),
+  folderRead: (folder_id: string) => 
+        hasPermission(
+            [
+              new ComplexPermission([RoleConst.USER],[PermissionConst.TOOL.getToolWorkspaceResourcePermission(folder_id)],[],'AND'),
+              RoleConst.WORKSPACE_MANAGE.getWorkspaceRole,
+              PermissionConst.TOOL_FOLDER_READ.getToolWorkspaceResourcePermission(folder_id),
+              PermissionConst.TOOL_READ.getWorkspacePermissionWorkspaceManageRole,  
+            ],
+            'OR'
+    ),
+  folderEdit: (folder_id: string) => 
+        hasPermission(
+            [
+              new ComplexPermission([RoleConst.USER],[PermissionConst.TOOL.getToolWorkspaceResourcePermission(folder_id)],[],'AND'),
+              RoleConst.WORKSPACE_MANAGE.getWorkspaceRole,
+              PermissionConst.TOOL_FOLDER_EDIT.getToolWorkspaceResourcePermission(folder_id),
+              PermissionConst.TOOL_EDIT.getWorkspacePermissionWorkspaceManageRole,  
+            ],
+            'OR'
+    ),
+  folderAuth: (folder_id: string) => 
+        hasPermission(
+            [
+              new ComplexPermission([RoleConst.USER],[PermissionConst.TOOL.getToolWorkspaceResourcePermission(folder_id)],[],'AND'),
+              RoleConst.WORKSPACE_MANAGE.getWorkspaceRole,
+              PermissionConst.TOOL_FOLDER_EDIT.getToolWorkspaceResourcePermission(folder_id),
+              PermissionConst.TOOL_RESOURCE_AUTHORIZATION.getWorkspacePermissionWorkspaceManageRole,  
+            ],
+            'OR'
+    ),
+  folderDelete: (folder_id: string) => 
+        hasPermission(
+            [
+              new ComplexPermission([RoleConst.USER],[PermissionConst.TOOL.getToolWorkspaceResourcePermission(folder_id)],[],'AND'),
+              RoleConst.WORKSPACE_MANAGE.getWorkspaceRole,
+              PermissionConst.TOOL_FOLDER_EDIT.getToolWorkspaceResourcePermission(folder_id),
+              PermissionConst.TOOL_DELETE.getWorkspacePermissionWorkspaceManageRole,  
+            ],
+            'OR'
+    ),
+  folderManage: () => true,
   delete: (source_id:string) =>
     hasPermission(
       [
         new ComplexPermission([RoleConst.USER],[PermissionConst.TOOL.getToolWorkspaceResourcePermission(source_id)],[],'AND'),
         RoleConst.WORKSPACE_MANAGE.getWorkspaceRole,
         PermissionConst.TOOL_DELETE.getToolWorkspaceResourcePermission(source_id),
-        PermissionConst.TOOL_DELETE.getWorkspacePermissionWorkspaceManageRole
-      ],
-      'OR',
-    ),
-  folderDelete: () =>
-    hasPermission(
-      [
-        RoleConst.USER.getWorkspaceRole,
-        RoleConst.WORKSPACE_MANAGE.getWorkspaceRole,
-        PermissionConst.TOOL_DELETE.getWorkspacePermission,
         PermissionConst.TOOL_DELETE.getWorkspacePermissionWorkspaceManageRole
       ],
       'OR',
@@ -91,16 +120,6 @@ const workspace = {
         PermissionConst.TOOL_EDIT.getWorkspacePermissionWorkspaceManageRole
       ],
       'OR'
-    ),
-  folderEdit: () =>
-    hasPermission(
-      [
-        RoleConst.USER.getWorkspaceRole,
-        RoleConst.WORKSPACE_MANAGE.getWorkspaceRole,
-        PermissionConst.TOOL_EDIT.getWorkspacePermission,
-        PermissionConst.TOOL_EDIT.getWorkspacePermissionWorkspaceManageRole
-      ],
-      'OR',
     ),
   copy: (source_id:string) =>
     hasPermission(

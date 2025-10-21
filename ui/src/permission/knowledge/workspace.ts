@@ -20,17 +20,56 @@ const workspace = {
       ],
       'OR',
     ),
-  folderRead: () => true,
+  folderRead: (folder_id: string) => 
+        hasPermission(
+            [
+              new ComplexPermission([RoleConst.USER],[PermissionConst.KNOWLEDGE.getKnowledgeWorkspaceResourcePermission(folder_id)],[],'AND'),
+              RoleConst.WORKSPACE_MANAGE.getWorkspaceRole,
+              PermissionConst.KNOWLEDGE_FOLDER_READ.getKnowledgeWorkspaceResourcePermission(folder_id),
+              PermissionConst.KNOWLEDGE_READ.getWorkspacePermissionWorkspaceManageRole,  
+            ],
+            'OR'
+    ),
   folderManage: () => true,
-  folderCreate: () =>
-    hasPermission(
-      [
-        RoleConst.USER.getWorkspaceRole,
-        RoleConst.WORKSPACE_MANAGE.getWorkspaceRole,
-        PermissionConst.KNOWLEDGE_CREATE.getWorkspacePermission,
-        PermissionConst.KNOWLEDGE_CREATE.getWorkspacePermissionWorkspaceManageRole,
-      ],
-      'OR',
+  folderAuth: (folder_id: string) => 
+        hasPermission(
+            [
+              new ComplexPermission([RoleConst.USER],[PermissionConst.KNOWLEDGE.getKnowledgeWorkspaceResourcePermission(folder_id)],[],'AND'),
+              RoleConst.WORKSPACE_MANAGE.getWorkspaceRole,
+              PermissionConst.KNOWLEDGE_FOLDER_EDIT.getKnowledgeWorkspaceResourcePermission(folder_id),
+              PermissionConst.KNOWLEDGE_RESOURCE_AUTHORIZATION.getWorkspacePermissionWorkspaceManageRole,  
+            ],
+            'OR'
+    ),
+  folderCreate: (folder_id: string) => 
+        hasPermission(
+            [
+              new ComplexPermission([RoleConst.USER],[PermissionConst.KNOWLEDGE.getKnowledgeWorkspaceResourcePermission(folder_id)],[],'AND'),
+              RoleConst.WORKSPACE_MANAGE.getWorkspaceRole,
+              PermissionConst.KNOWLEDGE_FOLDER_EDIT.getKnowledgeWorkspaceResourcePermission(folder_id),
+              PermissionConst.KNOWLEDGE_CREATE.getWorkspacePermissionWorkspaceManageRole,  
+            ],
+            'OR'
+    ),
+  folderDelete: (folder_id: string) => 
+        hasPermission(
+            [
+              new ComplexPermission([RoleConst.USER],[PermissionConst.KNOWLEDGE.getKnowledgeWorkspaceResourcePermission(folder_id)],[],'AND'),
+              RoleConst.WORKSPACE_MANAGE.getWorkspaceRole,
+              PermissionConst.KNOWLEDGE_FOLDER_EDIT.getKnowledgeWorkspaceResourcePermission(folder_id),
+              PermissionConst.KNOWLEDGE_DELETE.getWorkspacePermissionWorkspaceManageRole,  
+            ],
+            'OR'
+    ),
+  folderEdit: (folder_id: string) => 
+        hasPermission(
+            [
+              new ComplexPermission([RoleConst.USER],[PermissionConst.KNOWLEDGE.getKnowledgeWorkspaceResourcePermission(folder_id)],[],'AND'),
+              RoleConst.WORKSPACE_MANAGE.getWorkspaceRole,
+              PermissionConst.KNOWLEDGE_FOLDER_EDIT.getKnowledgeWorkspaceResourcePermission(folder_id),
+              PermissionConst.KNOWLEDGE_EDIT.getWorkspacePermissionWorkspaceManageRole,  
+            ],
+            'OR'
     ),
   sync: (source_id:string) =>
     hasPermission(
@@ -82,16 +121,6 @@ const workspace = {
       ],
       'OR',
     ),
-  folderEdit: () =>
-    hasPermission(
-      [
-        RoleConst.USER.getWorkspaceRole,
-        RoleConst.WORKSPACE_MANAGE.getWorkspaceRole,
-        PermissionConst.KNOWLEDGE_EDIT.getWorkspacePermission,
-        PermissionConst.KNOWLEDGE_EDIT.getWorkspacePermissionWorkspaceManageRole,
-      ],
-      'OR',
-    ),
   export: (source_id:string) =>
     hasPermission(
       [
@@ -108,16 +137,6 @@ const workspace = {
         new ComplexPermission([RoleConst.USER],[PermissionConst.KNOWLEDGE.getKnowledgeWorkspaceResourcePermission(source_id)],[],'AND'),
         RoleConst.WORKSPACE_MANAGE.getWorkspaceRole,
         PermissionConst.KNOWLEDGE_DELETE.getKnowledgeWorkspaceResourcePermission(source_id),
-        PermissionConst.KNOWLEDGE_DELETE.getWorkspacePermissionWorkspaceManageRole,
-      ],
-      'OR',
-    ),
-  folderDelete: () =>
-    hasPermission(
-      [
-        RoleConst.USER.getWorkspaceRole,
-        RoleConst.WORKSPACE_MANAGE.getWorkspaceRole,
-        PermissionConst.KNOWLEDGE_DELETE.getWorkspacePermission,
         PermissionConst.KNOWLEDGE_DELETE.getWorkspacePermissionWorkspaceManageRole,
       ],
       'OR',

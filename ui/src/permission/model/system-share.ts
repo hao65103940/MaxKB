@@ -40,6 +40,7 @@ const share = {
   folderManage: () => false,
   folderCreate: () => false,
   folderEdit: () => false,
+  folderAuth: () => false,
   folderDelete: () => false,
 }
 export default share

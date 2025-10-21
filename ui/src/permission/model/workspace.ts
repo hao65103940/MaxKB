@@ -22,6 +22,7 @@ const workspace = {
     ),
   folderRead: () => true,
   folderManage: () => true,
+  folderAuth: () => false,
   folderCreate: () =>
     hasPermission(
       [

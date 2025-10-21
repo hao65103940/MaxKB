@@ -41,7 +41,7 @@ class FolderView(APIView):
         lambda r, kwargs: Permission(group=Group(f"{kwargs.get('source')}_FOLDER"), operate=Operate.EDIT,
                                      resource_path=f"/WORKSPACE/{kwargs.get('workspace_id')}/{kwargs.get('source')}/{r.data.get('parent_id')}"),
         lambda r, kwargs: Permission(group=Group(kwargs.get('source')), operate=Operate.EDIT,
-                                     resource_path=f"/WORKSPACE/{kwargs.get('workspace_id')}/ROLE/WORKSPACE_MANAGE"
+                                     resource_path=f"/WORKSPACE/{kwargs.get('workspace_id')}:ROLE/WORKSPACE_MANAGE"
                                      ),
         lambda r, kwargs: ViewPermission([RoleConstants.USER.get_workspace_role()],
                                          [Permission(group=Group(f"{kwargs.get('source')}_FOLDER"),
@@ -100,7 +100,7 @@ class FolderView(APIView):
         )
         @has_permissions(
             lambda r, kwargs: Permission(group=Group(kwargs.get('source')), operate=Operate.EDIT,
-                                         resource_path=f"/WORKSPACE/{kwargs.get('workspace_id')}/ROLE/WORKSPACE_MANAGE"
+                                         resource_path=f"/WORKSPACE/{kwargs.get('workspace_id')}:ROLE/WORKSPACE_MANAGE"
                                          ),
             lambda r, kwargs: Permission(group=Group(f"{kwargs.get('source')}_FOLDER"), operate=Operate.EDIT,
                                          resource_path=f"/WORKSPACE/{kwargs.get('workspace_id')}/{kwargs.get('source')}/{kwargs.get('folder_id')}"
@@ -152,7 +152,7 @@ class FolderView(APIView):
         )
         @has_permissions(
             lambda r, kwargs: Permission(group=Group(kwargs.get('source')), operate=Operate.EDIT,
-                                         resource_path=f"/WORKSPACE/{kwargs.get('workspace_id')}/ROLE/WORKSPACE_MANAGE"
+                                         resource_path=f"/WORKSPACE/{kwargs.get('workspace_id')}:ROLE/WORKSPACE_MANAGE"
                                          ),
             lambda r, kwargs: Permission(group=Group(f"{kwargs.get('source')}_FOLDER"), operate=Operate.EDIT,
                                          resource_path=f"/WORKSPACE/{kwargs.get('workspace_id')}/{kwargs.get('source')}/{kwargs.get('folder_id')}"

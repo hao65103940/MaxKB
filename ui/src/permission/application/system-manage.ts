@@ -15,6 +15,7 @@ const systemManage = {
     folderEdit: () => false,
     folderRead: () => false,
     folderManage: () => false,
+    folderAuth: () => false,
     export: () =>
         hasPermission(
             [

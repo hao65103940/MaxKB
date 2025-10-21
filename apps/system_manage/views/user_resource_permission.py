@@ -117,7 +117,7 @@ class WorkspaceResourceUserPermissionView(APIView):
     @has_permissions(
         lambda r, kwargs: Permission(group=Group(kwargs.get('resource')),
                                      operate=Operate.AUTH,
-                                     resource_path=f"/WORKSPACE/{kwargs.get('workspace_id')}/ROLE/WORKSPACE_MANAGE"),
+                                     resource_path=f"/WORKSPACE/{kwargs.get('workspace_id')}:ROLE/WORKSPACE_MANAGE"),
         lambda r, kwargs: Permission(group=Group(kwargs.get('resource')),
                                      operate=Operate.AUTH,
                                      resource_path=f"/WORKSPACE/{kwargs.get('workspace_id')}/{kwargs.get('resource')}/{kwargs.get('target')}"),
@@ -151,7 +151,7 @@ class WorkspaceResourceUserPermissionView(APIView):
     @has_permissions(
         lambda r, kwargs: Permission(group=Group(kwargs.get('resource')),
                                      operate=Operate.AUTH,
-                                     resource_path=f"/WORKSPACE/{kwargs.get('workspace_id')}/ROLE/WORKSPACE_MANAGE"),
+                                     resource_path=f"/WORKSPACE/{kwargs.get('workspace_id')}:ROLE/WORKSPACE_MANAGE"),
         lambda r, kwargs: Permission(group=Group(kwargs.get('resource')),
                                      operate=Operate.AUTH,
                                      resource_path=f"/WORKSPACE/{kwargs.get('workspace_id')}/{kwargs.get('resource')}/{kwargs.get('target')}"),
@@ -181,7 +181,7 @@ class WorkspaceResourceUserPermissionView(APIView):
         @has_permissions(
             lambda r, kwargs: Permission(group=Group(kwargs.get('resource')),
                                          operate=Operate.AUTH,
-                                         resource_path=f"/WORKSPACE/{kwargs.get('workspace_id')}/ROLE/WORKSPACE_MANAGE"),
+                                         resource_path=f"/WORKSPACE/{kwargs.get('workspace_id')}:ROLE/WORKSPACE_MANAGE"),
         lambda r, kwargs: Permission(group=Group(kwargs.get('resource')),
                                      operate=Operate.AUTH,
                                      resource_path=f"/WORKSPACE/{kwargs.get('workspace_id')}/{kwargs.get('resource')}/{kwargs.get('target')}"),
