@@ -1,5 +1,5 @@
 <template>
-  <el-avatar shape="square" style="background: #7F3BF5">
+  <el-avatar shape="square" class="avatar-blue">
     <img src="@/assets/workflow/icon_aggregation.svg" style="width: 100%" alt="" />
   </el-avatar>
 </template>

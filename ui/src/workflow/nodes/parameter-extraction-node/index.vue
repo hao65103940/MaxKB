@@ -1,93 +1,96 @@
 <template>
   <NodeContainer :nodeModel="nodeModel">
-    <el-form
-      @submit.prevent
-      :model="form_data"
-      label-position="top"
-      require-asterisk-position="right"
-      label-width="auto"
-      ref="VariableSplittingRef"
-      hide-required-asterisk
-    >
-      <el-form-item
-        :label="$t('views.application.form.aiModel.label')"
-        prop="model_id"
-        :rules="{
-          required: true,
-          message: $t('views.application.form.aiModel.placeholder'),
-          trigger: 'change',
-        }"
+    <h5 class="title-decoration-1 mb-8">{{ $t('views.applicationWorkflow.nodeSetting') }}</h5>
+    <el-card shadow="never" class="card-never" style="--el-card-padding: 12px">
+      <el-form
+        @submit.prevent
+        :model="form_data"
+        label-position="top"
+        require-asterisk-position="right"
+        label-width="auto"
+        ref="VariableSplittingRef"
+        hide-required-asterisk
       >
-        <template #label>
-          <div class="flex-between w-full">
-            <div>
-              <span
-                >{{ $t('views.application.form.aiModel.label')
-                }}<span class="color-danger">*</span></span
-              >
-            </div>
+        <el-form-item
+          :label="$t('views.application.form.aiModel.label')"
+          prop="model_id"
+          :rules="{
+            required: true,
+            message: $t('views.application.form.aiModel.placeholder'),
+            trigger: 'change',
+          }"
+        >
+          <template #label>
+            <div class="flex-between w-full">
+              <div>
+                <span
+                  >{{ $t('views.application.form.aiModel.label')
+                  }}<span class="color-danger ml-4">*</span></span
+                >
+              </div>
 
-            <el-button
-              :disabled="!form_data.model_id"
-              type="primary"
-              link
-              @click="openAIParamSettingDialog(form_data.model_id)"
-              @refreshForm="refreshParam"
-            >
-              <AppIcon iconName="app-setting"></AppIcon>
-            </el-button>
-          </div>
-        </template>
-        <ModelSelect
-          @change="model_change"
-          @wheel="wheel"
-          :teleported="false"
-          v-model="form_data.model_id"
-          :placeholder="$t('views.application.form.aiModel.placeholder')"
-          :options="modelOptions"
-          @submitModel="getSelectModel"
-          showFooter
-          :model-type="'LLM'"
-        ></ModelSelect>
-      </el-form-item>
-      <el-form-item
-        :label="
-          $t(
-            'views.applicationWorkflow.nodes.parameterExtractionNode.selectVariables.label',
-            '选择变量',
-          )
-        "
-      >
-        <template #label>
-          <div class="flex-between">
-            <div>
-              {{
-                $t(
-                  'views.applicationWorkflow.nodes.parameterExtractionNode.selectVariables.label',
-                  '选择变量',
-                )
-              }}
-              <span class="color-danger">*</span>
+              <el-button
+                :disabled="!form_data.model_id"
+                type="primary"
+                link
+                @click="openAIParamSettingDialog(form_data.model_id)"
+                @refreshForm="refreshParam"
+              >
+                <AppIcon iconName="app-setting"></AppIcon>
+              </el-button>
             </div>
-          </div>
-        </template>
-        <NodeCascader
-          ref="nodeCascaderRef"
-          :nodeModel="nodeModel"
-          class="w-full"
-          :placeholder="
-            $t(
-              'views.applicationWorkflow.nodes.parameterExtractionNode.selectVariables.placeholder',
-            )
-          "
-          v-model="form_data.input_variable"
-        />
-      </el-form-item>
-      <ParametersFieldTable
-        ref="ParametersFieldTableRef"
-        :node-model="nodeModel"
-      ></ParametersFieldTable>
-    </el-form>
+          </template>
+          <ModelSelect
+            @change="model_change"
+            @wheel="wheel"
+            :teleported="false"
+            v-model="form_data.model_id"
+            :placeholder="$t('views.application.form.aiModel.placeholder')"
+            :options="modelOptions"
+            @submitModel="getSelectModel"
+            showFooter
+            :model-type="'LLM'"
+          ></ModelSelect>
+        </el-form-item>
+        <el-form-item
+          prop="input_variable"
+          :rules="{
+            message: $t('views.applicationWorkflow.variable.placeholder'),
+            trigger: 'blur',
+            required: true,
+          }"
+        >
+          <template #label>
+            <div class="flex-between">
+              <div>
+                {{ $t('views.applicationWorkflow.nodes.variableSplittingNode.inputVariables') }}
+                <span class="color-danger">*</span>
+              </div>
+            </div>
+          </template>
+          <NodeCascader
+            ref="nodeCascaderRef"
+            :nodeModel="nodeModel"
+            class="w-full"
+            :placeholder="$t('views.applicationWorkflow.variable.placeholder')"
+            v-model="form_data.input_variable"
+          />
+        </el-form-item>
+        <el-form-item
+          prop="variable_list"
+          :rules="{
+            message: $t('views.applicationWorkflow.nodes.parameterExtractionNode.extractParameters.label'),
+            trigger: 'blur',
+            required: true,
+          }"
+        >
+          <ParametersFieldTable
+            ref="ParametersFieldTableRef"
+            :node-model="nodeModel"
+          ></ParametersFieldTable>
+        </el-form-item>
+      </el-form>
+    </el-card>
     <AIModeParamSettingDialog ref="AIModeParamSettingDialogRef" @refresh="refreshParam" />
   </NodeContainer>
 </template>
@@ -95,7 +98,6 @@
 import { computed, onMounted, ref, inject } from 'vue'
 import NodeContainer from '@/workflow/common/NodeContainer.vue'
 import NodeCascader from '@/workflow/common/NodeCascader.vue'
-import VariableFieldTable from '@/workflow/nodes/variable-splitting/component/VariableFieldTable.vue'
 import AIModeParamSettingDialog from '@/views/application/component/AIModeParamSettingDialog.vue'
 import ParametersFieldTable from '@/workflow/nodes/parameter-extraction-node/component/ParametersFieldTable.vue'
 import { useRoute } from 'vue-router'

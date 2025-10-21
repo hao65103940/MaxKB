@@ -4,6 +4,7 @@
   --el-text-color-primary: #1f2329;
   --el-border-radius-base: 6px;
   --el-menu-item-height: 45px;
+  --el-border-color: rgba(31, 35, 41, 0.15);
 }
 
 .el-avatar {
@@ -183,6 +184,7 @@
 .el-table {
   --el-table-header-bg-color: var(--app-layout-bg-color);
   --el-table-text-color: var(--app-text-color);
+  --el-table-border-color: #DEE0E3;
   font-weight: 400;
   thead {
     color: var(--app-text-color-secondary);

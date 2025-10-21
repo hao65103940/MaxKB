@@ -166,15 +166,15 @@ export const questionNode = {
 }
 export const variableSplittingNode = {
   type: WorkflowType.VariableSplittingNode,
-  text: t('views.applicationWorkflow.nodes.variableSplittingNode.text', '变量拆分'),
-  label: t('views.applicationWorkflow.nodes.variableSplittingNode.label', '变量拆分'),
+  text: t('views.applicationWorkflow.nodes.variableSplittingNode.text'),
+  label: t('views.applicationWorkflow.nodes.variableSplittingNode.label'),
   height: 345,
   properties: {
-    stepName: t('views.applicationWorkflow.nodes.variableSplittingNode.label', '变量拆分'),
+    stepName: t('views.applicationWorkflow.nodes.variableSplittingNode.label'),
     config: {
       fields: [
         {
-          label: t('views.applicationWorkflow.nodes.variableSplittingNode.result', '结果'),
+          label: t('common.result'),
           value: 'result',
         },
       ],
@@ -184,15 +184,16 @@ export const variableSplittingNode = {
 
 export const parameterExtractionNode = {
   type: WorkflowType.ParameterExtractionNode,
-  text: t('views.applicationWorkflow.nodes.parameterExtractionNode.text', '变量拆分'),
-  label: t('views.applicationWorkflow.nodes.parameterExtractionNode.label', '变量拆分'),
+  text: t('views.applicationWorkflow.nodes.parameterExtractionNode.text'),
+  label: t('views.applicationWorkflow.nodes.parameterExtractionNode.label'),
   height: 345,
   properties: {
-    stepName: t('views.applicationWorkflow.nodes.parameterExtractionNode.label', '变量拆分'),
+    width: 430,
+    stepName: t('views.applicationWorkflow.nodes.parameterExtractionNode.label'),
     config: {
       fields: [
         {
-          label: t('views.applicationWorkflow.nodes.parameterExtractionNode.result', '结果'),
+          label: t('common.result'),
           value: 'result',
         },
       ],
@@ -633,11 +634,16 @@ export const menuNodes = [
   },
   {
     label: t('views.applicationWorkflow.nodes.classify.businessLogic'),
-    list: [conditionNode, formNode, variableAssignNode, replyNode, loopNode],
+    list: [conditionNode, formNode, replyNode, loopNode],
   },
   {
-    label: t('views.applicationWorkflow.nodes.classify.dataProcessing', '数据处理'),
-    list: [variableSplittingNode, parameterExtractionNode, variableAggregationNode],
+    label: t('views.applicationWorkflow.nodes.classify.dataProcessing'),
+    list: [
+      variableAssignNode,
+      variableAggregationNode,
+      variableSplittingNode,
+      parameterExtractionNode,
+    ],
   },
   {
     label: t('views.applicationWorkflow.nodes.classify.other'),

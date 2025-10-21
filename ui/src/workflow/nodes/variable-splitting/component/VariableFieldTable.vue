@@ -1,27 +1,25 @@
 <template>
-  <div class="flex-between mb-16">
-    <h5 class="break-all ellipsis lighter" style="max-width: 80%">
-      {{ $t('views.applicationWorkflow.nodes.variableSplittingNode.splitVariables', '拆分变量') }}
+  <div class="flex-between w-full">
+    <h5 class="break-all lighter">
+      {{ $t('views.applicationWorkflow.nodes.variableSplittingNode.splitVariables') }}
+      <span class="color-danger">*</span>
     </h5>
-    <div>
-      <span class="ml-4">
-        <el-button link type="primary" @click="openAddDialog()">
-          <AppIcon iconName="app-add-outlined" class="mr-4"></AppIcon>
-          {{ $t('common.add') }}
-        </el-button>
-      </span>
-    </div>
+    <span class="ml-4" style="margin-top: -4px">
+      <el-button link type="primary" @click="openAddDialog()">
+        <AppIcon iconName="app-add-outlined"></AppIcon>
+      </el-button>
+    </span>
   </div>
   <el-table
     v-if="props.nodeModel.properties.node_data.variable_list?.length > 0"
     :data="props.nodeModel.properties.node_data.variable_list"
-    class="mb-16"
     ref="tableRef"
     row-key="field"
+    class="border-l border-r"
   >
     <el-table-column
       prop="field"
-      :label="$t('dynamicsForm.paramForm.variable.label', '变量')"
+      :label="$t('common.variable')"
       width="95"
     >
       <template #default="{ row }">
@@ -31,11 +29,9 @@
 
     <el-table-column prop="label" :label="$t('dynamicsForm.paramForm.name.label')">
       <template #default="{ row }">
-        <span>
-          <span :title="row.label" class="ellipsis-1">
-            {{ row.label }}
-          </span></span
-        >
+        <span :title="row.label" class="ellipsis-1">
+          {{ row.label }}
+        </span>
       </template>
     </el-table-column>
     <el-table-column :label="$t('common.operation')" align="left" width="90">
@@ -82,7 +78,7 @@ function deleteField(index: any) {
   inputFieldList.value.splice(index, 1)
   const fields = [
     {
-      label: t('views.applicationWorkflow.nodes.variableSplittingNode.result', '结果'),
+      label: t('common.result'),
       value: 'result',
     },
     ...inputFieldList.value.map((item) => ({ label: item.label, value: item.field })),
@@ -105,7 +101,7 @@ function refreshFieldList(data: any, index: any) {
   VariableFieldDialogRef.value.close()
   const fields = [
     {
-      label: t('views.applicationWorkflow.nodes.variableSplittingNode.result', '结果'),
+      label: t('common.result'),
       value: 'result',
     },
     ...inputFieldList.value.map((item) => ({ label: item.label, value: item.field })),
@@ -120,7 +116,7 @@ onMounted(() => {
   set(props.nodeModel.properties.node_data, 'variable_list', inputFieldList)
   const fields = [
     {
-      label: t('views.applicationWorkflow.nodes.variableSplittingNode.result', '结果'),
+      label: t('common.result'),
       value: 'result',
     },
     ...inputFieldList.value.map((item) => ({ label: item.label, value: item.field })),

@@ -39,7 +39,6 @@ export default {
       requiredMessage: '請輸入應用名稱',
     },
     appDescription: {
-      label: '描述',
       placeholder: '描述該應用的應用場景及用途，如：XXX 小助手回答用戶提出的 XXX 產品使用問題',
     },
     appType: {

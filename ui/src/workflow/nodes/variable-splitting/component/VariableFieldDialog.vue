@@ -1,6 +1,10 @@
 <template>
   <el-dialog
-    :title="isEdit ? $t('common.param.editParam') : $t('common.param.addParam')"
+    :title="
+      isEdit
+        ? $t('views.applicationWorkflow.nodes.variableSplittingNode.editVariables')
+        : $t('views.applicationWorkflow.nodes.variableSplittingNode.addVariables')
+    "
     v-model="dialogVisible"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
@@ -16,7 +20,7 @@
       require-asterisk-position="right"
     >
       <el-form-item
-        :label="$t('dynamicsForm.paramForm.field.label')"
+        :label="$t('common.variable')"
         :required="true"
         prop="field"
         :rules="rules.field"
@@ -24,7 +28,9 @@
         <el-input
           v-model="form.field"
           :maxlength="64"
-          :placeholder="$t('dynamicsForm.paramForm.field.placeholder')"
+          :placeholder="
+            $t('views.applicationWorkflow.nodes.variableSplittingNode.variablePlaceholder')
+          "
           show-word-limit
         />
       </el-form-item>
@@ -42,9 +48,7 @@
         />
       </el-form-item>
       <el-form-item
-        :label="
-          $t('views.applicationWorkflow.nodes.variableSplittingNode.expression.label', '表达式')
-        "
+        :label="$t('views.applicationWorkflow.nodes.variableSplittingNode.expression.label')"
         :required="true"
         prop="label"
         :rules="rules.label"
@@ -54,10 +58,7 @@
           :maxlength="64"
           show-word-limit
           :placeholder="
-            $t(
-              'views.applicationWorkflow.nodes.variableSplittingNode.expression.placeholder',
-              '请输入表达式',
-            )
+            $t('views.applicationWorkflow.nodes.variableSplittingNode.expression.placeholder')
           "
         />
       </el-form-item>
@@ -66,7 +67,7 @@
       <span class="dialog-footer">
         <el-button @click.prevent="close"> {{ $t('common.cancel') }} </el-button>
         <el-button type="primary" @click="submit(fieldFormRef)" :loading="loading">
-          {{ isEdit ? $t('common.save') : $t('common.add') }}
+          {{ $t('common.save') }}
         </el-button>
       </span>
     </template>

@@ -24,11 +24,11 @@
           @blur="folderForm.name = folderForm.name.trim()"
         />
       </el-form-item>
-      <el-form-item :label="$t('components.folder.description')" prop="desc">
+      <el-form-item :label="$t('common.desc')" prop="desc">
         <el-input
           v-model="folderForm.desc"
           type="textarea"
-          :placeholder="$t('components.folder.descriptionPlaceholder')"
+          :placeholder="$t('common.descPlaceholder')"
           maxlength="128"
           show-word-limit
           :autosize="{ minRows: 3 }"
@@ -133,7 +133,7 @@ const submitHandle = async () => {
           .then((res) => {
             return user.profile().then(() => {
               return res
-            })         
+            })
           })
           .then((res) => {
           MsgSuccess(t('common.createSuccess'))

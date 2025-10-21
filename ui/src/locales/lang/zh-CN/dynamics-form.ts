@@ -28,9 +28,6 @@ export default {
     placeholder: '请输入关键字搜索',
   },
   paramForm: {
-    variable: {
-      label: '变量',
-    },
     field: {
       label: '参数',
       placeholder: '请输入参数',

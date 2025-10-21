@@ -1,35 +1,56 @@
 <template>
   <NodeContainer :nodeModel="nodeModel">
-    <el-form
-      @submit.prevent
-      :model="form_data"
-      label-position="top"
-      require-asterisk-position="right"
-      label-width="auto"
-      ref="VariableSplittingRef"
-      hide-required-asterisk
-    >
-      <el-form-item
-        :label="$t('views.applicationWorkflow.nodes.variableSplittingNode.label', '输入变量')"
+    <h5 class="title-decoration-1 mb-8">{{ $t('views.applicationWorkflow.nodeSetting') }}</h5>
+    <el-card shadow="never" class="card-never" style="--el-card-padding: 12px">
+      <el-form
+        @submit.prevent
+        :model="form_data"
+        label-position="top"
+        require-asterisk-position="right"
+        label-width="auto"
+        ref="VariableSplittingRef"
+        hide-required-asterisk
       >
-        <template #label>
-          <div class="flex-between">
-            <div>
-              {{ $t('views.applicationWorkflow.nodes.variableSplittingNode.label', '输入变量') }}
-              <span class="color-danger">*</span>
+        <el-form-item
+          prop="input_variable"
+          :rules="{
+            message: $t('views.applicationWorkflow.variable.placeholder'),
+            trigger: 'blur',
+            required: true,
+          }"
+        >
+          <template #label>
+            <div class="flex-between">
+              <div>
+                {{ $t('views.applicationWorkflow.nodes.variableSplittingNode.inputVariables') }}
+                <span class="color-danger">*</span>
+              </div>
             </div>
-          </div>
-        </template>
-        <NodeCascader
-          ref="nodeCascaderRef"
-          :nodeModel="nodeModel"
-          class="w-full"
-          :placeholder="$t('views.applicationWorkflow.variable.placeholder')"
-          v-model="form_data.input_variable"
-        />
-      </el-form-item>
-      <VariableFieldTable ref="VariableFieldTableRef" :node-model="nodeModel"></VariableFieldTable>
-    </el-form>
+          </template>
+          <NodeCascader
+            ref="nodeCascaderRef"
+            :nodeModel="nodeModel"
+            class="w-full"
+            :placeholder="$t('views.applicationWorkflow.variable.placeholder')"
+            v-model="form_data.input_variable"
+          />
+        </el-form-item>
+
+        <el-form-item
+          prop="variable_list"
+          :rules="{
+            message: $t('views.applicationWorkflow.variable.placeholder'),
+            trigger: 'blur',
+            required: true,
+          }"
+        >
+          <VariableFieldTable
+            ref="VariableFieldTableRef"
+            :node-model="nodeModel"
+          ></VariableFieldTable>
+        </el-form-item>
+      </el-form>
+    </el-card>
   </NodeContainer>
 </template>
 <script setup lang="ts">

@@ -56,7 +56,7 @@ const showBack = computed(() => {
       position: absolute;
       top: 36px;
       right: -12px;
-      box-shadow: 0px 5px 10px 0px rgba(31, 35, 41, 0.1);
+      box-shadow: 0px 5px 10px 0px var(--app-text-color-light-1);
       z-index: 1;
     }
 

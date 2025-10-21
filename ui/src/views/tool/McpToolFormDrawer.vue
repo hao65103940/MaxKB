@@ -63,7 +63,7 @@
           </div>
         </el-form-item>
 
-        <el-form-item :label="$t('views.tool.form.mcpDescription.label')">
+        <el-form-item :label="$t('common.desc')">
           <el-input
             v-model="form.desc"
             type="textarea"
@@ -78,7 +78,7 @@
           {{ $t('views.tool.form.mcp.title') }}
         </h4>
 
-        <el-form-item :label="$t('views.tool.form.mcpDescription.label')" prop="code">
+        <el-form-item prop="code">
           <template #label>
             {{ $t('views.tool.form.mcp.label') }}
             <span class="color-danger">*</span>
@@ -98,7 +98,9 @@
 
     <template #footer>
       <div>
-        <el-button :loading="loading" @click="testConnection">{{ $t('views.system.test') }}</el-button>
+        <el-button :loading="loading" @click="testConnection">{{
+          $t('views.system.test')
+        }}</el-button>
         <el-button :loading="loading" @click="visible = false">{{ $t('common.cancel') }}</el-button>
         <el-button
           type="primary"

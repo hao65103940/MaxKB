@@ -20,7 +20,7 @@
         </span>
       </template>
     </el-table-column>
-    <el-table-column prop="desc" :label="$t('views.application.form.appDescription.label')">
+    <el-table-column prop="desc" :label="$t('common.desc')">
       <template #default="{ row }">
         <span class="ellipsis-1" :title="row.desc">
           {{ row.desc }}

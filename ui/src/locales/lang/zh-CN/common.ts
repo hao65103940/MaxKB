@@ -82,6 +82,8 @@ export default {
   selectPlaceholder: '请选择',
   title: '标题',
   content: '内容',
+  desc: '描述',
+  descPlaceholder: '请输入描述',
   rename: '重命名',
   renameSuccess: '重命名成功',
   EditAvatarDialog: {
@@ -117,4 +119,5 @@ export default {
     label: '提示词',
     placeholder: '请输入提示词',
   },
+  variable: '变量',
 }

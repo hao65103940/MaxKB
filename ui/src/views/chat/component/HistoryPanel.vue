@@ -50,11 +50,7 @@
           </el-tooltip>
         </div>
       </div>
-      <div
-        v-show="!isPcCollapse"
-        class="left-height"
-        v-if="showHistory"
-      >
+      <div v-show="!isPcCollapse" class="left-height" v-if="showHistory">
         <el-scrollbar>
           <div class="p-16 pt-0">
             <common-list
@@ -111,11 +107,7 @@
         <template #title>{{ $t('chat.createChat') }}</template>
       </el-menu-item>
 
-      <el-sub-menu
-        v-show="isPcCollapse"
-        index="2"
-        v-if="showHistory"
-      >
+      <el-sub-menu v-show="isPcCollapse" index="2" v-if="showHistory">
         <template #title>
           <AppIcon iconName="app-history-outlined" />
         </template>
@@ -285,7 +277,7 @@ function refreshFieldTitle(chatId: string, abstract: string) {
     padding-left: 8px;
     padding-right: 8px;
     &:hover {
-      background-color: rgba(31, 35, 41, 0.1);
+      background-color: var(--app-text-color-light-1);
     }
     &.is-active {
       background-color: #ffffff;

@@ -418,6 +418,10 @@ export default {
       text: '用於拆分變量',
       result: '結果',
       splitVariables: '拆分變量',
+      inputVariables: '輸入變量',
+      addVariables: '添加變量',
+      editVariables: '編輯變量',
+      variablePlaceholder: '請輸入變量',
       expression: {
         label: '表達式',
         placeholder: '請輸入表達式',
@@ -425,16 +429,10 @@ export default {
     },
     parameterExtractionNode: {
       label: '參數提取',
-      text: ' ',
-      result: '結果',
-      selectVariables: {
-        label: ' ',
-        placeholder: '請選擇要提取的參數',
-      },
+      text: '利用 AI 模型提取結構化參數',
       extractParameters: {
         label: '提取參數',
-        desc: '從文本中提取參數',
-        parameterType: 'Parameter Type',
+        parameterType: '參數類型',
       },
     },
   },

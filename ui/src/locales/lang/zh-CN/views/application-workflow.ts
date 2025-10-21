@@ -50,7 +50,6 @@ export default {
     beautify: '一键美化',
   },
   variable: {
-    label: '变量',
     global: '全局变量',
     chat: '会话变量',
     Referencing: '引用变量',
@@ -443,25 +442,22 @@ export default {
     variableSplittingNode: {
       label: '变量拆分',
       text: '用于拆分变量',
-      result: '结果',
       splitVariables: '拆分变量',
+      inputVariables: '输入变量',
+      addVariables: '添加变量',
+      editVariables: '编辑变量',
+      variablePlaceholder: '请输入变量',
       expression: {
         label: '表达式',
         placeholder: '请输入表达式',
       },
     },
-   parameterExtractionNode: {
-      label: '參數提取',
-      text: '利用 AI 模型提取結構化參數',
-      result: '結果',
-      selectVariables: {
-        label: '選擇變量',
-        placeholder: '請選擇變量',
-      },
+    parameterExtractionNode: {
+      label: '参数提取',
+      text: '利用 AI 模型提取结构化参数',
       extractParameters: {
-        label: '提取參數',
-        desc: '描述',
-        parameterType: '參數類型',
+        label: '提取参数',
+        parameterType: '参数类型',
       },
     },
   },

@@ -44,12 +44,12 @@
         />
       </el-form-item>
       <el-form-item
-        :label="$t('views.application.form.appDescription.label')"
+        :label="$t('common.desc')"
         prop="desc"
         :rules="{
           required: form.is_required,
           message:
-            $t('common.inputPlaceholder') + $t('views.application.form.appDescription.label'),
+            $t('common.inputPlaceholder') + $t('common.desc'),
           trigger: 'blur',
         }"
       >

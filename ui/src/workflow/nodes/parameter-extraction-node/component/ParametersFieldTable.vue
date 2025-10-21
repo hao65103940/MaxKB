@@ -1,34 +1,23 @@
 <template>
-  <div class="flex-between mb-16">
-    <h5 class="break-all ellipsis lighter" style="max-width: 80%">
-      {{
-        $t(
-          'views.applicationWorkflow.nodes.parameterExtractionNode.extractParameters.label',
-          '提取参数',
-        )
-      }}
+  <div class="flex-between w-full">
+    <h5 class="break-all lighter">
+      {{ $t('views.applicationWorkflow.nodes.parameterExtractionNode.extractParameters.label') }}
+      <span class="color-danger">*</span>
     </h5>
-    <div>
-      <span class="ml-4">
-        <el-button link type="primary" @click="openAddDialog()">
-          <AppIcon iconName="app-add-outlined" class="mr-4"></AppIcon>
-          {{ $t('common.add') }}
-        </el-button>
-      </span>
-    </div>
+    <span class="ml-4" style="margin-top: -4px">
+      <el-button link type="primary" @click="openAddDialog()">
+        <AppIcon iconName="app-add-outlined" class="mr-4"></AppIcon>
+      </el-button>
+    </span>
   </div>
   <el-table
     v-if="props.nodeModel.properties.node_data.variable_list?.length > 0"
     :data="props.nodeModel.properties.node_data.variable_list"
-    class="mb-16"
     ref="tableRef"
     row-key="field"
+    class="border-l border-r"
   >
-    <el-table-column
-      prop="field"
-      :label="$t('dynamicsForm.paramForm.field.label', '变量')"
-      width="95"
-    >
+    <el-table-column prop="field" :label="$t('dynamicsForm.paramForm.field.label')" width="90">
       <template #default="{ row }">
         <span :title="row.field" class="ellipsis-1">{{ row.field }}</span>
       </template>
@@ -52,14 +41,10 @@
       "
     >
       <template #default="{ row }">
-        <span>
-          <span :title="row.parameter_type" class="ellipsis-1">
-            {{ row.parameter_type }}
-          </span></span
-        >
+        <el-tag type="info" class="info-tag"> {{ row.parameter_type }}</el-tag>
       </template>
     </el-table-column>
-    <el-table-column :label="$t('common.operation')" align="left" width="90">
+    <el-table-column :label="$t('common.operation')" align="left" width="80">
       <template #default="{ row, $index }">
         <span class="mr-4">
           <el-tooltip effect="dark" :content="$t('common.modify')" placement="top">
@@ -103,7 +88,7 @@ function deleteField(index: any) {
   inputFieldList.value.splice(index, 1)
   const fields = [
     {
-      label: t('views.applicationWorkflow.nodes.variableSplittingNode.result', '结果'),
+      label: t('common.result'),
       value: 'result',
     },
     ...inputFieldList.value.map((item) => ({ label: item.label, value: item.field })),
@@ -126,7 +111,7 @@ function refreshFieldList(data: any, index: any) {
   ParametersFieldDialogRef.value.close()
   const fields = [
     {
-      label: t('views.applicationWorkflow.nodes.variableSplittingNode.result', '结果'),
+      label: t('common.result'),
       value: 'result',
     },
     ...inputFieldList.value.map((item) => ({ label: item.label, value: item.field })),
@@ -141,7 +126,7 @@ onMounted(() => {
   set(props.nodeModel.properties.node_data, 'variable_list', inputFieldList)
   const fields = [
     {
-      label: t('views.applicationWorkflow.nodes.variableSplittingNode.result', '结果'),
+      label: t('common.result'),
       value: 'result',
     },
     ...inputFieldList.value.map((item) => ({ label: item.label, value: item.field })),

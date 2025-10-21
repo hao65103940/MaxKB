@@ -42,7 +42,6 @@ export default {
       requiredMessage: '请输入应用名称',
     },
     appDescription: {
-      label: '描述',
       placeholder: '描述该应用的应用场景及用途，如：XXX 小助手回答用户提出的 XXX 产品使用问题',
     },
     appType: {

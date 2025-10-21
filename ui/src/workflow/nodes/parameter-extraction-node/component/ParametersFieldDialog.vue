@@ -69,27 +69,13 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item
-        :label="
-          $t(
-            'views.applicationWorkflow.nodes.parameterExtractionNode.extractParameters.desc',
-            '描述',
-          )
-        "
-        prop="desc"
-      >
+      <el-form-item :label="$t('common.desc')" prop="desc">
         <el-input
           v-model="form.desc"
           style="width: 100%"
           :rows="2"
           type="textarea"
-          :placeholder="
-            $t('common.inputPlaceholder') +
-            $t(
-              'views.applicationWorkflow.nodes.parameterExtractionNode.extractParameters.desc',
-              '描述',
-            )
-          "
+          :placeholder="$t('common.descPlaceholder')"
         />
       </el-form-item>
     </el-form>
@@ -97,7 +83,7 @@
       <span class="dialog-footer">
         <el-button @click.prevent="close"> {{ $t('common.cancel') }} </el-button>
         <el-button type="primary" @click="submit(fieldFormRef)" :loading="loading">
-          {{ isEdit ? $t('common.save') : $t('common.add') }}
+          {{ $t('common.save') }}
         </el-button>
       </span>
     </template>

@@ -60,7 +60,7 @@
           </div>
         </el-form-item>
 
-        <el-form-item :label="$t('views.tool.form.toolDescription.label')">
+        <el-form-item :label="$t('common.desc')">
           <el-input
             v-model="form.desc"
             type="textarea"

@@ -11,11 +11,11 @@
     >
       <template v-for="(item, index) in form_data.variable_list" :key="item.id">
         <el-card shadow="never" class="card-never mb-8" style="--el-card-padding: 12px">
-          <el-form-item :label="$t('views.applicationWorkflow.variable.label')">
+          <el-form-item >
             <template #label>
               <div class="flex-between">
                 <div>
-                  {{ $t('views.applicationWorkflow.variable.label') }}
+                  {{ $t('common.variable') }}
                   <span class="color-danger">*</span>
                 </div>
                 <el-button

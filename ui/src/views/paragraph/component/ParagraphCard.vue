@@ -33,11 +33,7 @@
             v-if="permissionPrecise.doc_edit(id)"
           >
             <el-button text @click.stop="editParagraph(data)">
-              <AppIcon
-                iconName="app-edit"
-                :size="16"
-                class="color-secondary"
-              ></AppIcon>
+              <AppIcon iconName="app-edit" :size="16" class="color-secondary"></AppIcon>
             </el-button>
           </el-tooltip>
         </span>
@@ -227,7 +223,7 @@ async function changeState(row: any) {
     })
 }
 function getDetail() {
-  loadSharedApi({ type: 'knowledge', systemType: apiType.value, isShared: shareDisabled.value})
+  loadSharedApi({ type: 'knowledge', systemType: apiType.value, isShared: shareDisabled.value })
     .getKnowledgeDetail(id, loading)
     .then((res: any) => {
       knowledgeDetail.value = res.data
@@ -324,7 +320,7 @@ watch(dialogVisible, (val: boolean) => {
   position: relative;
   overflow: inherit;
   &:hover {
-    background: rgba(31, 35, 41, 0.1);
+    background: var(--app-text-color-light-1);
     border: 1px solid #dee0e3;
   }
   &.disabled {
