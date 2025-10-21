@@ -79,12 +79,14 @@ class BaseSearchKnowledgeNode(ISearchKnowledgeStepNode):
         self.context['question'] = question
         self.context['show_knowledge'] = show_knowledge
 
+        document_id_list = None
         if search_scope_type == 'referencing':  # 引用上一步知识库/文档
             if search_scope_source == 'knowledge':  # 知识库
                 knowledge_id_list = self.get_reference_content(search_scope_reference)
             else:  # 文档
+                document_id_list = self.get_reference_content(search_scope_reference)
                 knowledge_id_list = QuerySet(Document).filter(
-                    id__in=self.get_reference_content(search_scope_reference)
+                    id__in=document_id_list
                 ).values_list(
                     'knowledge_id', flat=True
                 ).distinct()
@@ -105,7 +107,7 @@ class BaseSearchKnowledgeNode(ISearchKnowledgeStepNode):
                                     QuerySet(Document).filter(
                                         knowledge_id__in=knowledge_id_list,
                                         is_active=False)]
-        embedding_list = vector.query(question, embedding_value, knowledge_id_list, exclude_document_id_list,
+        embedding_list = vector.query(question, embedding_value, knowledge_id_list, document_id_list, exclude_document_id_list,
                                       exclude_paragraph_id_list, True, knowledge_setting.get('top_n'),
                                       knowledge_setting.get('similarity'),
                                       SearchMode(knowledge_setting.get('search_mode')))

@@ -126,6 +126,7 @@ class BaseVectorStore(ABC):
 
     @abstractmethod
     def query(self, query_text: str, query_embedding: List[float], knowledge_id_list: list[str],
+              document_id_list: list[str] | None,
               exclude_document_id_list: list[str],
               exclude_paragraph_list: list[str], is_active: bool, top_n: int, similarity: float,
               search_mode: SearchMode):
