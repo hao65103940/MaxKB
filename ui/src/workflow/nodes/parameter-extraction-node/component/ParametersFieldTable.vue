@@ -94,6 +94,7 @@ function deleteField(index: any) {
     ...inputFieldList.value.map((item) => ({ label: item.label, value: item.field })),
   ]
   set(props.nodeModel.properties.config, 'fields', fields)
+  props.nodeModel.clear_next_node_field(false)
 }
 
 function refreshFieldList(data: any, index: any) {
@@ -117,6 +118,7 @@ function refreshFieldList(data: any, index: any) {
     ...inputFieldList.value.map((item) => ({ label: item.label, value: item.field })),
   ]
   set(props.nodeModel.properties.config, 'fields', fields)
+  props.nodeModel.clear_next_node_field(false)
 }
 
 onMounted(() => {

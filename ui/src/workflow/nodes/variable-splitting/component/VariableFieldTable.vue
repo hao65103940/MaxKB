@@ -17,11 +17,7 @@
     row-key="field"
     class="border-l border-r"
   >
-    <el-table-column
-      prop="field"
-      :label="$t('common.variable')"
-      width="95"
-    >
+    <el-table-column prop="field" :label="$t('common.variable')" width="95">
       <template #default="{ row }">
         <span :title="row.field" class="ellipsis-1">{{ row.field }}</span>
       </template>
@@ -84,6 +80,7 @@ function deleteField(index: any) {
     ...inputFieldList.value.map((item) => ({ label: item.label, value: item.field })),
   ]
   set(props.nodeModel.properties.config, 'fields', fields)
+  props.nodeModel.clear_next_node_field(false)
 }
 
 function refreshFieldList(data: any, index: any) {
@@ -107,6 +104,7 @@ function refreshFieldList(data: any, index: any) {
     ...inputFieldList.value.map((item) => ({ label: item.label, value: item.field })),
   ]
   set(props.nodeModel.properties.config, 'fields', fields)
+  props.nodeModel.clear_next_node_field(false)
 }
 
 onMounted(() => {
