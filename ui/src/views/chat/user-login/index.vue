@@ -252,7 +252,9 @@ const loginHandle = () => {
       })
     } else {
       const publicKey = forge.pki.publicKeyFromPem(chatUser?.chat_profile?.rasKey as any);
-      const encrypted = publicKey.encrypt(JSON.stringify(loginForm.value), 'RSAES-PKCS1-V1_5');
+      const jsonData = JSON.stringify(loginForm.value);
+      const utf8Bytes = forge.util.encodeUtf8(jsonData);
+      const encrypted = publicKey.encrypt(utf8Bytes, 'RSAES-PKCS1-V1_5');
       const encryptedBase64 = forge.util.encode64(encrypted);
       chatUser.login({
         encryptedData: encryptedBase64,
@@ -438,10 +440,10 @@ onBeforeMount(() => {
         console.log('DingTalk client request success:', res)
         chatUser.dingOauth2Callback(res.code, accessToken).then(() => {
           router.push({
-              name: 'chat',
-              params: {accessToken: accessToken},
-              query: route.query,
-            })
+            name: 'chat',
+            params: {accessToken: accessToken},
+            query: route.query,
+          })
         })
       })
     }
