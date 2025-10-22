@@ -24,7 +24,7 @@ from openpyxl.cell.cell import ILLEGAL_CHARACTERS_RE
 from rest_framework import serializers
 
 from application.models import Chat, Application, ChatRecord
-from common.db.search import get_dynamics_model, native_search, native_page_search
+from common.db.search import get_dynamics_model, native_search, native_page_search, native_page_handler
 from common.exception.app_exception import AppApiException
 from common.utils.common import get_file_content
 from maxkb.conf import PROJECT_DIR
@@ -95,7 +95,8 @@ class ApplicationChatQuerySerializers(serializers.Serializer):
              'trample_num': models.IntegerField(),
              'comparer': models.CharField(),
              'application_chat.update_time': models.DateTimeField(),
-             'application_chat.id': models.UUIDField(), }))
+             'application_chat.id': models.UUIDField(),
+             'application_chat_record_temp.id': models.UUIDField()}))
 
         base_query_dict = {'application_chat.application_id': self.data.get("application_id"),
                            'application_chat.update_time__gte': start_time,
@@ -105,7 +106,6 @@ class ApplicationChatQuerySerializers(serializers.Serializer):
             base_query_dict['application_chat.abstract__icontains'] = self.data.get('abstract')
         if 'username' in self.data and self.data.get('username') is not None:
             base_query_dict['application_chat.asker__username__icontains'] = self.data.get('username')
-
 
         if select_ids is not None and len(select_ids) > 0:
             base_query_dict['application_chat.id__in'] = select_ids
@@ -180,25 +180,26 @@ class ApplicationChatQuerySerializers(serializers.Serializer):
                 str(row.get('create_time').astimezone(pytz.timezone(TIME_ZONE)).strftime('%Y-%m-%d %H:%M:%S')
                     if row.get('create_time') is not None else None)]
 
+    @staticmethod
+    def reset_value(value):
+        if isinstance(value, str):
+            value = re.sub(ILLEGAL_CHARACTERS_RE, '', value)
+        if isinstance(value, datetime.datetime):
+            eastern = pytz.timezone(TIME_ZONE)
+            c = datetime.timezone(eastern._utcoffset)
+            value = value.astimezone(c)
+        return value
+
     def export(self, data, with_valid=True):
         if with_valid:
             self.is_valid(raise_exception=True)
         ApplicationChatRecordExportRequest(data=data).is_valid(raise_exception=True)
 
-        data_list = native_search(self.get_query_set(data.get('select_ids')),
-                                  select_string=get_file_content(
-                                      os.path.join(PROJECT_DIR, "apps", "application", 'sql',
-                                                   ('export_application_chat_ee.sql' if ['PE', 'EE'].__contains__(
-                                                       edition) else 'export_application_chat.sql'))),
-                                  with_table_name=False)
-
-        batch_size = 500
-
         def stream_response():
-            workbook = openpyxl.Workbook()
-            worksheet = workbook.active
-            worksheet.title = 'Sheet1'
-
+            workbook = openpyxl.Workbook(write_only=True)
+            worksheet = workbook.create_sheet(title='Sheet1')
+            current_page = 1
+            page_size = 500
             headers = [gettext('Conversation ID'), gettext('summary'), gettext('User Questions'),
                        gettext('Problem after optimization'),
                        gettext('answer'), gettext('User feedback'),
@@ -207,24 +208,22 @@ class ApplicationChatQuerySerializers(serializers.Serializer):
                        gettext('Annotation'), gettext('USER'), gettext('Consuming tokens'),
                        gettext('Time consumed (s)'),
                        gettext('Question Time')]
-            for col_idx, header in enumerate(headers, 1):
-                cell = worksheet.cell(row=1, column=col_idx)
-                cell.value = header
+            worksheet.append(headers)
+            for data_list in native_page_handler(page_size, self.get_query_set(data.get('select_ids')),
+                                                 primary_key='application_chat_record_temp.id',
+                                                 primary_queryset='default_queryset',
+                                                 get_primary_value=lambda item: item.get('id'),
+                                                 select_string=get_file_content(
+                                                     os.path.join(PROJECT_DIR, "apps", "application", 'sql',
+                                                                  ('export_application_chat_ee.sql' if ['PE',
+                                                                                                        'EE'].__contains__(
+                                                                      edition) else 'export_application_chat.sql'))),
+                                                 with_table_name=False):
 
-            for i in range(0, len(data_list), batch_size):
-                batch_data = data_list[i:i + batch_size]
-
-                for row_idx, row in enumerate(batch_data, start=i + 2):
-                    for col_idx, value in enumerate(self.to_row(row), 1):
-                        cell = worksheet.cell(row=row_idx, column=col_idx)
-                        if isinstance(value, str):
-                            value = re.sub(ILLEGAL_CHARACTERS_RE, '', value)
-                        if isinstance(value, datetime.datetime):
-                            eastern = pytz.timezone(TIME_ZONE)
-                            c = datetime.timezone(eastern._utcoffset)
-                            value = value.astimezone(c)
-                        cell.value = value
-
+                for item in data_list:
+                    row = [self.reset_value(v) for v in self.to_row(item)]
+                    worksheet.append(row)
+                current_page = current_page + 1
             output = BytesIO()
             workbook.save(output)
             output.seek(0)
