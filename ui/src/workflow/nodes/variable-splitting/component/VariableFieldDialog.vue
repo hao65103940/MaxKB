@@ -50,8 +50,7 @@
       <el-form-item
         :label="$t('views.applicationWorkflow.nodes.variableSplittingNode.expression.label')"
         :required="true"
-        prop="label"
-        :rules="rules.label"
+        prop="expression"
       >
         <el-input
           v-model="form.expression"
