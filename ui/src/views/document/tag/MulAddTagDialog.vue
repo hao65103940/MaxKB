@@ -82,7 +82,7 @@
             </el-col>
             <el-col :span="1">
               <el-button
-                :disabled="index === 0"
+                :disabled="tagList.length === 1"
                 text
                 @click="deleteTag(index)"
                 :style="{ marginTop: index === 0 ? '35px' : '5px' }"

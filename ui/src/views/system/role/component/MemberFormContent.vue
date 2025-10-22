@@ -22,6 +22,7 @@
             "
             filterable
             multiple
+            :reserve-keyword="false"
             style="width: 100%"
             collapse-tags
             collapse-tags-tooltip

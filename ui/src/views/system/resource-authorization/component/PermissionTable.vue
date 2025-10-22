@@ -39,6 +39,7 @@
             filterable
             clearable
             multiple
+            :reserve-keyword="false"
             collapse-tags
             collapse-tags-tooltip
             style="width: 220px"

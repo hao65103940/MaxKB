@@ -52,7 +52,7 @@
             </el-col>
             <el-col :span="1">
               <el-button
-                :disabled="index === 0"
+                :disabled="tags.length === 1"
                 link
                 type="info"
                 @click="deleteTag(index)"

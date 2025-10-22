@@ -130,6 +130,7 @@
       collapse-tags
       filterable
       clearable
+      :reserve-keyword="false"
       v-model="formValue.default_value"
       :teleported="false"
       popper-class="default-select"
