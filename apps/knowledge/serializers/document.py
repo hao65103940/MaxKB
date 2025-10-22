@@ -1531,6 +1531,7 @@ class DocumentSerializers(serializers.Serializer):
             ).exists():
                 raise AppApiException(500, _('Document id does not exist'))
 
+        @transaction.atomic
         def replace(self):
             self.is_valid(raise_exception=True)
             file = self.data.get('file')
@@ -1539,7 +1540,20 @@ class DocumentSerializers(serializers.Serializer):
             if not source_file:
                 raise AppApiException(500, _('Source file not found'))
 
-            source_file.save(file.read())
+            # 获取原文件的sha256_hash
+            original_hash = source_file.sha256_hash
+
+            # 读取新文件内容
+            file_content = file.read()
+
+            # 查找所有具有相同sha256_hash的文件
+            files_to_update = QuerySet(File).filter(
+                Q(sha256_hash=original_hash) & Q(source_id=self.data.get('knowledge_id'))
+            )
+
+            # 更新所有相同hash的文件
+            for file_obj in files_to_update:
+                file_obj.save(file_content)
 
             return True
 
