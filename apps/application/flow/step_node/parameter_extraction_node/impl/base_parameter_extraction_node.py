@@ -86,7 +86,7 @@ class BaseParameterExtractionNode(IParameterExtractionNode):
 
     def save_context(self, details, workflow_manage):
         for key, value in details.get('result').items():
-            self.context['key'] = value
+            self.context[key] = value
         self.context['result'] = details.get('result')
 
     def execute(self, input_variable, variable_list, model_params_setting, model_id, **kwargs) -> NodeResult:

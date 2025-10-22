@@ -34,7 +34,7 @@ def smart_jsonpath_search(data: dict, path: str):
 class BaseVariableSplittingNode(IVariableSplittingNode):
     def save_context(self, details, workflow_manage):
         for key, value in details.get('result').items():
-            self.context['key'] = value
+            self.context[key] = value
         self.context['result'] = details.get('result')
 
     def execute(self, input_variable, variable_list, **kwargs) -> NodeResult:
