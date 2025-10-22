@@ -79,7 +79,9 @@
         <el-form-item
           prop="variable_list"
           :rules="{
-            message: $t('views.applicationWorkflow.nodes.parameterExtractionNode.extractParameters.label'),
+            message: $t(
+              'views.applicationWorkflow.nodes.parameterExtractionNode.extractParameters.variableListPlaceholder',
+            ),
             trigger: 'blur',
             required: true,
           }"
@@ -184,7 +186,9 @@ const model_change = (model_id?: string) => {
 
 const VariableSplittingRef = ref()
 const validate = async () => {
-  return VariableSplittingRef.value.validate()
+  return VariableSplittingRef.value.validate().catch((err: any) => {
+    return Promise.reject({ node: props.nodeModel, errMessage: err })
+  })
 }
 
 onMounted(() => {

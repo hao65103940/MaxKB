@@ -422,6 +422,7 @@ export default {
       addVariables: '添加變量',
       editVariables: '編輯變量',
       variablePlaceholder: '請輸入變量',
+      variableListPlaceholder: '請添加折開變數',
       expression: {
         label: '表達式',
         placeholder: '請輸入表達式',
@@ -432,6 +433,7 @@ export default {
       text: '利用 AI 模型提取結構化參數',
       extractParameters: {
         label: '提取參數',
+        variableListPlaceholder: '請添加選取參數',
         parameterType: '參數類型',
       },
     },

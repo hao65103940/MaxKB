@@ -436,6 +436,7 @@ You are a master of problem optimization, adept at accurately inferring user int
       addVariables: 'Add Variables',
       editVariables: 'Edit Variables',
       variablePlaceholder: 'Please enter variable',
+      variableListPlaceholder: 'Please add split variables',
       expression: {
         label: 'Expression',
         placeholder: 'Please enter expression',
@@ -446,6 +447,7 @@ You are a master of problem optimization, adept at accurately inferring user int
       text: 'Use AI models to extract structured parameters',
       extractParameters: {
         label: 'Extract Parameters',
+        variableListPlaceholder: 'Please add extraction parameters',
         parameterType: 'Parameter Type',
       },
     },

@@ -447,6 +447,7 @@ export default {
       addVariables: '添加变量',
       editVariables: '编辑变量',
       variablePlaceholder: '请输入变量',
+      variableListPlaceholder: '请添加拆分变量',
       expression: {
         label: '表达式',
         placeholder: '请输入表达式',
@@ -457,6 +458,7 @@ export default {
       text: '利用 AI 模型提取结构化参数',
       extractParameters: {
         label: '提取参数',
+        variableListPlaceholder: '请添加提取参数',
         parameterType: '参数类型',
       },
     },

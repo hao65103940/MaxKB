@@ -39,7 +39,9 @@
         <el-form-item
           prop="variable_list"
           :rules="{
-            message: $t('views.applicationWorkflow.variable.placeholder'),
+            message: $t(
+              'views.applicationWorkflow.nodes.variableSplittingNode.variableListPlaceholder',
+            ),
             trigger: 'blur',
             required: true,
           }"
@@ -81,7 +83,9 @@ const form_data = computed({
 })
 const VariableSplittingRef = ref()
 const validate = async () => {
-  return VariableSplittingRef.value.validate()
+  return VariableSplittingRef.value.validate().catch((err: any) => {
+    return Promise.reject({ node: props.nodeModel, errMessage: err })
+  })
 }
 onMounted(() => {
   set(props.nodeModel, 'validate', validate)
