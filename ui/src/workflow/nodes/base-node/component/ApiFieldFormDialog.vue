@@ -24,7 +24,15 @@
           @blur="form.variable = form.variable.trim()"
         />
       </el-form-item>
-
+      <el-form-item :label="$t('common.desc')">
+        <el-input
+          v-model="form.desc"
+          :placeholder="$t('common.descPlaceholder')"
+          @blur="form.name = form.name.trim()"
+          maxlength="64"
+          show-word-limit
+        />
+      </el-form-item>
       <el-form-item :label="$t('dynamicsForm.paramForm.required.label')" @click.prevent>
         <el-switch size="small" v-model="form.is_required"></el-switch>
       </el-form-item>
@@ -39,22 +47,6 @@
       >
         <el-input
           v-model="form.default_value"
-          :placeholder="$t('dynamicsForm.default.placeholder')"
-          @blur="form.name = form.name.trim()"
-        />
-      </el-form-item>
-      <el-form-item
-        :label="$t('common.desc')"
-        prop="desc"
-        :rules="{
-          required: form.is_required,
-          message:
-            $t('common.inputPlaceholder') + $t('common.desc'),
-          trigger: 'blur',
-        }"
-      >
-        <el-input
-          v-model="form.desc"
           :placeholder="$t('dynamicsForm.default.placeholder')"
           @blur="form.name = form.name.trim()"
         />

@@ -142,7 +142,7 @@ export default {
       },
     },
     searchDocumentNode: {
-      label: '文檔檢索',
+      label: '文檔標籤檢索',
       text: '從設定的檢索範圍中，根據文檔標籤檢索出符合條件的文檔',
       selectKnowledge: '檢索範圍',
       searchSetting: '檢索設定',

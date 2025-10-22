@@ -148,7 +148,7 @@ export default {
       },
     },
     searchDocumentNode: {
-      label: '文档检索',
+      label: '文档标签检索',
       text: '从设定的检索范围中，根据文档标签检索出满足条件的文档',
       selectKnowledge: '检索范围',
       searchSetting: '检索设置',

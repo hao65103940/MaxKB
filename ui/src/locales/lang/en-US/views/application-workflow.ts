@@ -141,7 +141,7 @@ export default {
       },
     },
     searchDocumentNode: {
-      label: 'Document Search',
+      label: 'Document Tag Retrieval',
       text: 'Search for documents that meet the conditions based on the document label within the specified search scope',
       selectKnowledge: 'Search Scope',
       searchSetting: 'Search Settings',
