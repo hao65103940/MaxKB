@@ -22,6 +22,9 @@ class AliyunBaiLianEmbedding(MaxKBBaseModel):
         self.model_name = model_name
         self.optional_params = optional_params
 
+    def is_cache_model(self):
+        return False
+
     @staticmethod
     def new_instance(model_type, model_name, model_credential: Dict[str, object], **model_kwargs):
         optional_params = MaxKBBaseModel.filter_optional_params(model_kwargs)

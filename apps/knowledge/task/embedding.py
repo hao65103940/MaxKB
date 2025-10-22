@@ -27,7 +27,9 @@ def get_embedding_model(model_id, exception_handler=lambda e: maxkb_logger.error
     ))):
     try:
         model = QuerySet(Model).filter(id=model_id).first()
-        embedding_model = ModelManage.get_model(model_id, lambda _id: get_model(model))
+
+        s = {p.get('field'): p.get('default_value') for p in model.model_params_form if p.get('default_value') is not None}
+        embedding_model = ModelManage.get_model(model_id, lambda _id: get_model(model, **{**s}))
     except Exception as e:
         exception_handler(e)
         raise e
@@ -77,6 +79,7 @@ def embedding_by_document(document_id, model_id, state_list=None):
             ))
 
     embedding_model = get_embedding_model(model_id, exception_handler)
+    #
     ListenerManagement.embedding_by_document(document_id, embedding_model, state_list)
 
 
