@@ -9,14 +9,18 @@
         require-asterisk-position="right"
         label-width="auto"
         ref="knowledgeNodeFormRef"
+        hide-required-asterisk
       >
         <el-form-item :label="$t('views.chatLog.selectKnowledge')">
           <template #label>
             <div class="flex-between">
               <span>{{ $t('views.chatLog.selectKnowledge') }}</span>
               <span>
-                <el-button v-if="form_data.search_scope_type === 'custom'"
-                  type="primary" link @click="openknowledgeDialog"
+                <el-button
+                  v-if="form_data.search_scope_type === 'custom'"
+                  type="primary"
+                  link
+                  @click="openknowledgeDialog"
                 >
                   <AppIcon iconName="app-add-outlined"></AppIcon>
                 </el-button>
@@ -74,6 +78,7 @@
                 <div class="flex-between">
                   <span>
                     {{ $t('views.applicationWorkflow.nodes.searchDocumentNode.select_variable') }}
+                    <span class="color-danger">*</span>
                   </span>
                   <span>
                     <el-select
@@ -84,11 +89,15 @@
                       @change="form_data.search_scope_reference = []"
                     >
                       <el-option
-                        :label="$t('views.applicationWorkflow.nodes.searchDocumentNode.knowledge_list')"
+                        :label="
+                          $t('views.applicationWorkflow.nodes.searchDocumentNode.knowledge_list')
+                        "
                         value="knowledge"
                       />
                       <el-option
-                        :label="$t('views.applicationWorkflow.nodes.searchDocumentNode.document_list')"
+                        :label="
+                          $t('views.applicationWorkflow.nodes.searchDocumentNode.document_list')
+                        "
                         value="document"
                       />
                     </el-select>
@@ -110,9 +119,9 @@
         >
           <template #label>
             <div class="flex-between">
-              <span>{{
-                $t('views.applicationWorkflow.nodes.searchKnowledgeNode.searchParam')
-              }}</span>
+              <span
+                >{{ $t('views.applicationWorkflow.nodes.searchKnowledgeNode.searchParam') }}
+              </span>
               <el-button type="primary" link @click="openParamSettingDialog">
                 <AppIcon iconName="app-setting"></AppIcon>
               </el-button>
@@ -148,7 +157,6 @@
           </div>
         </el-form-item>
         <el-form-item
-          :label="$t('views.applicationWorkflow.nodes.searchKnowledgeNode.searchQuestion.label')"
           prop="question_reference_address"
           :rules="{
             message: $t(
@@ -158,6 +166,14 @@
             required: true,
           }"
         >
+          <template #label>
+            <div class="flex-between">
+              <span>
+                {{ $t('views.applicationWorkflow.nodes.searchKnowledgeNode.searchQuestion.label') }}
+                <span class="color-danger">*</span></span
+              >
+            </div>
+          </template>
           <NodeCascader
             ref="nodeCascaderRef"
             :nodeModel="nodeModel"
@@ -169,7 +185,6 @@
           />
         </el-form-item>
         <el-form-item
-          :label="$t('views.applicationWorkflow.nodes.searchKnowledgeNode.showKnowledge.label')"
           prop="show_knowledge"
           :rules="{
             message: $t(
@@ -180,6 +195,14 @@
           }"
           @click.prevent
         >
+          <template #label>
+            <div class="flex-between">
+              <span>
+                {{ $t('views.applicationWorkflow.nodes.searchKnowledgeNode.showKnowledge.label') }}
+                <span class="color-danger">*</span></span
+              >
+            </div>
+          </template>
           <el-switch size="small" v-model="form_data.show_knowledge" />
         </el-form-item>
       </el-form>
@@ -204,7 +227,7 @@ import type { FormInstance } from 'element-plus'
 import { ref, computed, onMounted } from 'vue'
 import { relatedObject } from '@/utils/array'
 import { SearchMode } from '@/enums/application'
-import AppIcon from "@/components/app-icon/AppIcon.vue";
+import AppIcon from '@/components/app-icon/AppIcon.vue'
 
 const props = defineProps<{ nodeModel: any }>()
 const nodeCascaderRef = ref()
