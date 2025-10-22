@@ -22,7 +22,7 @@ def get_workspace_user_resource_permission_list(auth_target_type, workspace_user
     return reduce(lambda x, y: [*x, *y], [
         [WorkspaceUserResourcePermission(target=f.id, workspace_id=f.workspace_id, user_id=wurm.user_id,
                                          auth_target_type=auth_target_type, auth_type="RESOURCE_PERMISSION_GROUP",
-                                         permission_list=['VIEW']) for wurm in
+                                         permission_list=['VIEW','MANAGE'] if wurm.user_id == f.user_id else ['VIEW']) for wurm in
          workspace_user_role_mapping_model_workspace_dict.get(f.workspace_id, [])] for f in
         QuerySet(folder_model).all()], [])
 
