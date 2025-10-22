@@ -141,6 +141,14 @@ const share = {
       ],
       'OR'
     ),
+  doc_replace: () => 
+    hasPermission (
+      [
+        RoleConst.ADMIN,
+        PermissionConst.SHARED_KNOWLEDGE_DOCUMENT_REPLACE
+      ],
+      'OR'
+    ),
   problem_create: () => 
     hasPermission (
       [

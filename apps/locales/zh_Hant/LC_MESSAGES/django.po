@@ -8863,3 +8863,9 @@ msgstr "標籤管理"
 
 msgid "Tag Setting"
 msgstr "標籤設定"
+
+msgid "Download Original Document"
+msgstr "下載原文件"
+
+msgid "Replace Original Document"
+msgstr "替換原文件"

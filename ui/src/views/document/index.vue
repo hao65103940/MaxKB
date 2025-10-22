@@ -519,6 +519,7 @@
                             {{ $t('views.document.setting.download') }}
                           </el-dropdown-item>
                           <el-upload
+                            v-if="permissionPrecise.doc_replace(id)"
                             ref="elUploadRef"
                             :file-list="[]"
                             action="#"
@@ -526,7 +527,7 @@
                             :show-file-list="false"
                             :on-change="(file: any, fileList: any) => replaceDocument(file, row)"
                           >
-                            <el-dropdown-item v-if="permissionPrecise.doc_edit(id)">
+                            <el-dropdown-item>
                               <el-icon class="color-secondary">
                                 <Upload />
                               </el-icon>
@@ -786,7 +787,8 @@ const MoreFilledPermission1 = (id: string) => {
     permissionPrecise.value.doc_export(id) ||
     permissionPrecise.value.doc_download(id) ||
     permissionPrecise.value.doc_delete(id) ||
-    permissionPrecise.value.doc_tag(id)
+    permissionPrecise.value.doc_tag(id) ||
+    permissionPrecise.value.doc_replace(id)
   )
 }
 

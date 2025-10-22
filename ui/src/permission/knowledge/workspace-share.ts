@@ -23,6 +23,7 @@ const workspaceShare = {
   doc_export: () => false,
   doc_download: () => false,
   doc_tag: () => false,
+  doc_replace: () => false,
 
   knowledge_chat_user_read: () => false,
   knowledge_chat_user_edit: () => false,

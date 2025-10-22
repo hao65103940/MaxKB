@@ -115,6 +115,12 @@ const systemManage = {
       PermissionConst.RESOURCE_KNOWLEDGE_DOCUMENT_TAG
     ],'OR'
   ),
+  doc_replace: () => hasPermission(
+    [
+      RoleConst.ADMIN,
+      PermissionConst.RESOURCE_KNOWLEDGE_DOCUMENT_REPLACE
+    ],'OR'
+  ),
   knowledge_chat_user_read: () => 
     hasPermission([
       RoleConst.ADMIN,

@@ -242,6 +242,16 @@ const workspace = {
       ],
       'OR',
     ),
+  doc_replace: (source_id:string) =>
+    hasPermission(
+      [
+        new ComplexPermission([RoleConst.USER],[PermissionConst.KNOWLEDGE.getKnowledgeWorkspaceResourcePermission(source_id)],[],'AND'),
+        RoleConst.WORKSPACE_MANAGE.getWorkspaceRole,
+        PermissionConst.KNOWLEDGE_DOCUMENT_REPLACE.getKnowledgeWorkspaceResourcePermission(source_id),
+        PermissionConst.KNOWLEDGE_DOCUMENT_REPLACE.getWorkspacePermissionWorkspaceManageRole,
+      ],
+      'OR',
+    ),
   knowledge_chat_user_read: (source_id:string) => false,  
   knowledge_chat_user_edit: (source_id:string) => 
     hasPermission(

@@ -8737,3 +8737,9 @@ msgstr ""
 
 msgid "Tag Setting"
 msgstr ""
+
+msgid "Download Original Document"
+msgstr ""
+
+msgid "Replace Original Document"
+msgstr ""
