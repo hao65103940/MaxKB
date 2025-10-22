@@ -8857,3 +8857,9 @@ msgstr "采样率"
 
 msgid "Captcha is required"
 msgstr "验证码是必填项"
+
+msgid "Tag"
+msgstr "标签管理"
+
+msgid "Tag Setting"
+msgstr "标签设置"

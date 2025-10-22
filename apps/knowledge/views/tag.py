@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 
 from common.auth import TokenAuth
 from common.auth.authentication import has_permissions
-from common.constants.permission_constants import PermissionConstants, RoleConstants
+from common.constants.permission_constants import PermissionConstants, RoleConstants, ViewPermission, CompareConstants
 from common.log.log import log
 from common.result import result
 from knowledge.api.tag import TagCreateAPI, TagDeleteAPI, TagEditAPI
@@ -25,9 +25,11 @@ class KnowledgeTagView(APIView):
         tags=[_('Knowledge Base/Tag')]  # type: ignore
     )
     @has_permissions(
-        PermissionConstants.KNOWLEDGE_TAG_CREATE.get_workspace_permission(),
+        PermissionConstants.KNOWLEDGE_TAG_CREATE.get_workspace_knowledge_permission(),
+        PermissionConstants.KNOWLEDGE_TAG_CREATE.get_workspace_permission_workspace_manage_role(),
         RoleConstants.WORKSPACE_MANAGE.get_workspace_role(),
-        RoleConstants.USER.get_workspace_role()
+        ViewPermission([RoleConstants.USER.get_workspace_role()],
+                       [PermissionConstants.KNOWLEDGE.get_workspace_knowledge_permission()], CompareConstants.AND),
     )
     @log(
         menu='tag', operate="Create a knowledge tag",
@@ -47,9 +49,11 @@ class KnowledgeTagView(APIView):
         tags=[_('Knowledge Base/Tag')]  # type: ignore
     )
     @has_permissions(
-        PermissionConstants.KNOWLEDGE_TAG_READ.get_workspace_permission(),
+        PermissionConstants.KNOWLEDGE_TAG_READ.get_workspace_knowledge_permission(),
+        PermissionConstants.KNOWLEDGE_TAG_READ.get_workspace_permission_workspace_manage_role(),
         RoleConstants.WORKSPACE_MANAGE.get_workspace_role(),
-        RoleConstants.USER.get_workspace_role()
+        ViewPermission([RoleConstants.USER.get_workspace_role()],
+                       [PermissionConstants.KNOWLEDGE.get_workspace_knowledge_permission()], CompareConstants.AND),
     )
     @log(
         menu='tag', operate="Create a knowledge tag",
@@ -74,9 +78,11 @@ class KnowledgeTagView(APIView):
             tags=[_('Knowledge Base/Tag')]  # type: ignore
         )
         @has_permissions(
-            PermissionConstants.KNOWLEDGE_TAG_EDIT.get_workspace_permission(),
+            PermissionConstants.KNOWLEDGE_TAG_EDIT.get_workspace_knowledge_permission(),
+            PermissionConstants.KNOWLEDGE_TAG_EDIT.get_workspace_permission_workspace_manage_role(),
             RoleConstants.WORKSPACE_MANAGE.get_workspace_role(),
-            RoleConstants.USER.get_workspace_role()
+            ViewPermission([RoleConstants.USER.get_workspace_role()],
+                           [PermissionConstants.KNOWLEDGE.get_workspace_knowledge_permission()], CompareConstants.AND),
         )
         @log(
             menu='tag', operate="Update a knowledge tag",
@@ -99,9 +105,11 @@ class KnowledgeTagView(APIView):
             tags=[_('Knowledge Base/Tag')]  # type: ignore
         )
         @has_permissions(
-            PermissionConstants.KNOWLEDGE_TAG_DELETE.get_workspace_permission(),
+            PermissionConstants.KNOWLEDGE_TAG_DELETE.get_workspace_knowledge_permission(),
+            PermissionConstants.KNOWLEDGE_TAG_DELETE.get_workspace_permission_workspace_manage_role(),
             RoleConstants.WORKSPACE_MANAGE.get_workspace_role(),
-            RoleConstants.USER.get_workspace_role()
+            ViewPermission([RoleConstants.USER.get_workspace_role()],
+                           [PermissionConstants.KNOWLEDGE.get_workspace_knowledge_permission()], CompareConstants.AND),
         )
         @log(
             menu='tag', operate="Delete a knowledge tag",
@@ -124,9 +132,11 @@ class KnowledgeTagView(APIView):
             tags=[_('Knowledge Base/Tag')]  # type: ignore
         )
         @has_permissions(
-            PermissionConstants.KNOWLEDGE_TAG_DELETE.get_workspace_permission(),
+            PermissionConstants.KNOWLEDGE_TAG_DELETE.get_workspace_knowledge_permission(),
+            PermissionConstants.KNOWLEDGE_TAG_DELETE.get_workspace_permission_workspace_manage_role(),
             RoleConstants.WORKSPACE_MANAGE.get_workspace_role(),
-            RoleConstants.USER.get_workspace_role()
+            ViewPermission([RoleConstants.USER.get_workspace_role()],
+                           [PermissionConstants.KNOWLEDGE.get_workspace_knowledge_permission()], CompareConstants.AND),
         )
         @log(
             menu='tag', operate="Batch Delete knowledge tag",
