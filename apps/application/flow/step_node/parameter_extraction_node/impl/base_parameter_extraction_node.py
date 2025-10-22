@@ -88,8 +88,10 @@ class BaseParameterExtractionNode(IParameterExtractionNode):
         for key, value in details.get('result').items():
             self.context[key] = value
         self.context['result'] = details.get('result')
+        self.context['request'] = details.get('request')
 
     def execute(self, input_variable, variable_list, model_params_setting, model_id, **kwargs) -> NodeResult:
+        self.context['request'] = input_variable
         if model_params_setting is None:
             model_params_setting = get_default_model_params_setting(model_id)
         workspace_id = self.workflow_manage.get_body().get('workspace_id')
@@ -106,6 +108,7 @@ class BaseParameterExtractionNode(IParameterExtractionNode):
             "index": index,
             'run_time': self.context.get('run_time'),
             'type': self.node.type,
+            'request': self.context.get('request'),
             'result': self.context.get('result'),
             'status': self.status,
             'err_message': self.err_message
