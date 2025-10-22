@@ -8743,3 +8743,6 @@ msgstr ""
 
 msgid "Replace Original Document"
 msgstr ""
+
+msgid "Update License"
+msgstr ""

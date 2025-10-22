@@ -178,6 +178,7 @@ class Operate(Enum):
     AUTH = "READ+AUTH" # 资源授权
     TAG = "READ+TAG" # 标签设置
     REPLACE = "READ+REPLACE" # 标签设置
+    UPDATE = "READ+UPDATE" # 更新license
 
 
 class RoleGroup(Enum):
@@ -1014,9 +1015,14 @@ class PermissionConstants(Enum):
                                                     )
 
     ABOUT_READ = Permission(group=Group.OTHER, operate=Operate.READ,
+                            role_list=[RoleConstants.ADMIN, RoleConstants.USER],
+                            parent_group=[SystemGroup.OTHER, WorkspaceGroup.OTHER, UserGroup.OTHER],
+                            label=_('About')
+                            )
+    ABOUT_UPDATE = Permission(group=Group.OTHER, operate=Operate.UPDATE,
                             role_list=[RoleConstants.ADMIN],
                             parent_group=[SystemGroup.OTHER],
-                            label=_('About')
+                            label=_('Update License')
                             )
     SWITCH_LANGUAGE = Permission(group=Group.OTHER, operate=Operate.EDIT,
                                  role_list=[RoleConstants.ADMIN, RoleConstants.USER],

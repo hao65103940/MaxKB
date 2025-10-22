@@ -320,6 +320,7 @@ const PermissionConst = {
   OPERATION_LOG_CLEAR_POLICY: new Permission('OPERATION_LOG:READ+CLEAR_POLICY'),
 
   ABOUT_READ: new Permission('OTHER:READ'),
+  ABOUT_UPDATE: new Permission('OTHER:READ+UPDATE'),
   SWITCH_LANGUAGE: new Permission('OTHER:READ+EDIT'),
   CHANGE_PASSWORD: new Permission('OTHER:READ+CREATE'),
   SYSTEM_API_KEY_EDIT: new Permission('OTHER:READ+DELETE'),

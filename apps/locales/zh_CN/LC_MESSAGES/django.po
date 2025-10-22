@@ -8869,3 +8869,6 @@ msgstr "下载原文档"
 
 msgid "Replace Original Document"
 msgstr "替换原文档"
+
+msgid "Update License"
+msgstr "更新许可证"
