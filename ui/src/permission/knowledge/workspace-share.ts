@@ -22,10 +22,16 @@ const workspaceShare = {
   doc_delete: () => false,
   doc_export: () => false,
   doc_download: () => false,
+  doc_tag: () => false,
 
   knowledge_chat_user_read: () => false,
   knowledge_chat_user_edit: () => false,
 
+  tag_read: () => false,
+  tag_create: () => false,
+  tag_delete: () => false,
+  tag_edit: () => false,
+  
   problem_read: () => false,
   problem_create: () => false,
   problem_relate: () => false,

@@ -74,7 +74,7 @@
                       <el-dropdown-item
                         @click="openAddTagDialog()"
                         :disabled="multipleSelection.length === 0"
-                        v-if="permissionPrecise.doc_edit(id)"
+                        v-if="permissionPrecise.doc_tag(id)"
                         >{{ $t('views.document.tag.addTag') }}
                       </el-dropdown-item>
                       <el-dropdown-item
@@ -132,7 +132,9 @@
                   clearable
                 />
               </div>
-              <el-button @click="openTagDrawer" class="ml-12">
+              <el-button @click="openTagDrawer" class="ml-12"
+                v-if="permissionPrecise.tag_read(id)"
+              >
                 {{ $t('views.document.tag.label') }}
               </el-button>
             </div>
@@ -479,7 +481,9 @@
                             ></AppIcon>
                             {{ $t('views.document.generateQuestion.title') }}
                           </el-dropdown-item>
-                          <el-dropdown-item @click="openTagSettingDrawer(row)">
+                          <el-dropdown-item @click="openTagSettingDrawer(row)"
+                            v-if="permissionPrecise.doc_tag(id)"
+                          >
                             <AppIcon iconName="app-tag" class="color-secondary"></AppIcon>
 
                             {{ $t('views.document.tag.setting') }}
@@ -771,7 +775,7 @@ const MoreFilledPermission0 = (id: string) => {
     permissionPrecise.value.doc_migrate(id) ||
     (knowledgeDetail?.value.type === 1 && permissionPrecise.value.doc_sync(id)) ||
     (knowledgeDetail?.value.type === 2 && permissionPrecise.value.doc_sync(id)) ||
-    permissionPrecise.value.doc_delete(id)
+    permissionPrecise.value.doc_delete(id) || permissionPrecise.value.doc_tag(id)
   )
 }
 
@@ -781,7 +785,8 @@ const MoreFilledPermission1 = (id: string) => {
     permissionPrecise.value.doc_migrate(id) ||
     permissionPrecise.value.doc_export(id) ||
     permissionPrecise.value.doc_download(id) ||
-    permissionPrecise.value.doc_delete(id)
+    permissionPrecise.value.doc_delete(id) ||
+    permissionPrecise.value.doc_tag(id)
   )
 }
 

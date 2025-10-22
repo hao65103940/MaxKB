@@ -109,7 +109,12 @@ const systemManage = {
       PermissionConst.RESOURCE_KNOWLEDGE_DOCUMENT_DOWNLOAD_SOURCE_FILE
     ],'OR'
   ),
-  
+  doc_tag: () => hasPermission(
+    [
+      RoleConst.ADMIN,
+      PermissionConst.RESOURCE_KNOWLEDGE_DOCUMENT_TAG
+    ],'OR'
+  ),
   knowledge_chat_user_read: () => 
     hasPermission([
       RoleConst.ADMIN,
@@ -150,7 +155,31 @@ const systemManage = {
       PermissionConst.RESOURCE_KNOWLEDGE_PROBLEM_EDIT
     ],'OR'
     ),
-    chat_user_edit: () =>false,
+  tag_read: () => 
+    hasPermission([
+      RoleConst.ADMIN,
+      PermissionConst.RESOURCE_KNOWLEDGE_TAG_READ
+    ],'OR'
+    ),
+  tag_create: () => 
+    hasPermission([
+      RoleConst.ADMIN,
+      PermissionConst.RESOURCE_KNOWLEDGE_TAG_CREATE
+    ],'OR'
+    ),  
+  tag_edit: () => 
+    hasPermission([
+      RoleConst.ADMIN,
+      PermissionConst.RESOURCE_KNOWLEDGE_TAG_EDIT
+    ],'OR'
+    ),  
+  tag_delete: () => 
+    hasPermission([
+      RoleConst.ADMIN,
+      PermissionConst.RESOURCE_KNOWLEDGE_TAG_DELETE
+    ],'OR'
+    ),  
+  chat_user_edit: () =>false,
 
   
   auth: () => 
