@@ -841,13 +841,40 @@
                 </div>
               </div>
             </div>
-            <div class="card-never border-r-6">
+            <div class="card-never border-r-6  mt-8">
               <h5 class="p-8-12">
                 {{ $t('common.param.outputParam') }}
               </h5>
               <div class="p-8-12 border-t-dashed lighter">
                 <div v-for="(f, i) in data.result_list" :key="i" class="mb-8">
                   <span class="color-secondary">{{ f.name }}:</span> {{ f.output_value }}
+                </div>
+              </div>
+            </div>
+          </template>
+
+          <!-- 变量拆分 -->
+          <template
+            v-if="
+              data.type === WorkflowType.VariableSplittingNode ||
+              data.type == WorkflowType.ParameterExtractionNode
+            "
+          >
+            <div class="card-never border-r-6">
+              <h5 class="p-8-12">
+                {{ $t('common.param.inputParam') }}
+              </h5>
+              <div class="p-8-12 border-t-dashed lighter pre-wrap">
+                {{ data.request || '-' }}
+              </div>
+            </div>
+            <div class="card-never border-r-6 mt-8">
+              <h5 class="p-8-12">
+                {{ $t('common.param.outputParam') }}
+              </h5>
+              <div class="p-8-12 border-t-dashed lighter">
+                <div v-for="(f, i) in data.result" :key="i" class="mb-8">
+                  <span class="color-secondary">{{ i }}:</span> {{ f }}
                 </div>
               </div>
             </div>
@@ -1002,11 +1029,11 @@
               <div class="p-8-12 border-t-dashed lighter">
                 <div class="mb-8">
                   <span class="color-secondary"> knowledge_list:</span>
-                  {{ data.knowledge_items?.map((v:any) => v.name).join(',') }}
+                  {{ data.knowledge_items?.map((v: any) => v.name).join(',') }}
                 </div>
                 <div class="mb-8">
                   <span class="color-secondary"> document_list:</span>
-                  {{ data.document_items?.map((v:any)  => v.name).join(',')  }}
+                  {{ data.document_items?.map((v: any) => v.name).join(',') }}
                 </div>
               </div>
             </div>
