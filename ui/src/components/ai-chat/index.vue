@@ -523,6 +523,8 @@ function chatMessage(chat?: any, problem?: string, re_chat?: boolean, other_para
             : [],
         audio_list:
           other_params_data && other_params_data.audio_list ? other_params_data.audio_list : [],
+        video_list:
+          other_params_data && other_params_data.video_list ? other_params_data.video_list : [],
         other_list:
           other_params_data && other_params_data.other_list ? other_params_data.other_list : [],
       },

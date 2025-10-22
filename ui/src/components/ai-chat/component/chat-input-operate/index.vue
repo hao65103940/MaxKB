@@ -403,7 +403,7 @@ const upload = ref()
 
 const imageExtensions = ['JPG', 'JPEG', 'PNG', 'GIF', 'BMP']
 const documentExtensions = ['PDF', 'DOCX', 'TXT', 'XLS', 'XLSX', 'MD', 'HTML', 'CSV']
-const videoExtensions: any = ['MP4', 'MOV', 'AVI']
+const videoExtensions: any = ['MP4', 'AVI', 'MKV', 'MOV', 'FLV', 'WMV']
 const audioExtensions = ['MP3', 'WAV', 'OGG', 'AAC', 'M4A']
 const otherExtensions = ref(['PPT', 'DOC'])
 
