@@ -10,7 +10,7 @@
         label-width="auto"
         ref="knowledgeNodeFormRef"
       >
-        <el-form-item :label="$t('views.chatLog.selectKnowledge')">
+        <el-form-item>
           <template #label>
             <div class="flex-between">
               <span>

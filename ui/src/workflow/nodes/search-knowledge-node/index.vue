@@ -11,10 +11,12 @@
         ref="knowledgeNodeFormRef"
         hide-required-asterisk
       >
-        <el-form-item :label="$t('views.chatLog.selectKnowledge')">
+        <el-form-item>
           <template #label>
             <div class="flex-between">
-              <span>{{ $t('views.chatLog.selectKnowledge') }}</span>
+              <span>
+                {{ $t('views.applicationWorkflow.nodes.searchDocumentNode.selectKnowledge') }}</span
+              >
               <span>
                 <el-button
                   v-if="form_data.search_scope_type === 'custom'"
