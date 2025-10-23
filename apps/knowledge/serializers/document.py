@@ -1539,13 +1539,25 @@ class DocumentSerializers(serializers.Serializer):
 
             if not source_file:
                 # 不存在手动关联一个文档
+                new_source_file_id = uuid.uuid7()
                 new_source_file = File(
-                    id=uuid.uuid7(),
+                    id=new_source_file_id,
                     file_name=file.name,
                     source_type=FileSourceType.DOCUMENT,
                     source_id=self.data.get('document_id'),
                 )
                 new_source_file.save(file.read())
+                # 更新Document的meta字段
+                QuerySet(Document).filter(id=self.data.get('document_id')).update(
+                    meta=Func(
+                        F("meta"),
+                        Value(["source_file_id"]),
+                        Value(json.dumps(str(new_source_file_id))),
+                        Value(True),  # create_missing = true
+                        function="jsonb_set",
+                        output_field=JSONField(),
+                    )
+                )
             else:
                 # 获取原文件的sha256_hash
                 original_hash = source_file.sha256_hash
