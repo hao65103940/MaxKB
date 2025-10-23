@@ -149,7 +149,6 @@
         <div class="w-full">
           <el-form-item
             v-if="form_data.search_mode === 'auto'"
-            :label="$t('views.applicationWorkflow.nodes.searchKnowledgeNode.searchQuestion.label')"
             prop="question_reference"
             :rules="{
               message: $t(
@@ -159,8 +158,14 @@
               required: true,
             }"
           >
+            <template #label>
+              <span>
+                {{ $t('views.applicationWorkflow.nodes.searchKnowledgeNode.searchQuestion.label') }}
+                <span class="color-danger">*</span></span
+              >
+            </template>
             <NodeCascader
-              ref="nodeCascaderRef"
+              ref="nodeCascaderRef2"
               :nodeModel="nodeModel"
               class="w-full"
               :placeholder="
@@ -257,6 +262,7 @@ const route = useRoute()
 
 const props = defineProps<{ nodeModel: any }>()
 const nodeCascaderRef = ref()
+const nodeCascaderRef2 = ref()
 const compareList = [
   { value: 'contain', label: t('views.applicationWorkflow.compare.contain') },
   { value: 'not_contain', label: t('views.applicationWorkflow.compare.not_contain') },
@@ -365,6 +371,7 @@ watch(
 const validate = () => {
   return Promise.all([
     nodeCascaderRef.value?.validate(),
+    nodeCascaderRef2.value?.validate(),
     knowledgeNodeFormRef.value?.validate(),
   ]).catch((err) => {
     return Promise.reject({ node: props.nodeModel, errMessage: err })
