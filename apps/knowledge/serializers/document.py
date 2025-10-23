@@ -1538,23 +1538,30 @@ class DocumentSerializers(serializers.Serializer):
             source_file = QuerySet(File).filter(source_id=self.data.get('document_id')).first()
 
             if not source_file:
-                raise AppApiException(500, _('Source file not found'))
+                # 不存在手动关联一个文档
+                new_source_file = File(
+                    id=uuid.uuid7(),
+                    file_name=file.name,
+                    source_type=FileSourceType.DOCUMENT,
+                    source_id=self.data.get('document_id'),
+                )
+                new_source_file.save(file.read())
+            else:
+                # 获取原文件的sha256_hash
+                original_hash = source_file.sha256_hash
 
-            # 获取原文件的sha256_hash
-            original_hash = source_file.sha256_hash
+                # 读取新文件内容
+                file_content = file.read()
 
-            # 读取新文件内容
-            file_content = file.read()
+                # 查找所有具有相同sha256_hash的文件
+                files_to_update = QuerySet(File).filter(
+                    sha256_hash=original_hash,
+                    source_id__in=[self.data.get('knowledge_id'), self.data.get('document_id')]
+                )
 
-            # 查找所有具有相同sha256_hash的文件
-            files_to_update = QuerySet(File).filter(
-                sha256_hash=original_hash,
-                source_id__in=[self.data.get('knowledge_id'), self.data.get('document_id')]
-            )
-
-            # 更新所有相同hash的文件
-            for file_obj in files_to_update:
-                file_obj.save(file_content)
+                # 更新所有相同hash的文件
+                for file_obj in files_to_update:
+                    file_obj.save(file_content)
 
             return True
 
