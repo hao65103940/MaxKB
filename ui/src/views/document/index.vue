@@ -605,6 +605,13 @@
                             <AppIcon iconName="app-sync" class="color-secondary"></AppIcon>
                             {{ $t('views.knowledge.setting.sync') }}</el-dropdown-item
                           >
+                          <el-dropdown-item @click="openTagSettingDrawer(row)"
+                            v-if="permissionPrecise.doc_tag(id)"
+                          >
+                            <AppIcon iconName="app-tag" class="color-secondary"></AppIcon>
+
+                            {{ $t('views.document.tag.setting') }}
+                          </el-dropdown-item>
                           <el-dropdown-item
                             v-if="
                               permissionPrecise.doc_generate(id) &&
