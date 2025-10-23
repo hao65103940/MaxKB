@@ -8872,3 +8872,18 @@ msgstr "替换原文档"
 
 msgid "Update License"
 msgstr "更新许可证"
+
+msgid "Tag Key"
+msgstr "标签"
+
+msgid "Tag Value"
+msgstr "标签值"
+
+msgid "Tag id does not exist"
+msgstr "标签 ID 不存在"
+
+msgid "Tag key already exists"
+msgstr "标签已存在"
+
+msgid "Tag value already exists"
+msgstr "标签值已存在"

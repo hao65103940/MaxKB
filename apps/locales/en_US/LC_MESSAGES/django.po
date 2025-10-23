@@ -8746,3 +8746,18 @@ msgstr ""
 
 msgid "Update License"
 msgstr ""
+
+msgid "Tag Key"
+msgstr ""
+
+msgid "Tag Value"
+msgstr ""
+
+msgid "Tag id does not exist"
+msgstr ""
+
+msgid "Tag key already exists"
+msgstr ""
+
+msgid "Tag value already exists"
+msgstr ""
