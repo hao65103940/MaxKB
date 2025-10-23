@@ -42,6 +42,7 @@ ENV PATH=/opt/py3/bin:$PATH \
     REDIS_PASSWORD=Password123@redis \
     LANG=en_US.UTF-8 \
     PYTHONUNBUFFERED=1 \
+    LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libjemalloc.so.2 \
     MAXKB_CONFIG_TYPE=ENV \
     MAXKB_LOG_LEVEL=INFO \
     MAXKB_SANDBOX=1 \
