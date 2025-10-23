@@ -271,6 +271,7 @@ function getList() {
 }
 
 const open = () => {
+  filterText.value = ''
   debugVisible.value = true
   getList()
 }
