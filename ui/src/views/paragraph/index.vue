@@ -409,8 +409,9 @@ function onEnd(event?: any, params?: any, index?: number) {
   }
   const obj = p ?? {
     paragraph_id: paragraphDetail.value[event.newIndex].id, // 当前拖动的段落ID
-    new_position: paragraphDetail.value[event.newIndex + 1].position, // 新位置的段落位置
+    new_position: paragraphDetail.value[event.newIndex + 1]?.position || paragraphDetail.value.length, // 新位置的段落位置
   }
+  // console.log(paragraphDetail.value[event.newIndex], obj)
   loadSharedApi({ type: 'paragraph', systemType: apiType.value }).putAdjustPosition(
     id,
     documentId,

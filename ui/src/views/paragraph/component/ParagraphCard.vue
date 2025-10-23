@@ -93,13 +93,13 @@
                   <template #dropdown>
                     <el-dropdown-menu>
                       <el-dropdown-item
-                        :disabled="props.showMoveUp"
+                        :disabled="!props.showMoveUp"
                         @click.stop="emit('move', 'up')"
                       >
                         {{ $t('views.document.movePosition.moveUp') }}
                       </el-dropdown-item>
                       <el-dropdown-item
-                        :disabled="props.showMoveDown"
+                        :disabled="!props.showMoveDown"
                         @click.stop="emit('move', 'down')"
                       >
                         {{ $t('views.document.movePosition.moveDown') }}
