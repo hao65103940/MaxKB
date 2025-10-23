@@ -1475,7 +1475,7 @@ class DocumentSerializers(serializers.Serializer):
                     id=uuid.uuid7(),
                     document_id=document_id,
                     tag_id=tag_id
-                ) for tag_id in tag_ids if tag_id not in existing_tag_ids
+                ) for tag_id in set(tag_ids) if tag_id not in existing_tag_ids
             ]
             if new_tags:
                 QuerySet(DocumentTag).bulk_create(new_tags)
