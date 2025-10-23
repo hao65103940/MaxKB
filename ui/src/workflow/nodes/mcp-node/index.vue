@@ -130,7 +130,7 @@
             <template #label>
               <div class="flex-between">
                 <div>
-                  <TooltipLabel v-if="item.label.attrs.tooltip" :label="item.label.label" :tooltip="item.label.attrs.tooltip" />
+                  <TooltipLabel v-if="item.label.attrs.tooltip" :label="item.label" :tooltip="item.label.attrs.tooltip" />
                   <span v-else>{{ item.label.label }}</span>
                   <span v-if="item.required" class="color-danger">*</span>
                 </div>
@@ -200,7 +200,7 @@
             <template #label>
               <div class="flex-between">
                 <div>
-                  <TooltipLabel v-if="item.label.attrs.tooltip" :label="item.label.label" :tooltip="item.label.attrs.tooltip" />
+                  <TooltipLabel v-if="item.label.attrs.tooltip" :label="item.label" :tooltip="item.label.attrs.tooltip" />
                   <span v-else>{{ item.label.label }}</span>
                   <span v-if="item.required" class="color-danger">*</span>
                 </div>
