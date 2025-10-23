@@ -121,44 +121,63 @@ class BaseSearchDocumentNode(ISearchDocumentStepNode):
                 compare_type = condition['compare']
 
                 # 构建查询条件
-                if compare_type == 'contain':
-                    q_filter = Q(tag__key=tag_key, tag__value__icontains=field_value)
-                elif compare_type == 'eq':
-                    q_filter = Q(tag__key=tag_key, tag__value=field_value)
-                elif compare_type == 'not_contain':
-                    q_filter = ~Q(tag__key=tag_key, tag__value__icontains=field_value)
+                if compare_type == 'not_contain':
+                    # 反向查询:找出包含该标签的文档,然后排除
+                    exclude_docs = set(QuerySet(DocumentTag).filter(
+                        document_id__in=matched_doc_ids,
+                        tag__key=tag_key,
+                        tag__value__icontains=field_value
+                    ).values_list('document_id', flat=True).distinct())
+
+                    matched_doc_ids = matched_doc_ids - exclude_docs
                 else:
-                    continue
+                    if compare_type == 'contain':
+                        q_filter = Q(tag__key=tag_key, tag__value__icontains=field_value)
+                    elif compare_type == 'eq':
+                        q_filter = Q(tag__key=tag_key, tag__value=field_value)
+                    else:
+                        continue
 
-                # 单次查询获取符合条件的文档
-                tag_docs = set(QuerySet(DocumentTag).filter(
-                    document_id__in=matched_doc_ids
-                ).filter(q_filter).values_list('document_id', flat=True).distinct())
+                    # 单次查询获取符合条件的文档
+                    tag_docs = set(QuerySet(DocumentTag).filter(
+                        document_id__in=matched_doc_ids
+                    ).filter(q_filter).values_list('document_id', flat=True).distinct())
 
-                matched_doc_ids = matched_doc_ids.intersection(tag_docs)
+                    matched_doc_ids = matched_doc_ids.intersection(tag_docs)
 
             return matched_doc_ids
 
         else:
-            # OR逻辑:使用一次查询完成
-            q_objects = Q()
+            # OR逻辑
+            matched_docs = set()
 
             for condition in search_condition_list:
                 tag_key = condition['key']
                 field_value = self.workflow_manage.generate_prompt(condition['value'])
                 compare_type = condition['compare']
 
-                if compare_type == 'contain':
-                    q_objects |= Q(tag__key=tag_key, tag__value__icontains=field_value)
-                elif compare_type == 'eq':
-                    q_objects |= Q(tag__key=tag_key, tag__value=field_value)
-                elif compare_type == 'not_contain':
-                    q_objects |= ~Q(tag__key=tag_key, tag__value__icontains=field_value)
+                if compare_type == 'not_contain':
+                    # 反向查询:找出包含该标签的文档,然后用全集减去
+                    exclude_docs = set(QuerySet(DocumentTag).filter(
+                        document_id__in=document_id_list,
+                        tag__key=tag_key,
+                        tag__value__icontains=field_value
+                    ).values_list('document_id', flat=True).distinct())
 
-            # 一次查询获取所有匹配的文档
-            matched_docs = set(QuerySet(DocumentTag).filter(
-                document_id__in=document_id_list
-            ).filter(q_objects).values_list('document_id', flat=True).distinct())
+                    matched_docs = matched_docs.union(set(document_id_list) - exclude_docs)
+                else:
+                    if compare_type == 'contain':
+                        q_filter = Q(tag__key=tag_key, tag__value__icontains=field_value)
+                    elif compare_type == 'eq':
+                        q_filter = Q(tag__key=tag_key, tag__value=field_value)
+                    else:
+                        continue
+
+                    docs = set(QuerySet(DocumentTag).filter(
+                        document_id__in=document_id_list
+                    ).filter(q_filter).values_list('document_id', flat=True).distinct())
+
+                    matched_docs = matched_docs.union(docs)
 
             return matched_docs
 
