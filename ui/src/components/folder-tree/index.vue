@@ -111,7 +111,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onUnmounted, ref, watch } from 'vue'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { onBeforeRouteLeave } from 'vue-router'
 import type { TreeInstance } from 'element-plus'
 import CreateFolderDialog from '@/components/folder-tree/CreateFolderDialog.vue'
@@ -125,7 +125,7 @@ import useStore from '@/stores'
 import { TreeToFlatten } from '@/utils/array'
 import { MsgConfirm } from '@/utils/message'
 import permissionMap from '@/permission'
-
+import bus from '@/bus'
 defineOptions({ name: 'FolderTree' })
 const props = defineProps({
   data: {
@@ -188,7 +188,12 @@ const { folder } = useStore()
 onBeforeRouteLeave((to, from) => {
   folder.setCurrentFolder({})
 })
-
+onMounted(() => {
+  bus.on('select_node', (id: string) => {
+    treeRef.value?.setCurrentKey(id)
+      hoverNodeId.value=id
+   })
+})
 interface Tree {
   name: string
   children?: Tree[]

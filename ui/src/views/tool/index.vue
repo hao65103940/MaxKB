@@ -40,6 +40,7 @@ import { SourceTypeEnum } from '@/enums/common'
 import permissionMap from '@/permission'
 import { useRoute } from 'vue-router'
 import useStore from '@/stores'
+import bus from "@/bus"
 const route = useRoute()
 const { folder, tool } = useStore()
 
