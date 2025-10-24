@@ -263,6 +263,15 @@ You are a master of problem optimization, adept at accurately inferring user int
     variableAggregationNode: {
       label: 'Variable Aggregation',
       text: 'Perform aggregation processing on the outputs of multiple branches',
+      Strategy: 'Aggregation Strategy',
+      placeholder: 'Return the first non-null value of each group',
+      placeholder1: 'Structurally aggregate each group of variables',
+      group: {
+        placeholder: 'Please select a variable',
+        noneError: 'Name cannot be empty',
+        dupError: 'Name cannot be duplicated',
+      },
+      add: 'Add Group',
     },
     mcpNode: {
       label: 'MCP Node',

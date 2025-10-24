@@ -264,6 +264,15 @@ export default {
     variableAggregationNode: {
       label: '变量聚合',
       text: '对多个分支的输出进行聚合处理',
+      Strategy: '聚合策略',
+      placeholder: '返回每组的第一个非空值',
+      placeholder1: '结构化聚合每组变量',
+      group: {
+        placeholder: '请选择变量',
+        noneError: '名称不能为空',
+        dupError: '名称不能重复',
+      },
+      add: '添加分组',
     },
     variableAssignNode: {
       label: '变量赋值',

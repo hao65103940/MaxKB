@@ -345,7 +345,9 @@ export const variableAggregationNode = {
   height: 252,
   properties: {
     stepName: t('views.applicationWorkflow.nodes.variableAggregationNode.label'),
-    config: {},
+    config: {
+      fields: [],
+    },
   },
 }
 
