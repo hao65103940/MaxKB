@@ -17,6 +17,7 @@ class XInferenceSpeechToText(MaxKBBaseModel, BaseSpeechToText):
     api_base: str
     api_key: str
     model: str
+    params: dict
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
