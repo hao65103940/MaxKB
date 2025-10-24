@@ -82,6 +82,10 @@ export const aiChatNode = {
           label: t('views.applicationWorkflow.nodes.aiChatNode.think'),
           value: 'reasoning_content',
         },
+        {
+          label: t('views.applicationWorkflow.nodes.aiChatNode.historyMessage'),
+          value: 'history_message',
+        },
       ],
     },
   },

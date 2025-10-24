@@ -126,6 +126,7 @@ export default {
       },
       defaultPrompt: '已知信息',
       think: '思考過程',
+      historyMessage: '歷史聊天記錄',
     },
     searchKnowledgeNode: {
       label: '知識庫檢索',

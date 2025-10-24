@@ -125,6 +125,7 @@ export default {
       },
       defaultPrompt: 'Known Information',
       think: 'Thinking Process',
+      historyMessage: 'Historical chat records',
     },
     searchKnowledgeNode: {
       label: 'Knowledge Retrieval',
