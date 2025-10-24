@@ -5,6 +5,9 @@ class ParameterExtractionNode extends AppNode {
   constructor(props: any) {
     super(props, ParameterExtractionNodeVue)
   }
+  getConfig(props: any) {
+    return props.model.properties.config
+  }
 }
 
 export default {

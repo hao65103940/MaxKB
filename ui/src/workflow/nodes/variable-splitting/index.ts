@@ -5,6 +5,9 @@ class VariableSplittingNode extends AppNode {
   constructor(props: any) {
     super(props, VariableSplittingNodeVue)
   }
+  getConfig(props: any) {
+    return props.model.properties.config
+  }
 }
 
 export default {

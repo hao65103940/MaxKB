@@ -39,10 +39,13 @@ class AppNode extends HtmlResize.view {
       )
     }
 
-    props.model.properties.config = nodeDict[props.model.type].properties.config
+    props.model.properties.config = this.getConfig(props)
     if (props.model.properties.height) {
       props.model.height = props.model.properties.height
     }
+  }
+  getConfig(props: any) {
+    return nodeDict[props.model.type].properties.config
   }
   getNodeName(nodes: Array<any>, baseName: string) {
     let index = 0
