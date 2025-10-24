@@ -1,6 +1,6 @@
-import {WorkflowType, WorkflowMode} from '@/enums/application'
+import { WorkflowType, WorkflowMode } from '@/enums/application'
 
-import {t} from '@/locales'
+import { t } from '@/locales'
 
 const end_nodes: Array<string> = [
   WorkflowType.AiChat,
@@ -18,7 +18,8 @@ const end_nodes: Array<string> = [
   WorkflowType.LoopBodyNode,
   WorkflowType.LoopNode,
   WorkflowType.LoopBreakNode,
-  WorkflowType.VideoUnderstandNode
+  WorkflowType.VideoUnderstandNode,
+  WorkflowType.VariableAssignNode,
 ]
 
 const loop_end_nodes: Array<string> = [
