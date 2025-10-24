@@ -55,7 +55,7 @@
         ref="multipleTableRef"
         class="mt-16"
         :data="filteredData"
-        @selection-change="handleSelectionChange"
+        @select="select"
         :maxTableHeight="260"
         :row-key="(row: any) => row.id"
         style="min-width: 600px"
@@ -147,6 +147,7 @@ import { hasPermission } from '@/utils/permission/index'
 import { ComplexPermission } from '@/utils/permission/type'
 import { getPermissionOptions } from '@/views/system/resource-authorization/constant'
 import useStore from '@/stores'
+import { TreeToFlatten } from '@/utils/array'
 
 const { model, user } = useStore()
 const route = useRoute()
@@ -310,11 +311,33 @@ const filteredData = computed(() => {
 })
 
 const multipleSelection = ref<any[]>([])
+const selectObj: any = {}
+const select = (val: any[], active: any) => {
+  if (active.resource_type === 'folder') {
+    if (!val.some((item) => item.id == active.id)) {
+      if (selectObj[active.id] === undefined) {
+        selectObj[active.id] = 0
+      }
+      if (selectObj[active.id] % 2 == 0) {
+        console.log(TreeToFlatten([active]))
+        TreeToFlatten([active])
+          .filter((item: any) => item.id != active.id)
+          .forEach((item: any) => {
+            multipleTableRef.value?.toggleRowSelection(item, true)
+          })
 
-const handleSelectionChange = (val: any[]) => {
-  multipleSelection.value = val
+        multipleSelection.value = multipleTableRef.value.getSelectionRows()
+      } else {
+        multipleSelection.value = val
+      }
+      selectObj[active.id] = selectObj[active.id] + 1
+    } else {
+      multipleSelection.value = val
+    }
+  } else {
+    multipleSelection.value = val
+  }
 }
-
 const dialogVisible = ref(false)
 const radioPermission = ref('')
 function openMulConfigureDialog() {
