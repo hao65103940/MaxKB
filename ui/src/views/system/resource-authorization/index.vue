@@ -196,7 +196,7 @@ const toTree = (nodeList: any, pField: any) => {
       const pNode = nodeMap[element[pField]]
       if (pNode) {
         if (!pNode.children) {
-           pNode.children = [] 
+           pNode.children = []
         }
         pNode.children.push(element)
       }

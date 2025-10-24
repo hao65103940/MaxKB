@@ -58,8 +58,8 @@
         @selection-change="handleSelectionChange"
         :maxTableHeight="260"
         :row-key="(row: any) => row.id"
-        :expand-row-keys="defaultExpandKeys"
         style="min-width: 600px"
+        :expand-row-keys="defaultExpandKeys"
         show-overflow-tooltip
       >
         <el-table-column type="selection" width="55" :reserve-selection="true" />

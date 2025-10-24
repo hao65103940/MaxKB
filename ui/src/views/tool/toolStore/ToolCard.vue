@@ -31,9 +31,6 @@
       </el-text>
     </template>
     <template #footer>
-      <span class="card-footer-left color-secondary">
-        {{ `${$t('common.author')}: MaxKB` }}
-      </span>
       <div class="card-footer-operation mb-8" @click.stop>
         <el-button @click="emit('handleDetail')">
           {{ $t('common.detail') }}
