@@ -60,7 +60,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import { cloneDeep } from 'lodash'
-import { isAppIcon } from '@/utils/common'
+import { isAppIcon, numberFormat } from '@/utils/common'
 const emit = defineEmits(['refresh', 'addTool'])
 
 const visibleInternalDesc = ref(false)
@@ -87,7 +87,7 @@ const addInternalTool = (data: any) => {
 }
 
 defineExpose({
-  open
+  open,
 })
 </script>
 <style lang="scss"></style>

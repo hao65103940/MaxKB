@@ -125,7 +125,7 @@
                   </el-col>
                   <el-col :span="1">
                     <el-button
-                      :disabled="index === 0 && cIndex === 0"
+                      :disabled="form_data.branch.length === 2 && item.conditions.length === 1"
                       link
                       type="info"
                       class="mt-4"

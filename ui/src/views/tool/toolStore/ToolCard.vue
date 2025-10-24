@@ -31,6 +31,9 @@
       </el-text>
     </template>
     <template #footer>
+      <span class="card-footer-left color-secondary" v-if="props.tool?.downloads!= undefined">
+        {{ `${$t('views.document.upload.download')}: ${numberFormat(props.tool.downloads || 0)} ` }}
+      </span>
       <div class="card-footer-operation mb-8" @click.stop>
         <el-button @click="emit('handleDetail')">
           {{ $t('common.detail') }}
@@ -45,8 +48,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { isAppIcon, resetUrl } from '@/utils/common'
-
+import { isAppIcon, resetUrl, numberFormat } from '@/utils/common'
 const props = defineProps<{
   tool: any
   getSubTitle: (v: any) => string

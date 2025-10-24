@@ -40,6 +40,15 @@
             </div>
           </div>
         </div>
+
+        <div class="mt-16" v-if="toolDetail?.downloads != undefined">
+          <el-text type="info">
+            <div>
+              {{ $t('views.document.upload.download') }}:
+              {{ numberFormat(toolDetail?.downloads || 0) }}
+            </div>
+          </el-text>
+        </div>
       </div>
       <MdPreview
         ref="editorRef"
@@ -55,7 +64,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import { cloneDeep } from 'lodash'
-import { isAppIcon } from '@/utils/common'
+import { isAppIcon, numberFormat } from '@/utils/common'
 const emit = defineEmits(['refresh', 'addTool'])
 
 const visibleInternalDesc = ref(false)
@@ -77,7 +86,7 @@ const open = (data: any, detail: any) => {
 }
 
 defineExpose({
-  open
+  open,
 })
 </script>
 <style lang="scss"></style>

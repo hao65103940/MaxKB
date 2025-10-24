@@ -184,7 +184,7 @@
 .el-table {
   --el-table-header-bg-color: var(--app-layout-bg-color);
   --el-table-text-color: var(--app-text-color);
-  --el-table-border-color: #DEE0E3;
+  --el-table-border-color: #dee0e3;
   font-weight: 400;
   thead {
     color: var(--app-text-color-secondary);
@@ -302,6 +302,13 @@
 .el-select__selected-item {
   color: var(--el-text-color-primary);
   font-weight: 400;
+  .el-tag {
+    color: var(--el-text-color-primary);
+    background-color: var(--app-text-color-light-1);
+    height: 24px;
+    font-size: 14px;
+    font-weight: 400;
+  }
 }
 .el-select__caret {
   color: var(--app-text-color-secondary);
