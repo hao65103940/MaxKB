@@ -62,7 +62,7 @@
                   :placeholder="$t('views.document.tag.requiredMessage2')"
                 >
                   <el-option
-                    v-for="op in tag.valueOptions"
+                    v-for="op in getValueOptions(tag)"
                     :key="op"
                     :value="op.id"
                     :label="op.value"
@@ -143,9 +143,15 @@ const deleteTag = (index: number) => {
 }
 
 function tagKeyChange(tag: any) {
-  const currentKeyOption = keyOptions.value.find((op: any) => op.key === tag.key)
-  tag.valueOptions = currentKeyOption ? currentKeyOption.values : []
   tag.value = null
+}
+
+function getValueOptions(tag?: any) {
+  let currentKeyOption = null
+  if (tag && tag.key) {
+    currentKeyOption = keyOptions.value.find((op: any) => op.key === tag.key)
+  }
+  return currentKeyOption ? currentKeyOption.values : []
 }
 
 const submit = () => {
@@ -162,12 +168,7 @@ function getTags(Key?: string) {
   loadSharedApi({ type: 'knowledge', systemType: props.apiType, isShared: isShared.value })
     .getTags(id, {}, optionLoading)
     .then((res: any) => {
-      if (Key) {
-        const index = res.data.findIndex((op: any) => op.key === Key)
-        tagList.value[index].valueOptions = res.data[index].values
-      } else {
-        keyOptions.value = res.data
-      }
+      keyOptions.value = res.data
     })
 }
 

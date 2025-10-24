@@ -5,11 +5,15 @@
     </template>
     <div class="flex-between mb-16">
       <div>
-        <el-button type="primary" @click="openCreateTagDialog()"
+        <el-button
+          type="primary"
+          @click="openCreateTagDialog()"
           v-if="permissionPrecise.tag_create(id)"
-        >{{ $t('views.document.tag.create') }}
+          >{{ $t('views.document.tag.create') }}
         </el-button>
-        <el-button :disabled="multipleSelection.length === 0" @click="batchDelete"
+        <el-button
+          :disabled="multipleSelection.length === 0"
+          @click="batchDelete"
           v-if="permissionPrecise.tag_delete(id)"
         >
           {{ $t('common.delete') }}
@@ -32,7 +36,7 @@
       @cell-mouse-enter="cellMouseEnter"
       @cell-mouse-leave="cellMouseLeave"
     >
-      <el-table-column type="selection" width="55"/>
+      <el-table-column type="selection" width="55" />
       <el-table-column :label="$t('views.document.tag.key')">
         <template #default="{ row }">
           <div class="flex-between">
@@ -40,7 +44,10 @@
             <div v-if="currentMouseId === row.id">
               <span class="mr-4">
                 <el-tooltip effect="dark" :content="$t('views.document.tag.addValue')">
-                  <el-button type="primary" text @click.stop="openCreateTagDialog(row)"
+                  <el-button
+                    type="primary"
+                    text
+                    @click.stop="openCreateTagDialog(row)"
                     v-if="permissionPrecise.tag_create(id)"
                   >
                     <AppIcon iconName="app-add-outlined" />
@@ -49,7 +56,10 @@
               </span>
               <span class="mr-4">
                 <el-tooltip effect="dark" :content="$t('views.document.tag.edit')">
-                  <el-button type="primary" text @click.stop="editTagKey(row)"
+                  <el-button
+                    type="primary"
+                    text
+                    @click.stop="editTagKey(row)"
                     v-if="permissionPrecise.tag_edit(id)"
                   >
                     <AppIcon iconName="app-edit" />
@@ -57,7 +67,10 @@
                 </el-tooltip>
               </span>
               <el-tooltip effect="dark" :content="$t('common.delete')">
-                <el-button type="primary" text @click.stop="delTag(row)"
+                <el-button
+                  type="primary"
+                  text
+                  @click.stop="delTag(row)"
                   v-if="permissionPrecise.tag_delete(id)"
                 >
                   <AppIcon iconName="app-delete" />
@@ -78,7 +91,10 @@
         <template #default="{ row }">
           <span class="mr-4">
             <el-tooltip effect="dark" :content="$t('views.document.tag.editValue')">
-              <el-button type="primary" text @click.stop="editTagValue(row)"
+              <el-button
+                type="primary"
+                text
+                @click.stop="editTagValue(row)"
                 v-if="permissionPrecise.tag_edit(id)"
               >
                 <AppIcon iconName="app-edit" />
@@ -86,7 +102,10 @@
             </el-tooltip>
           </span>
           <el-tooltip effect="dark" :content="$t('common.delete')">
-            <el-button type="primary" text @click.stop="delTagValue(row)"
+            <el-button
+              type="primary"
+              text
+              @click.stop="delTagValue(row)"
               v-if="permissionPrecise.tag_delete(id)"
             >
               <AppIcon iconName="app-delete" />
@@ -96,8 +115,8 @@
       </el-table-column>
     </el-table>
   </el-drawer>
-  <CreateTagDialog ref="createTagDialogRef" @refresh="getList"/>
-  <EditTagDialog ref="editTagDialogRef" @refresh="getList"/>
+  <CreateTagDialog ref="createTagDialogRef" @refresh="getList" />
+  <EditTagDialog ref="editTagDialogRef" @refresh="getList" />
 </template>
 
 <script setup lang="ts">
@@ -110,12 +129,11 @@ import { t } from '@/locales'
 import EditTagDialog from '@/views/document/tag/EditTagDialog.vue'
 import permissionMap from '@/permission'
 
-
 const emit = defineEmits(['refresh'])
 
 const route = useRoute()
 const {
-  params: {id, folderId}, // id为knowledgeID
+  params: { id, folderId }, // id为knowledgeID
 } = route as any
 
 const isShared = computed(() => {
@@ -169,7 +187,7 @@ const tableData = computed(() => {
 })
 
 // 合并单元格方法
-const spanMethod = ({row, column, rowIndex, columnIndex}: any) => {
+const spanMethod = ({ row, column, rowIndex, columnIndex }: any) => {
   if (columnIndex === 0 || columnIndex === 1) {
     // key列 (由于添加了选择列，索引变为1)
     if (row.keyIndex === 0) {
@@ -200,19 +218,12 @@ function openCreateTagDialog(row?: any) {
 }
 
 function batchDelete() {
-  MsgConfirm(t('views.document.tag.deleteConfirm'), t('views.document.tag.deleteTip'), {
-    confirmButtonText: t('common.delete'),
-    confirmButtonClass: 'danger',
-  })
+  const tagsToDelete = multipleSelection.value.map((item) => item.id)
+  loadSharedApi({ type: 'knowledge', systemType: apiType.value })
+    .delMulTag(id, tagsToDelete)
     .then(() => {
-      const tagsToDelete = multipleSelection.value.map((item) => item.id)
-      loadSharedApi({ type: 'knowledge', systemType: apiType.value })
-        .delMulTag(id, tagsToDelete)
-        .then(() => {
-          getList()
-        })
+      getList()
     })
-    .catch(() => {})
 }
 
 const editTagDialogRef = ref()
@@ -241,29 +252,18 @@ function editTagValue(row: any) {
 }
 
 function delTagValue(row: any) {
-  MsgConfirm(
-    t('views.document.tag.deleteConfirm') + row.key + '-' + row.value,
-    t('views.document.tag.deleteTip'),
-    {
-      confirmButtonText: t('common.delete'),
-      confirmButtonClass: 'danger',
-    },
-  )
+  loadSharedApi({ type: 'knowledge', systemType: apiType.value })
+    .delTag(id, row.id, 'one')
     .then(() => {
-      loadSharedApi({ type: 'knowledge', systemType: apiType.value })
-        .delTag(id, row.id, 'one')
-        .then(() => {
-          getList()
-        })
+      getList()
     })
-    .catch(() => {})
 }
 
 function getList() {
   const params = {
-    ...(filterText.value && {name: filterText.value}),
+    ...(filterText.value && { name: filterText.value }),
   }
-  loadSharedApi({type: 'knowledge', systemType: apiType.value, isShared: isShared.value})
+  loadSharedApi({ type: 'knowledge', systemType: apiType.value, isShared: isShared.value })
     .getTags(id, params, loading)
     .then((res: any) => {
       tags.value = res.data

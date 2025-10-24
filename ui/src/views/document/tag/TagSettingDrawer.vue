@@ -199,6 +199,7 @@ function addTags(tags: any) {
 }
 
 const open = (doc: any) => {
+  filterText.value = ''
   debugVisible.value = true
   document_id.value = doc.id
 
