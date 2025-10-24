@@ -319,7 +319,6 @@ const select = (val: any[], active: any) => {
         selectObj[active.id] = 0
       }
       if (selectObj[active.id] % 2 == 0) {
-        console.log(TreeToFlatten([active]))
         TreeToFlatten([active])
           .filter((item: any) => item.id != active.id)
           .forEach((item: any) => {
@@ -371,6 +370,27 @@ function submitPermissions(value: string, row: any) {
       permission: value,
     },
   ]
+  const emitSubmitPermissions = (treeData: any[], ids: Array<string>, result: Array<any>) => {
+    if (!treeData || treeData.length === 0) return []
+    for (const node of treeData) {
+      const isRecursion = node.permission == 'NOT_AUTH' && ids.includes(node.id)
+      if (node.children && node.children.length > 0 && !isRecursion) {
+        emitSubmitPermissions(node.children, ids, result)
+      }
+      const isMatch = node.permission == 'NOT_AUTH' && ids.includes(node.id)
+      if (isMatch) {
+        ids.push(node.folder_id)
+        result.push({
+          target_id: node.id,
+          permission: 'VIEW',
+        })
+      }
+    }
+    return result
+  }
+  if (['VIEW', 'MANAGE', 'ROLE'].includes(value)) {
+    emitSubmitPermissions(props.data, [row.folder_id], obj)
+  }
   emit('submitPermissions', obj)
 }
 const provider_list = ref<Array<Provider>>([])
