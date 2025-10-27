@@ -409,13 +409,13 @@ class ResourceUserPermissionSerializer(serializers.Serializer):
         if workspace_manage:
             current_user_managed_resources_ids = QuerySet(resource_model).filter(workspace_id=workspace_id, folder__in=folder_ids).annotate(
                     id_str=Cast('id', TextField())
-                ).values_list("id", flat=True)
+                ).values_list("id_str", flat=True)
         else:
             current_user_managed_resources_ids = QuerySet(WorkspaceUserResourcePermission).filter(
                 workspace_id=workspace_id, user_id=current_user_id, auth_target_type=auth_target_type,
                 target__in=QuerySet(resource_model).filter(workspace_id=workspace_id, folder__in=folder_ids).annotate(
                     id_str=Cast('id', TextField())
-                ).values_list("id", flat=True),
+                ).values_list("id_str", flat=True),
                 permission_list__contains=['MANAGE']).values_list('target', flat=True)
 
         return current_user_managed_resources_ids
