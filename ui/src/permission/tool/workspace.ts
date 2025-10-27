@@ -126,8 +126,8 @@ const workspace = {
       [
         new ComplexPermission([RoleConst.USER],[PermissionConst.TOOL.getToolWorkspaceResourcePermission(source_id)],[],'AND'),
         RoleConst.WORKSPACE_MANAGE.getWorkspaceRole,
-        PermissionConst.TOOL_EXPORT.getToolWorkspaceResourcePermission(source_id),
-        PermissionConst.TOOL_EXPORT.getWorkspacePermissionWorkspaceManageRole
+        PermissionConst.TOOL_EDIT.getToolWorkspaceResourcePermission(source_id),
+        PermissionConst.TOOL_EDIT.getWorkspacePermissionWorkspaceManageRole
       ],
       'OR'
     ),
