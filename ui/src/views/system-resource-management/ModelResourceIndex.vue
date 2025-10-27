@@ -221,10 +221,7 @@
                   <el-dropdown-item
                     @click.stop="openParamSetting(row)"
                     v-if="
-                      (row.model_type === 'TTS' ||
-                        row.model_type === 'LLM' ||
-                        row.model_type === 'IMAGE' ||
-                        row.model_type === 'TTI') &&
+                      ['TTS','LLM','IMAGE','TTI','STT','RERANKER'].includes(row.model_type) &&
                       permissionPrecise.paramSetting()
                     "
                   >
