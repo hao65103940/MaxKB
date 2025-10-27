@@ -2,7 +2,8 @@
 
 import uuid_utils.compat as uuid
 from django.db import transaction
-from django.db.models import QuerySet, Q, Func, F
+from django.db.models import QuerySet, Q, Func, F, TextField
+from django.db.models.functions import Cast
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
@@ -224,7 +225,9 @@ class FolderSerializer(serializers.Serializer):
                 nodes = Folder.objects.filter(id=self.data.get('id')).get_descendants(include_self=True)
                 for node in nodes:
                     # 删除相关的资源
-                    source_ids = Source.objects.filter(folder_id=node.id).values_list('id', flat=True)
+                    source_ids = (Source.objects.filter(folder_id=node.id)
+                                  .annotate(id_str=Cast('id', TextField()))
+                                  .values_list('id_str', flat=True))
                     # 检查文件夹是否存在未授权当前用户的资源
                     auth_list = QuerySet(WorkspaceUserResourcePermission).filter(
                         Q(workspace_id=self.data.get('workspace_id')) &
