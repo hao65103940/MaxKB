@@ -140,7 +140,6 @@
       ref="SelectDocumentDialogRef"
       @refresh="refreshMigrateParagraph"
       :apiType="apiType"
-      :workspace-id="knowledgeDetail.workspace_id"
     />
     <GenerateRelatedDialog ref="GenerateRelatedDialogRef" @refresh="refresh" :apiType="apiType" />
   </el-card>
@@ -195,7 +194,6 @@ const emit = defineEmits([
 ])
 const loading = ref(false)
 const changeStateloading = ref(false)
-const knowledgeDetail = ref<any>({})
 const show = ref(false)
 // card上面存在dropdown菜单
 const subHovered = ref(false)
@@ -220,13 +218,6 @@ async function changeState(row: any) {
     })
     .catch(() => {
       return false
-    })
-}
-function getDetail() {
-  loadSharedApi({ type: 'knowledge', systemType: apiType.value, isShared: shareDisabled.value })
-    .getKnowledgeDetail(id, loading)
-    .then((res: any) => {
-      knowledgeDetail.value = res.data
     })
 }
 
@@ -303,10 +294,6 @@ const dialogVisible = computed(
     SelectDocumentDialogRef.value?.dialogVisible ||
     GenerateRelatedDialogRef.value?.dialogVisible,
 )
-
-onMounted(() => {
-  getDetail()
-})
 
 watch(dialogVisible, (val: boolean) => {
   emit('dialogVisibleChange', val)

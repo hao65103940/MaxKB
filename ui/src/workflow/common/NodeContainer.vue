@@ -269,8 +269,8 @@ const mousedown = (event?: any) => {
   if (!event?.shiftKey) {
     props.nodeModel.graphModel.clearSelectElements()
   }
-  set(props.nodeModel, 'isSelected', true)
-  set(props.nodeModel, 'isHovered', true)
+  set(props.nodeModel, 'isSelected', !props.nodeModel.isSelected)
+  set(props.nodeModel, 'isHovered', !props.nodeModel.isSelected)
   props.nodeModel.graphModel.toFront(props.nodeModel.id)
 }
 const showicon = ref<number | null>(null)

@@ -132,44 +132,26 @@ const handleSelectionChange = (val: any[]) => {
 }
 
 function batchDelete() {
-  MsgConfirm(t('views.document.tag.deleteConfirm'), t('views.document.tag.deleteTip'), {
-    confirmButtonText: t('common.delete'),
-    confirmButtonClass: 'danger',
-  })
-    .then(() => {
-      const tagsToDelete = multipleSelection.value.reduce((acc, item) => {
-        // 找出当前选中项的key对应的所有value id
-        const sameKeyItems = tableData.value.filter((data) => data.key === item.key)
-        const sameKeyIds = sameKeyItems.map((data) => data.id)
-        return [...acc, ...sameKeyIds]
-      }, [] as string[])
+  const tagsToDelete = multipleSelection.value.reduce((acc, item) => {
+    // 找出当前选中项的key对应的所有value id
+    const sameKeyItems = tableData.value.filter((data) => data.key === item.key)
+    const sameKeyIds = sameKeyItems.map((data) => data.id)
+    return [...acc, ...sameKeyIds]
+  }, [] as string[])
 
-      loadSharedApi({ type: 'document', systemType: apiType.value })
-        .delMulDocumentTag(id, document_id.value, tagsToDelete, loading)
-        .then(() => {
-          getList()
-        })
+  loadSharedApi({ type: 'document', systemType: apiType.value })
+    .delMulDocumentTag(id, document_id.value, tagsToDelete, loading)
+    .then(() => {
+      getList()
     })
-    .catch(() => {})
 }
 
 function delTagValue(row: any) {
-  MsgConfirm(
-    t('views.document.tag.deleteConfirm') + row.key + '-' + row.value,
-    t('views.document.tag.deleteTip'),
-    {
-      confirmButtonText: t('common.delete'),
-      confirmButtonClass: 'danger',
-    },
-  )
+  loadSharedApi({ type: 'document', systemType: apiType.value })
+    .delMulDocumentTag(id, document_id.value, [row.id], loading)
     .then(() => {
-      loadSharedApi({ type: 'document', systemType: apiType.value })
-        .delMulDocumentTag(id, document_id.value, [row.id], loading)
-        .then(() => {
-          getList()
-        })
+      getList()
     })
-    .catch(() => {})
 }
 
 function getList() {

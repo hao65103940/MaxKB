@@ -26,7 +26,7 @@
   </el-dialog>
 </template>
 <script setup lang="ts">
-import {ref, watch, reactive, computed, onMounted} from 'vue'
+import { ref, watch, reactive, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import SelectKnowledgeDocument from '@/components/select-knowledge-document/index.vue'
 import { loadSharedApi } from '@/utils/dynamics-api/shared-api'
@@ -60,6 +60,7 @@ watch(dialogVisible, (bool) => {
 })
 
 const open = (list: any) => {
+  getDetail()
   paragraphList.value = list
   dialogVisible.value = true
 }
@@ -91,11 +92,6 @@ function getDetail() {
       knowledgeDetail.value = res.data
     })
 }
-
-onMounted(() => {
-  getDetail()
-})
-
 
 function changeKnowledge(dataset_id: string) {
   localStorage.setItem(id + 'chat_dataset_id', dataset_id)

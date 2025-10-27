@@ -109,6 +109,7 @@ const renderGraphData = (data?: any) => {
       data.nodeModel.clear_next_node_field(false)
     })
     // lf.value.openSelectionSelect()
+    // lf.value.extension.selectionSelect.setSelectionSense(true, false)
     setTimeout(() => {
       lf.value?.fitView()
     }, 500)

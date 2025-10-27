@@ -218,12 +218,19 @@ function openCreateTagDialog(row?: any) {
 }
 
 function batchDelete() {
-  const tagsToDelete = multipleSelection.value.map((item) => item.id)
-  loadSharedApi({ type: 'knowledge', systemType: apiType.value })
-    .delMulTag(id, tagsToDelete)
+  MsgConfirm(t('views.document.tag.deleteConfirm'), t('views.document.tag.deleteTip'), {
+    confirmButtonText: t('common.delete'),
+    confirmButtonClass: 'danger',
+  })
     .then(() => {
-      getList()
+      const tagsToDelete = multipleSelection.value.map((item) => item.id)
+      loadSharedApi({ type: 'knowledge', systemType: apiType.value })
+        .delMulTag(id, tagsToDelete)
+        .then(() => {
+          getList()
+        })
     })
+    .catch(() => {})
 }
 
 const editTagDialogRef = ref()
