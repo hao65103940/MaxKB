@@ -32,9 +32,13 @@
               {{ $t('views.application.generateDialog.title') }}
             </p>
           </el-scrollbar>
+
           <div v-if="answer && !loading && !isStreaming && !showContinueButton" class="mt-8">
             <el-button type="primary" @click="() => emit('replace', answer)">
               {{ $t('views.application.generateDialog.replace') }}
+            </el-button>
+            <el-button @click="copyClick(answer)">
+              {{ $t('common.copy') }}
             </el-button>
             <el-button @click="reAnswerClick" :disabled="!answer || loading" :loading="loading">
               {{ $t('views.application.generateDialog.remake') }}
@@ -101,6 +105,7 @@ import { t } from '@/locales'
 import systemGeneratePromptAPI from '@/api/system-resource-management/application'
 import generatePromptAPI from '@/api/application/application'
 import useStore from '@/stores'
+import { copyClick } from '@/utils/clipboard'
 const emit = defineEmits(['replace'])
 const { user } = useStore()
 const route = useRoute()
@@ -209,10 +214,10 @@ const startStreamingOutput = () => {
 
   streamTimer = setInterval(() => {
     if (isApiComplete.value && !isPaused.value) {
-       // 更新显示内容
+      // 更新显示内容
       const currentAnswer = chatMessages.value[chatMessages.value.length - 1]
       if (currentAnswer && currentAnswer.role === 'ai') {
-        currentAnswer.content = fullContent .value
+        currentAnswer.content = fullContent.value
       }
       stopStreaming()
       return
@@ -357,7 +362,7 @@ const showContinueButton = computed(() => {
 })
 
 function generatePrompt(inputValue: any) {
-  isApiComplete.value=false
+  isApiComplete.value = false
   loading.value = true
   const workspaceId = user.getWorkspaceId() || 'default'
   chatMessages.value.push({ content: inputValue, role: 'user' })
@@ -397,7 +402,9 @@ function generatePrompt(inputValue: any) {
 // 重新生成点击
 const reAnswerClick = () => {
   if (originalUserInput.value) {
-    generatePrompt(`上一次回答不满意。请针对原始问题"${originalUserInput.value}"并结合对话记录，严格按照格式规范重新生成。`)
+    generatePrompt(
+      `上一次回答不满意。请针对原始问题"${originalUserInput.value}"并结合对话记录，严格按照格式规范重新生成。`,
+    )
   }
 }
 
