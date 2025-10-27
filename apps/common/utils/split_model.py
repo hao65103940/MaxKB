@@ -276,7 +276,7 @@ def post_handler_paragraph(content: str, limit: int):
 
 def smart_split_paragraph(content: str, limit: int):
     """
-    智能分段：在limit前找到合适的分割点（句号、回车等）
+    智能分段:在limit前找到合适的分割点(句号、回车等)
     :param content: 需要分段的文本
     :param limit: 最大字符限制
     :return: 分段后的文本列表
@@ -291,31 +291,29 @@ def smart_split_paragraph(content: str, limit: int):
         end = start + limit
 
         if end >= len(content):
-            # 剩余文本不超过限制，直接添加
+            # 剩余文本不超过限制,直接添加
             result.append(content[start:])
             break
 
         # 在limit范围内寻找最佳分割点
         best_split = end
 
-        # 优先级：句号 > 感叹号/问号 > 回车 > 分号/逗号 > 空格
+        # 优先级:句号 > 感叹号/问号 > 回车
         split_chars = [
-            ('。', -1), ('！', -1), ('？', -1),  # 句子结束符
+            ('。', 0), ('!', 0), ('?', 0),  # 句子结束符,包含在当前段
             ('\n', 0),  # 回车符
-            ('；', -1), ('，', -1),  # 标点符号
-            (' ', -1)  # 空格
         ]
 
         # 从后往前找分割点
         for i in range(end - 1, start + limit // 2, -1):  # 至少保留一半内容
             for char, offset in split_chars:
                 if content[i] == char:
-                    best_split = i + 1 + offset
+                    best_split = i + 1  # 包含分隔符在当前段
                     break
             if best_split != end:
                 break
 
-        # 如果找不到合适分割点，使用原始limit
+        # 如果找不到合适分割点,使用原始limit
         if best_split == end and end < len(content):
             best_split = end
 
