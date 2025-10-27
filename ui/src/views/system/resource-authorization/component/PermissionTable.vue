@@ -322,9 +322,10 @@ const select = (val: any[], active: any) => {
         TreeToFlatten([active])
           .filter((item: any) => item.id != active.id)
           .forEach((item: any) => {
-            multipleTableRef.value?.toggleRowSelection(item, true)
+            if (multipleSelection.value.some((select) => item.id == select.id)) {
+              multipleTableRef.value?.toggleRowSelection(item, true)
+            }
           })
-
         multipleSelection.value = multipleTableRef.value.getSelectionRows()
       } else {
         multipleSelection.value = val
