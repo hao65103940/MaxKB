@@ -1,5 +1,5 @@
 # coding=utf-8
-
+import datetime
 from typing import Dict, Optional, Any, Iterator
 
 import requests
@@ -12,6 +12,7 @@ from langchain_core.runnables import RunnableConfig
 from models_provider.base_model_provider import MaxKBBaseModel
 from models_provider.impl.base_chat_open_ai import BaseChatOpenAI
 import json
+
 
 class QwenVLChatModel(MaxKBBaseModel, BaseChatOpenAI):
 
@@ -116,7 +117,7 @@ class QwenVLChatModel(MaxKBBaseModel, BaseChatOpenAI):
             **self.extra_body,
             "stream": True,
         }
-        response = requests.post(url, headers=headers, json=data)
+        response = requests.post(url, headers=headers, json=data, stream=True)
         if response.status_code != 200:
             raise Exception(f"Failed to get response: {response.text}")
         for line in response.iter_lines():
@@ -138,7 +139,6 @@ class QwenVLChatModel(MaxKBBaseModel, BaseChatOpenAI):
                             delta = chunk_data['choices'][0].get('delta', {})
                             content = delta.get('content', '')
                             if content:
-                                print(content)
                                 yield AIMessage(content=content)
                 except json.JSONDecodeError:
                     # 忽略无法解析的行
