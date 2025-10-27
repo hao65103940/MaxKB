@@ -380,6 +380,7 @@ const toolStoreDescDrawerRef = ref<InstanceType<typeof ToolStoreDescDrawer>>()
 function openCreateDialog(data?: any) {
   // mcp工具
   if (data?.tool_type === 'MCP') {
+    bus.emit('select_node', data.folder_id)
     openCreateMcpDialog(data)
     return
   }

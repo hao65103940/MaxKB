@@ -38,7 +38,7 @@ class FolderView(APIView):
         tags=[_('Folder')]  # type: ignore
     )
     @has_permissions(
-        lambda r, kwargs: Permission(group=Group(f"{kwargs.get('source')}_FOLDER"), operate=Operate.EDIT,
+        lambda r, kwargs: Permission(group=Group(f"{kwargs.get('source')}_FOLDER"), operate=Operate.CREATE,
                                      resource_path=f"/WORKSPACE/{kwargs.get('workspace_id')}/{kwargs.get('source')}/{r.data.get('parent_id')}"),
         lambda r, kwargs: Permission(group=Group(kwargs.get('source')), operate=Operate.EDIT,
                                      resource_path=f"/WORKSPACE/{kwargs.get('workspace_id')}:ROLE/WORKSPACE_MANAGE"
