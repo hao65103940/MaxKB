@@ -78,7 +78,7 @@ class UpdateUserResourcePermissionRequest(serializers.Serializer):
              workspace_id, workspace_id, workspace_id])
         if illegal_target_id_list is not None and len(illegal_target_id_list) > 0:
             raise AppApiException(500,
-                                  _('Non-existent id[') + str(illegal_target_id_list) + ']')
+                                  _('Non-existent id')+'[' + str(illegal_target_id_list) + ']')
 
 
 m_map = {
