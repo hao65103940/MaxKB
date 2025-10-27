@@ -439,7 +439,7 @@ You are a master of problem optimization, adept at accurately inferring user int
     },
     variableSplittingNode: {
       label: 'Variable Splitting',
-      text: 'Used to split variables',
+      text: 'Split a variable into multiple variables based on expressions',
       result: 'Result',
       splitVariables: 'Split Variables',
       inputVariables: 'Input Variable',

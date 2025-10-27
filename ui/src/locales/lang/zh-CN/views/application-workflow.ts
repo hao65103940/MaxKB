@@ -451,7 +451,7 @@ export default {
     },
     variableSplittingNode: {
       label: '变量拆分',
-      text: '用于拆分变量',
+      text: '对输入变量通过表达式拆分为多个变量进行输出',
       splitVariables: '拆分变量',
       inputVariables: '输入变量',
       addVariables: '添加变量',

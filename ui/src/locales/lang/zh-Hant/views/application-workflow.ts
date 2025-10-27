@@ -425,7 +425,7 @@ export default {
     loopBreakNode: { label: 'Break', text: '終止當前循環，跳出循環體', isBreak: 'Break' },
     variableSplittingNode: {
       label: '變量拆分',
-      text: '用於拆分變量',
+      text: '根據表達式將一個變量拆分為多個變量',
       result: '結果',
       splitVariables: '拆分變量',
       inputVariables: '輸入變量',
