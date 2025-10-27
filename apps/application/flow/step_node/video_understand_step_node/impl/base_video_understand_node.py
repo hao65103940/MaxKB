@@ -168,7 +168,7 @@ class BaseVideoUnderstandNode(IVideoUnderstandNode):
     def generate_prompt_question(self, prompt):
         return HumanMessage(self.workflow_manage.generate_prompt(prompt))
 
-    def _process_videos(self, image):
+    def _process_videos(self, image, video_model):
         videos = []
         if isinstance(image, str) and image.startswith('http'):
             videos.append({'type': 'video_url', 'video_url': {'url': image}})
@@ -176,16 +176,14 @@ class BaseVideoUnderstandNode(IVideoUnderstandNode):
             for img in image:
                 file_id = img['file_id']
                 file = QuerySet(File).filter(id=file_id).first()
-                video_bytes = file.get_bytes()
-                base64_video = base64.b64encode(video_bytes).decode("utf-8")
-                video_format = mimetypes.guess_type(file.file_name)[0]  # 获取MIME类型
+                url = video_model.upload_file_and_get_url(file.get_bytes(), file.file_name)
                 videos.append(
-                    {'type': 'video_url', 'video_url': {'url': f'data:{video_format};base64,{base64_video}'}})
+                    {'type': 'video_url', 'video_url': {'url': url}})
         return videos
 
     def generate_message_list(self, video_model, system: str, prompt: str, history_message, video):
         prompt_text = self.workflow_manage.generate_prompt(prompt)
-        videos = self._process_videos(video)
+        videos = self._process_videos(video, video_model)
 
         if videos:
             messages = [HumanMessage(content=[{'type': 'text', 'text': prompt_text}, *videos])]

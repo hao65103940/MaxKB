@@ -143,7 +143,9 @@ class DebugChatSerializers(serializers.Serializer):
             "application_id": chat_info.application.id, "debug": True
         }).chat(instance, base_to_response)
 
+
 SYSTEM_ROLE = get_file_content(os.path.join(PROJECT_DIR, "apps", "chat", 'template', 'generate_prompt_system'))
+
 
 class PromptGenerateSerializer(serializers.Serializer):
     workspace_id = serializers.CharField(required=False, label=_('Workspace ID'))
@@ -156,13 +158,13 @@ class PromptGenerateSerializer(serializers.Serializer):
         query_set = QuerySet(Application).filter(id=self.data.get('application_id'))
         if workspace_id:
             query_set = query_set.filter(workspace_id=workspace_id)
-        application=query_set.first()
+        application = query_set.first()
         if application is None:
             raise AppApiException(500, _('Application id does not exist'))
         return application
 
     def generate_prompt(self, instance: dict):
-        application=self.is_valid(raise_exception=True)
+        application = self.is_valid(raise_exception=True)
         GeneratePromptSerializers(data=instance).is_valid(raise_exception=True)
         workspace_id = self.data.get('workspace_id')
         model_id = self.data.get('model_id')
@@ -171,14 +173,14 @@ class PromptGenerateSerializer(serializers.Serializer):
 
         message = messages[-1]['content']
         q = prompt.replace("{userInput}", message)
-        q = q.replace("{application_name}",application.name)
-        q = q.replace("{detail}",application.desc)
+        q = q.replace("{application_name}", application.name)
+        q = q.replace("{detail}", application.desc)
 
         messages[-1]['content'] = q
-
+        SUPPORTED_MODEL_TYPES = ["LLM", "IMAGE"]
         model_exist = QuerySet(Model).filter(
             id=model_id,
-            model_type="LLM"
+            model_type__in=SUPPORTED_MODEL_TYPES
         ).exists()
         if not model_exist:
             raise Exception(_("Model does not exists or is not an LLM model"))
@@ -186,14 +188,17 @@ class PromptGenerateSerializer(serializers.Serializer):
         system_content = SYSTEM_ROLE.format(application_name=application.name, detail=application.desc)
 
         def process():
-            model = get_model_instance_by_model_workspace_id(model_id=model_id, workspace_id=workspace_id,**application.model_params_setting)
+            model = get_model_instance_by_model_workspace_id(model_id=model_id, workspace_id=workspace_id,
+                                                             **application.model_params_setting)
             try:
                 for r in model.stream([SystemMessage(content=system_content),
-                                   *[HumanMessage(content=m.get('content')) if m.get('role') == 'user' else AIMessage(
+                                       *[HumanMessage(content=m.get('content')) if m.get(
+                                           'role') == 'user' else AIMessage(
                                            content=m.get('content')) for m in messages]]):
                     yield 'data: ' + json.dumps({'content': r.content}) + '\n\n'
             except Exception as e:
                 yield 'data: ' + json.dumps({'error': str(e)}) + '\n\n'
+
         return to_stream_response_simple(process())
 
 
