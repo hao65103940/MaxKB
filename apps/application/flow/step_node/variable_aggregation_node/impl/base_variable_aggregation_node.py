@@ -38,7 +38,7 @@ class BaseVariableAggregationNode(IVariableAggregation):
                         'variable_to_json': self.set_variable_to_json,
                         }
 
-        result = { item.get('group_name'):strategy_map[strategy](item.get('variable_list'))  for item in group_list}
+        result = { item.get('field'):strategy_map[strategy](item.get('variable_list'))  for item in group_list}
 
         return NodeResult({'result': result,**result},{})
 

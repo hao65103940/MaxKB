@@ -39,11 +39,11 @@
             />
           </el-select>
       </el-form-item>
-      <div v-for="(group_list, gIndex) in form_data.group_list" :key="group_list.id" class="mb-8">
+      <div v-for="(group, gIndex) in form_data.group_list" :key="group.id" class="mb-8">
         <el-card shadow="never" class="card-never" style="--el-card-padding: 12px">
           
           <div class="flex-between mb-12">
-            <el-form-item
+            <!-- <el-form-item
               v-if="editingGroupIndex === gIndex"
               :prop="`group_list.${gIndex}.group_name`"
               :rules="groupNameRules(gIndex)"
@@ -58,10 +58,10 @@
                 style="width: 200px; font-weight: bold;"
               >
               </el-input>
-            </el-form-item>
-            <span v-else class="font-bold">{{ group_list.group_name }}</span>
+            </el-form-item> -->
+            <span class="font-bold">{{ group.field }}</span>
             <div class="flex align-center">
-              <el-button @click="editGroupName(gIndex)" size="large" link>
+              <el-button @click="openAddOrEditDialog(group,gIndex)" size="large" link>
                 <el-icon><EditPen /></el-icon>
               </el-button>
               <el-button @click="deleteGroup(gIndex)" size="large" link :disabled="form_data.group_list.length <= 1">
@@ -70,7 +70,7 @@
             </div>
           </div>
 
-          <div v-for="(item, vIndex) in group_list.variable_list" :key="item.v_id" class="mb-4">
+          <div v-for="(item, vIndex) in group.variable_list" :key="item.v_id" class="mb-4">
             <el-row :gutter="8">
               <el-col :span="21">
                 <el-form-item
@@ -96,7 +96,7 @@
                   link
                   size="large"
                   class="mt-4"
-                  :disabled="group_list.variable_list.length <= 1"
+                  :disabled="group.variable_list.length <= 1"
                   @click="deleteVariable(gIndex, vIndex)"
                 >
                   <AppIcon iconName="app-delete"></AppIcon>
@@ -112,36 +112,37 @@
           
         </el-card>
       </div>
-      <el-button @click="addGroup" type="primary" size="large" link>
+      <el-button @click="openAddOrEditDialog()" type="primary" size="large" link>
         <AppIcon iconName="app-add-outlined" class="mr-4"/>
             {{ $t('views.applicationWorkflow.nodes.variableAggregationNode.add') }}
       </el-button>
       </el-form>
+      <GroupFieldDialog ref="GroupFieldDialogRef" @refresh="refreshFieldList"></GroupFieldDialog>
   </NodeContainer>
 </template>
 <script setup lang="ts">
-import { set, cloneDeep, debounce } from 'lodash'
+import { set, cloneDeep } from 'lodash'
 import NodeCascader from '@/workflow/common/NodeCascader.vue'
 import NodeContainer from '@/workflow/common/NodeContainer.vue'
-
-import { ref, computed, onMounted, nextTick } from 'vue'
+import GroupFieldDialog from './component/GroupFieldDialog.vue'
+import { ref, computed, onMounted } from 'vue'
 import { isLastNode } from '@/workflow/common/data'
 import { t } from '@/locales'
 import { randomId } from '@/utils/common'
+import { MsgError } from '@/utils/message'
 
 const props = defineProps<{ nodeModel: any }>()
 const VariableAggregationRef = ref()
 const nodeCascaderRef = ref()
-const editingGroupIndex = ref<number | null>(null)
-const groupNameInputRef = ref()
-
+const GroupFieldDialogRef = ref()
 
 const form = {
   strategy: 'first_non_null',
   group_list: [
     {
       id: randomId(),
-      group_name: 'Group1',
+      label: 'Group1',
+      field: 'Group1',
       variable_list: [
         {
           v_id: randomId(),
@@ -165,68 +166,53 @@ const form_data = computed({
   }
 })
 
-const isGroupNameValid = ref<boolean>(true)
-const groupNameErrMsg = ref('')
-const tempGroupName = ref('')
+const inputFieldList = ref<any[]>([])
 
-const editGroupName = async (gIndex: number) => {
-  editingGroupIndex.value = gIndex
-  tempGroupName.value = form_data.value.group_list[gIndex].group_name
-  isGroupNameValid.value = true
-  groupNameErrMsg.value = ''
-  await nextTick()
-  if (groupNameInputRef.value) {
-    groupNameInputRef.value.focus()
+function openAddOrEditDialog(group?: any, index?: any) {
+  let data = null
+  if (group && index !== undefined) {
+    data = {
+      field: group.field,
+      label: group.label,
+    }
   }
+  GroupFieldDialogRef.value.open(data,index)
 }
 
-const groupNameRules = (gIndex: number) => [
-  { 
-    required: true, 
-    message: t('views.applicationWorkflow.nodes.variableAggregationNode.group.noneError'), 
-    trigger: 'blur' 
-  },
-  { 
-    validator: (rule: any, value: string, callback: any) => {
-      const trimmedValue = value?.trim() || ''
-      
-      const hasDuplicate = form_data.value.group_list.some((item: any, index: number) => 
-        index !== gIndex && item.group_name.trim() === trimmedValue
-      )
-      
-      if (hasDuplicate) {
-        callback(new Error(t('views.applicationWorkflow.nodes.variableAggregationNode.group.dupError')))
-      } else {
-        callback()
-      }
-    }, 
-    trigger: 'change'  // 实时触发
+function refreshFieldList(data: any, index: any) {
+  for (let i = 0; i < inputFieldList.value.length; i++) {
+    if (inputFieldList.value[i].field === data.field && index !== i) {
+      MsgError(t('views.applicationWorkflow.tip.paramErrorMessage') + data.field)
+      return
+    }
   }
-]
-
-
-const validateGroupNameField = debounce((gIndex: number) => {
-  VariableAggregationRef.value?.validateField(`group_list.${gIndex}.group_name`)
-}, 500)
-
-const finishEditGroupName = async (gIndex: number) => {
-  try {
-    await VariableAggregationRef.value?.validateField(`group_list.${gIndex}.group_name`)
-    const c_group_list = cloneDeep(form_data.value.group_list)
-    const fields = c_group_list.map((item:any) => ({ label: item.group_name, value: item.group_name}))
-    set(props.nodeModel.properties.config, 'fields', fields)
-    editingGroupIndex.value = null
-  } catch (error) {
-    form_data.value.group_list[gIndex].group_name = tempGroupName.value
-    editingGroupIndex.value = null
+  if ([undefined, null].includes(index)) {
+    inputFieldList.value.push(data)
+    addGroup(data)
+  } else {
+    inputFieldList.value.splice(index, 1, data)
+    editGroupDesc(data, index)
   }
+  GroupFieldDialogRef.value.close()
+  const fields = [
+    ...inputFieldList.value.map((item) => ({ label: item.label, value: item.field })),
+  ]
+  set(props.nodeModel.properties.config, 'fields', fields)
+}
+
+const editGroupDesc = (data: any, gIndex: any) => {
+  const c_group_list = cloneDeep(form_data.value.group_list)
+  c_group_list[gIndex].field = data.field
+  c_group_list[gIndex].label = data.label
+  form_data.value.group_list = c_group_list
 }
 
 const deleteGroup = (gIndex: number) => {
   const c_group_list = cloneDeep(form_data.value.group_list)
   c_group_list.splice(gIndex,1)
   form_data.value.group_list = c_group_list
-  const fields = c_group_list.map((item:any) => ({ label: item.group_name, value: item.group_name}))
+  inputFieldList.value.splice(gIndex, 1)
+  const fields = c_group_list.map((item:any) => ({ label: item.label, value: item.field}))
   set(props.nodeModel.properties.config, 'fields', fields)
 }
 
@@ -245,29 +231,19 @@ const deleteVariable = (gIndex: number,vIndex: number) => {
   form_data.value.group_list = c_group_list
 }
 
-const addGroup = () => {
-  let group_number = form_data.value.group_list.length + 1
-  let group_name = `Group${group_number}`
-
-  while (form_data.value.group_list.some((item: any) => item.group_name === group_name)) {
-    group_number++
-    group_name = `Group${group_number}`
-  }
-
+const addGroup = (data: any) => {
   const c_group_list = cloneDeep(form_data.value.group_list)
   c_group_list.push({
     id: randomId(),
-      group_name: group_name,
+    field: data.field,
+    label: data.label,  
       variable_list: [{
           v_id: randomId(),
           variable: []
         }]
   })
   form_data.value.group_list = c_group_list
-  const fields = c_group_list.map((item:any) => ({ label: item.group_name, value: item.group_name}))
-  set(props.nodeModel.properties.config, 'fields', fields)
 }
-
 
 
 
@@ -288,7 +264,10 @@ onMounted(() => {
     }
   }
   set(props.nodeModel, 'validate', validate)
-  const fields = form_data.value.group_list.map((item:any) => ({ label: item.group_name, value: item.group_name}))
+  if (props.nodeModel.properties.node_data.group_list) {
+    inputFieldList.value = form_data.value.group_list.map((item:any) => ({ label: item.label, field: item.field}))
+  }
+  const fields = form_data.value.group_list.map((item: any) => ({ label: item.label, value: item.field }))
   set(props.nodeModel.properties.config, 'fields', fields)
 })
 

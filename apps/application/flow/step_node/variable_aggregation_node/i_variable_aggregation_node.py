@@ -17,7 +17,8 @@ class VariableListSerializer(serializers.Serializer):
 
 class VariableGroupSerializer(serializers.Serializer):
     id = serializers.CharField(required=True, label=_("Group id"))
-    group_name = serializers.CharField(required=True, label=_("group_name"))
+    field = serializers.CharField(required=True, label=_("group_name"))
+    label = serializers.CharField(required=True)
     variable_list = VariableListSerializer(many=True)
 
 
