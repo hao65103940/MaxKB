@@ -58,6 +58,15 @@ def get_base_node_work_flow(work_flow):
     return None
 
 
+def hand_node(node, update_tool_map):
+    if node.get('type') == 'tool-lib-node':
+        tool_lib_id = (node.get('properties', {}).get('node_data', {}).get('tool_lib_id') or '')
+        node.get('properties', {}).get('node_data', {})['tool_lib_id'] = update_tool_map.get(tool_lib_id,
+                                                                                             tool_lib_id)
+    if node.get('type') == 'search-knowledge-node':
+        node.get('properties', {}).get('node_data', {})['knowledge_id_list'] = []
+
+
 class MKInstance:
 
     def __init__(self, application: dict, function_lib_list: List[dict], version: str, tool_list: List[dict]):
@@ -348,9 +357,9 @@ class Query(serializers.Serializer):
         application_query_set = application_query_set.order_by("-create_time")
 
         resource_and_folder_query_set = QuerySet(WorkspaceUserResourcePermission).filter(
-                    auth_target_type="APPLICATION",
-                    workspace_id=workspace_id,
-                    user_id=user_id)
+            auth_target_type="APPLICATION",
+            workspace_id=workspace_id,
+            user_id=user_id)
 
         return {'application_query_set': application_query_set,
                 'workspace_user_resource_permission_query_set': resource_and_folder_query_set,
@@ -582,12 +591,10 @@ class ApplicationSerializer(serializers.Serializer):
     def to_application(application, workspace_id, user_id, update_tool_map, folder_id):
         work_flow = application.get('work_flow')
         for node in work_flow.get('nodes', []):
-            if node.get('type') == 'tool-lib-node':
-                tool_lib_id = (node.get('properties', {}).get('node_data', {}).get('tool_lib_id') or '')
-                node.get('properties', {}).get('node_data', {})['tool_lib_id'] = update_tool_map.get(tool_lib_id,
-                                                                                                     tool_lib_id)
-            if node.get('type') == 'search-knowledge-node':
-                node.get('properties', {}).get('node_data', {})['knowledge_id_list'] = []
+            hand_node(node, update_tool_map)
+            if node.get('type') == 'loop-node':
+                for n in node.get('properties', {}).get('node_data', {}).get('loop_body', {}).get('nodes', []):
+                    hand_node(n, update_tool_map)
         return Application(id=uuid.uuid7(),
                            user_id=user_id,
                            name=application.get('name'),
