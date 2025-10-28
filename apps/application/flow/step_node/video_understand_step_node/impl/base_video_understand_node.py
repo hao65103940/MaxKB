@@ -59,11 +59,11 @@ def write_context(node_variable: Dict, workflow_variable: Dict, node: INode, wor
     _write_context(node_variable, workflow_variable, node, workflow, answer)
 
 
-def file_id_to_base64(file_id: str):
+def file_id_to_base64(file_id: str, video_model):
     file = QuerySet(File).filter(id=file_id).first()
     file_bytes = file.get_bytes()
-    base64_video = base64.b64encode(file_bytes).decode("utf-8")
-    return [base64_video, get_video_format(file.file_name)]
+    url = video_model.upload_file_and_get_url(file_bytes, file.file_name)
+    return url
 
 
 class BaseVideoUnderstandNode(IVideoUnderstandNode):
@@ -88,7 +88,8 @@ class BaseVideoUnderstandNode(IVideoUnderstandNode):
         self.context['question'] = question.content
         # 生成消息列表, 真实的history_message
         message_list = self.generate_message_list(video_model, system, prompt,
-                                                  self.get_history_message(history_chat_record, dialogue_number), video)
+                                                  self.get_history_message(history_chat_record, dialogue_number,
+                                                                           video_model), video)
         self.context['message_list'] = message_list
         self.generate_context_video(video)
         self.context['dialogue_type'] = dialogue_type
@@ -140,28 +141,28 @@ class BaseVideoUnderstandNode(IVideoUnderstandNode):
                 ])
         return HumanMessage(content=chat_record.problem_text)
 
-    def get_history_message(self, history_chat_record, dialogue_number):
+    def get_history_message(self, history_chat_record, dialogue_number, video_model):
         start_index = len(history_chat_record) - dialogue_number
         history_message = reduce(lambda x, y: [*x, *y], [
-            [self.generate_history_human_message(history_chat_record[index]),
-             self.generate_history_ai_message(history_chat_record[index])]
+            [self.generate_history_human_message(history_chat_record[index], video_model),
+             self.generate_history_ai_message(history_chat_record[index]), video_model]
             for index in
             range(start_index if start_index > 0 else 0, len(history_chat_record))], [])
         return history_message
 
-    def generate_history_human_message(self, chat_record):
+    def generate_history_human_message(self, chat_record, video_model):
 
         for data in chat_record.details.values():
             if self.node.id == data['node_id'] and 'video_list' in data:
                 video_list = data['video_list']
                 if len(video_list) == 0 or data['dialogue_type'] == 'WORKFLOW':
                     return HumanMessage(content=chat_record.problem_text)
-                video_base64_list = [file_id_to_base64(video.get('file_id')) for video in video_list]
+                video_base64_list = [file_id_to_base64(video.get('file_id'), video_model) for video in video_list]
                 return HumanMessage(
                     content=[
                         {'type': 'text', 'text': data['question']},
                         *[{'type': 'video_url',
-                           'video_url': {'url': f'data:{base64_video[1]};base64,{base64_video[0]}'}} for
+                           'video_url': {'url': f'{base64_video}'}} for
                           base64_video in video_base64_list]
                     ])
         return HumanMessage(content=chat_record.problem_text)
