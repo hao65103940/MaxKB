@@ -12,6 +12,7 @@ from langchain_core.messages import BaseMessage, HumanMessage, SystemMessage, AI
 from application.flow.i_step_node import NodeResult, INode
 from application.flow.step_node.video_understand_step_node.i_video_understand_node import IVideoUnderstandNode
 from knowledge.models import File
+from models_provider.impl.volcanic_engine_model_provider.model.image import get_video_format
 from models_provider.tools import get_model_instance_by_model_workspace_id
 
 
@@ -62,7 +63,7 @@ def file_id_to_base64(file_id: str):
     file = QuerySet(File).filter(id=file_id).first()
     file_bytes = file.get_bytes()
     base64_video = base64.b64encode(file_bytes).decode("utf-8")
-    return [base64_video, what(None, file_bytes)]
+    return [base64_video, get_video_format(file.file_name)]
 
 
 class BaseVideoUnderstandNode(IVideoUnderstandNode):
@@ -160,7 +161,7 @@ class BaseVideoUnderstandNode(IVideoUnderstandNode):
                     content=[
                         {'type': 'text', 'text': data['question']},
                         *[{'type': 'video_url',
-                           'video_url': {'url': f'data:video/{base64_video[1]};base64,{base64_video[0]}'}} for
+                           'video_url': {'url': f'data:{base64_video[1]};base64,{base64_video[0]}'}} for
                           base64_video in video_base64_list]
                     ])
         return HumanMessage(content=chat_record.problem_text)
