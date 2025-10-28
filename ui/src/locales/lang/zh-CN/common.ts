@@ -78,6 +78,7 @@ export default {
     editParam: '编辑参数',
     addParam: '添加参数',
   },
+  aggregationStrategy: '聚合策略',
   inputPlaceholder: '请输入',
   selectPlaceholder: '请选择',
   title: '标题',

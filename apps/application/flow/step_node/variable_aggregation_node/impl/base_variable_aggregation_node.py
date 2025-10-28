@@ -1,4 +1,4 @@
-#coding=utf-8
+# coding=utf-8
 """
     @project: MaxKB
     @Author：虎²
@@ -16,6 +16,8 @@ class BaseVariableAggregationNode(IVariableAggregation):
         for key, value in details.get('result').items():
             self.context['key'] = value
         self.context['result'] = details.get('result')
+        self.context['strategy'] = details.get('strategy')
+        self.context['group_list'] = details.get('group_list')
 
     def get_first_non_null(self, variable_list):
 
@@ -30,17 +32,35 @@ class BaseVariableAggregationNode(IVariableAggregation):
     def set_variable_to_json(self, variable_list):
 
         return {variable.get('variable')[1:][0]: self.workflow_manage.get_reference_field(
-                variable.get('variable')[0],
-                variable.get('variable')[1:]) for variable in variable_list}
+            variable.get('variable')[0],
+            variable.get('variable')[1:]) for variable in variable_list}
 
-    def execute(self,strategy,group_list,**kwargs) -> NodeResult:
-        strategy_map = {'first_non_null':self.get_first_non_null,
+    def reset_variable(self, variable):
+        value = self.workflow_manage.get_reference_field(
+            variable.get('variable')[0],
+            variable.get('variable')[1:])
+        node_id = variable.get('variable')[0]
+        node = self.workflow_manage.flow.get_node(node_id)
+        return {"value": value, 'node_name': node.properties.get('stepName') if node is not None else node_id,
+                'field': variable.get('variable')[1]}
+
+    def reset_group_list(self, group_list):
+        result = []
+        for g in group_list:
+            b = {'label': g.get('label'),
+                 'variable_list': [self.reset_variable(variable) for variable in g.get('variable_list')]}
+            result.append(b)
+        return result
+
+    def execute(self, strategy, group_list, **kwargs) -> NodeResult:
+        strategy_map = {'first_non_null': self.get_first_non_null,
                         'variable_to_json': self.set_variable_to_json,
                         }
 
-        result = { item.get('field'):strategy_map[strategy](item.get('variable_list'))  for item in group_list}
+        result = {item.get('field'): strategy_map[strategy](item.get('variable_list')) for item in group_list}
 
-        return NodeResult({'result': result,**result},{})
+        return NodeResult(
+            {'result': result, 'strategy': strategy, 'group_list': self.reset_group_list(group_list), **result}, {})
 
     def get_details(self, index: int, **kwargs):
         return {
@@ -49,6 +69,8 @@ class BaseVariableAggregationNode(IVariableAggregation):
             'run_time': self.context.get('run_time'),
             'type': self.node.type,
             'result': self.context.get('result'),
+            'strategy': self.context.get('strategy'),
+            'group_list': self.context.get('group_list'),
             'status': self.status,
             'err_message': self.err_message
         }

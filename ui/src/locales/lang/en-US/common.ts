@@ -74,6 +74,7 @@ export default {
     editParam: 'Edit Parameter',
     addParam: 'Add Parameter',
   },
+  aggregationStrategy: 'Aggregation Strategy',
   inputPlaceholder: 'Please input',
   selectPlaceholder: 'Please select',
   title: 'Title',

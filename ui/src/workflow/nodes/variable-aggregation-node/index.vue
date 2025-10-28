@@ -43,23 +43,7 @@
         <el-card shadow="never" class="card-never" style="--el-card-padding: 12px">
           
           <div class="flex-between mb-12">
-            <!-- <el-form-item
-              v-if="editingGroupIndex === gIndex"
-              :prop="`group_list.${gIndex}.group_name`"
-              :rules="groupNameRules(gIndex)"
-              style="margin-bottom: 0; flex: 1;"
-            >
-              <el-input
-                v-model="form_data.group_list[gIndex].group_name"
-                @blur="finishEditGroupName(gIndex)"
-                @input="validateGroupNameField(gIndex)"
-                ref="groupNameInputRef"
-                size="small"
-                style="width: 200px; font-weight: bold;"
-              >
-              </el-input>
-            </el-form-item> -->
-            <span class="font-bold">{{ group.field }}</span>
+            <span class="font-bold">{{ group.label }}</span>
             <div class="flex align-center">
               <el-button @click="openAddOrEditDialog(group,gIndex)" size="large" link>
                 <el-icon><EditPen /></el-icon>

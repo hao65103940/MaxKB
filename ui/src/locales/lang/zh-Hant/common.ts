@@ -74,6 +74,7 @@ export default {
     editParam: '編輯參數',
     addParam: '新增參數',
   },
+  aggregationStrategy: '聚合策略',
   inputPlaceholder: '請輸入',
   selectPlaceholder: '請選擇',
   title: '標題',
