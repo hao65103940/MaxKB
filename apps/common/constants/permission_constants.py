@@ -429,7 +429,7 @@ class Permission:
     def new_instance(permission_str: str):
         permission_split = permission_str.split(":")
         group = Group[permission_split[0]]
-        operate = Operate[permission_split[2]]
+        operate = Operate[permission_split[1]]
         if len(permission_split) > 2:
             dynamic_tag = ":".join(permission_split[2:])
             return Permission(group, operate, dynamic_tag)
