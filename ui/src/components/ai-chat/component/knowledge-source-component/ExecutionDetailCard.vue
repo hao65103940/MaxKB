@@ -22,7 +22,8 @@
             data.type === WorkflowType.ImageUnderstandNode ||
             data.type === WorkflowType.ImageGenerateNode ||
             data.type === WorkflowType.Application ||
-            data.type == WorkflowType.IntentNode
+            data.type == WorkflowType.IntentNode ||
+            data.type === WorkflowType.VideoUnderstandNode
           "
           >{{ data?.message_tokens + data?.answer_tokens }} tokens</span
         >
