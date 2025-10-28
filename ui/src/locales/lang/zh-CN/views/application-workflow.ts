@@ -451,7 +451,7 @@ export default {
     },
     variableSplittingNode: {
       label: '变量拆分',
-      text: '对输入变量通过表达式拆分为多个变量进行输出',
+      text: '通过配置JSON Path 表达式，对输入的 JSON 格式变量进行解析和拆分',
       splitVariables: '拆分变量',
       inputVariables: '输入变量',
       addVariables: '添加变量',

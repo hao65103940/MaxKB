@@ -425,7 +425,7 @@ export default {
     loopBreakNode: { label: 'Break', text: '終止當前循環，跳出循環體', isBreak: 'Break' },
     variableSplittingNode: {
       label: '變量拆分',
-      text: '根據表達式將一個變量拆分為多個變量',
+      text: '通過配置 JSON Path 表達式，對輸入的 JSON 格式變量進行解析和拆分',
       result: '結果',
       splitVariables: '拆分變量',
       inputVariables: '輸入變量',
