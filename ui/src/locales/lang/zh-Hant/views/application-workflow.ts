@@ -265,7 +265,7 @@ export default {
       text: '對多個分支的輸出進行聚合處理',
       Strategy: '聚合策略',
       placeholder: '返回每組的第一個非空值',
-      placeholder1: '結構化聚合每組變量',
+      placeholder1: '返回每組變量的集合',
       group: {
         placeholder: '請選擇變量',
         noneError: '名稱不能為空',
