@@ -1,3 +1,5 @@
+import base64
+import mimetypes
 from typing import Dict
 
 from models_provider.base_model_provider import MaxKBBaseModel
@@ -22,3 +24,10 @@ class VolcanicEngineImage(MaxKBBaseModel, BaseChatOpenAI):
     @staticmethod
     def is_cache_model():
         return False
+
+
+    def upload_file_and_get_url(self, file_stream, file_name):
+        """上传文件并获取文件URL"""
+        base64_video = base64.b64encode(file_stream).decode("utf-8")
+        video_format = mimetypes.guess_type(file_name)[0]
+        return f'data:{video_format};base64,{base64_video}'

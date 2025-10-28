@@ -86,7 +86,6 @@ class QwenVLChatModel(MaxKBBaseModel, BaseChatOpenAI):
         policy_data = self.get_upload_policy(self.openai_api_key.get_secret_value(), self.model_name)
         # 2. 上传文件到OSS
         oss_url = self.upload_file_to_oss(policy_data, file_stream, file_name)
-        print(oss_url)
 
         return oss_url
 
