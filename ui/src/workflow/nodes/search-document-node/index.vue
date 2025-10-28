@@ -194,7 +194,7 @@
             <div v-for="(c, index) in form_data.search_condition_list" :key="index">
               <el-row :gutter="8" class="mb-8">
                 <el-col :span="8">
-                  <el-select v-model="c.key" filterable>
+                  <el-select v-model="c.key" filterable @focus="getAllTags(form_data.knowledge_id_list)">
                     <el-option
                       v-for="tag in form_data.knowledge_tags"
                       :key="tag"
@@ -360,13 +360,6 @@ function getAllTags(knowledge_ids: any) {
       set(form_data.value, 'knowledge_tags', res.data)
     })
 }
-
-watch(
-  () => form_data.value.knowledge_id_list,
-  (val) => {
-    getAllTags(val)
-  },
-)
 
 const validate = () => {
   return Promise.all([
