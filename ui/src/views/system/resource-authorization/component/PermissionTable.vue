@@ -56,13 +56,14 @@
         class="mt-16"
         :data="filteredData"
         @select="select"
+        @select-all="selectAll"
         :maxTableHeight="260"
         :row-key="(row: any) => row.id"
         style="min-width: 600px"
         :expand-row-keys="defaultExpandKeys"
         show-overflow-tooltip
       >
-        <el-table-column type="selection" width="55" :reserve-selection="true" />
+        <el-table-column type="selection" width="55" :reserve-selection="true"> </el-table-column>
         <el-table-column prop="name" :label="$t('common.name')">
           <template #default="{ row }">
             <span style="vertical-align: sub">
@@ -137,7 +138,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ref, onMounted, watch, computed, reactive } from 'vue'
+import { ref, onMounted, computed, nextTick } from 'vue'
 import { useRoute } from 'vue-router'
 import type { Provider } from '@/api/type/model'
 import { SourceTypeEnum } from '@/enums/common'
@@ -312,6 +313,9 @@ const filteredData = computed(() => {
 
 const multipleSelection = ref<any[]>([])
 const selectObj: any = {}
+const selectAll = (selection: any[]) => {
+  multipleSelection.value = selection
+}
 const select = (val: any[], active: any) => {
   if (active.resource_type === 'folder') {
     if (!val.some((item) => item.id == active.id)) {
