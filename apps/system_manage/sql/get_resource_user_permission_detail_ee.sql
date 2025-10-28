@@ -1,6 +1,5 @@
 SELECT
     distinct(u.id),
-    u.id,
     u.nick_name,
     u.username,
     case
