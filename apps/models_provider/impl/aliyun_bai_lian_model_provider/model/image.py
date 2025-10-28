@@ -104,15 +104,28 @@ class QwenVLChatModel(MaxKBBaseModel, BaseChatOpenAI):
             "Content-Type": "application/json",
             "X-DashScope-OssResourceResolve": "enable"
         }
+        # 遍历input 获取所有的content 构造新的消息体
+        messages = []
+        for message in input:
+            if message.type == "human":
+                messages.append({
+                    "role": "user",
+                    "content": message.content
+                })
+            elif message.type == "ai":
+                messages.append({
+                    "role": "assistant",
+                    "content": message.content
+                })
+            elif message.type == "system":
+                messages.append({
+                    "role": "system",
+                    "content": message.content
+                })
 
         data = {
             "model": self.model_name,
-            "messages": [
-                {
-                    "role": "user",
-                    "content": input[0].content
-                }
-            ],
+            "messages": messages,
             **self.extra_body,
             "stream": True,
         }
