@@ -842,7 +842,7 @@
                 </div>
               </div>
             </div>
-            <div class="card-never border-r-6  mt-8">
+            <div class="card-never border-r-6 mt-8">
               <h5 class="p-8-12">
                 {{ $t('common.param.outputParam') }}
               </h5>
@@ -880,7 +880,41 @@
               </div>
             </div>
           </template>
-
+          <!-- 变量聚合 -->
+          <template v-if="data.type === WorkflowType.VariableAggregationNode">
+            <div class="card-never border-r-6">
+              <h5 class="p-8-12">
+                {{ $t('views.applicationWorkflow.nodes.variableAggregationNode.Strategy') }}
+              </h5>
+              <div class="p-8-12 border-t-dashed lighter pre-wrap">
+                {{ data.strategy }}
+              </div>
+            </div>
+            <div
+              class="card-never border-r-6 mt-8"
+              v-for="(group, groupI) in data.group_list"
+              :key="groupI"
+            >
+              <h5 class="p-8-12">
+                {{ group.label+ ' '+ $t('common.param.inputParam') }}
+              </h5>
+              <div class="p-8-12 border-t-dashed lighter">
+                <div v-for="(f, i) in group.variable_list" :key="i" class="mb-8">
+                  <span class="color-secondary">{{ `${f.node_name}.${f.field}` }}:</span> {{ f.value }}
+                </div>
+              </div>
+            </div>
+            <div class="card-never border-r-6 mt-8">
+              <h5 class="p-8-12">
+                {{ $t('common.param.outputParam') }}
+              </h5>
+              <div class="p-8-12 border-t-dashed lighter">
+                <div v-for="(f, i) in data.result" :key="i" class="mb-8">
+                  <span class="color-secondary">{{ i }}:</span> {{ f }}
+                </div>
+              </div>
+            </div>
+          </template>
           <!-- MCP 节点 -->
           <template v-if="data.type === WorkflowType.McpNode">
             <div class="card-never border-r-6">

@@ -41,7 +41,7 @@
       <div v-for="(group, gIndex) in form_data.group_list" :key="group.id" class="mb-8">
         <el-card shadow="never" class="card-never" style="--el-card-padding: 12px">
           <div class="flex-between mb-12">
-            <span class="font-bold">{{ group.label }}</span>
+            <span class="ellipsis" :title="group.label">{{ group.label }}</span>
             <div class="flex align-center" style="margin-right: -3px;">
               <el-button @click="openAddOrEditDialog(group, gIndex)"  link>
                 <el-icon><EditPen /></el-icon>
