@@ -98,7 +98,7 @@ export function initDefaultShortcut(lf: LogicFlow, graph: GraphModel) {
       return
     }
     const nodes = elements.nodes.filter((node) =>
-      ['start-node', 'base-node', 'loop-body-node'].includes(node.type),
+      ['start-node', 'base-node', 'loop-body-node', 'loop-start-node'].includes(node.type),
     )
     if (nodes.length > 0) {
       MsgError(
