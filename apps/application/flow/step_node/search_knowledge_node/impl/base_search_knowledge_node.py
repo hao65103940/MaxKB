@@ -85,11 +85,11 @@ class BaseSearchKnowledgeNode(ISearchKnowledgeStepNode):
                 knowledge_id_list = self.get_reference_content(search_scope_reference)
             else:  # 文档
                 document_id_list = self.get_reference_content(search_scope_reference)
-                knowledge_id_list = list(QuerySet(Document).filter(
+                knowledge_id_list = [str(k) for k in QuerySet(Document).filter(
                     id__in=document_id_list
                 ).values_list(
                     'knowledge_id', flat=True
-                ).distinct())
+                ).distinct()]
 
         get_knowledge_list_of_authorized = DatabaseModelManage.get_model('get_knowledge_list_of_authorized')
         chat_user_type = self.workflow_manage.get_body().get('chat_user_type')
