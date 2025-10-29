@@ -636,7 +636,7 @@ export const menuNodes = [
   },
   {
     label: t('views.knowledge.title'),
-    list: [searchKnowledgeNode, searchDocumentNode, rerankerNode],
+    list: [searchKnowledgeNode, searchDocumentNode, rerankerNode, documentExtractNode],
   },
   {
     label: t('views.applicationWorkflow.nodes.classify.businessLogic'),
@@ -653,7 +653,7 @@ export const menuNodes = [
   },
   {
     label: t('views.applicationWorkflow.nodes.classify.other'),
-    list: [mcpNode, documentExtractNode, toolNode],
+    list: [mcpNode, toolNode],
   },
 ]
 export const applicationLoopMenuNodes = [
@@ -674,7 +674,7 @@ export const applicationLoopMenuNodes = [
   },
   {
     label: t('views.knowledge.title'),
-    list: [searchKnowledgeNode, searchDocumentNode, rerankerNode],
+    list: [searchKnowledgeNode, searchDocumentNode, rerankerNode, documentExtractNode],
   },
   {
     label: t('views.applicationWorkflow.nodes.classify.businessLogic'),
@@ -682,11 +682,16 @@ export const applicationLoopMenuNodes = [
   },
   {
     label: t('views.applicationWorkflow.nodes.classify.dataProcessing', '数据处理'),
-    list: [variableAssignNode, variableSplittingNode, parameterExtractionNode, variableAggregationNode],
+    list: [
+      variableAssignNode,
+      variableSplittingNode,
+      parameterExtractionNode,
+      variableAggregationNode,
+    ],
   },
   {
     label: t('views.applicationWorkflow.nodes.classify.other'),
-    list: [mcpNode, documentExtractNode, toolNode],
+    list: [mcpNode, toolNode],
   },
 ]
 

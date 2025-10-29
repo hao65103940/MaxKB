@@ -42,8 +42,8 @@
         <el-card shadow="never" class="card-never" style="--el-card-padding: 12px">
           <div class="flex-between mb-12">
             <span class="ellipsis" :title="group.label">{{ group.label }}</span>
-            <div class="flex align-center" style="margin-right: -3px;">
-              <el-button @click="openAddOrEditDialog(group, gIndex)"  link>
+            <div class="flex align-center" style="margin-right: -3px">
+              <el-button @click="openAddOrEditDialog(group, gIndex)" link>
                 <el-icon><EditPen /></el-icon>
               </el-button>
               <el-button
@@ -55,43 +55,50 @@
               </el-button>
             </div>
           </div>
-
-          <div v-for="(item, vIndex) in group.variable_list" :key="item.v_id">
-            <el-row>
-              <el-col :span="22">
-                <el-form-item
-                  :prop="`group_list.${gIndex}.variable_list.${vIndex}.variable`"
-                  :rules="{
-                    type: 'array',
-                    required: true,
-                    message: $t(
-                      'views.applicationWorkflow.variable.placeholder',
-                    ),
-                    trigger: 'change',
-                  }"
-                >
-                  <NodeCascader
-                    ref="nodeCascaderRef"
-                    :nodeModel="nodeModel"
-                    class="w-full"
-                    :placeholder="$t('views.applicationWorkflow.variable.placeholder')"
-                    v-model="item.variable"
-                  />
-                </el-form-item>
-              </el-col>
-              <el-col :span="2">
-                <el-button
-                  link
-                  class="mt-4 ml-4"
-                  :disabled="group.variable_list.length <= 1"
-                  @click="deleteVariable(gIndex, vIndex)"
-                >
-                  <AppIcon iconName="app-delete"></AppIcon>
-                </el-button>
-              </el-col>
-            </el-row>
-          </div>
-
+          <VueDraggable
+            ref="el"
+            v-bind:modelValue="group.variable_list"
+            :disabled="group.variable_list.length === 1"
+            handle=".handle"
+            :animation="150"
+            ghostClass="ghost"
+            @end="onEnd($event, gIndex)"
+          >
+            <div v-for="(item, vIndex) in group.variable_list" :key="item.v_id" class="drag-card">
+              <el-row class="handle">
+                <el-col :span="22" class="flex">
+                  <img src="@/assets/sort.svg" alt="" height="15" class="mr-4 mt-8" />
+                  <el-form-item
+                    :prop="`group_list.${gIndex}.variable_list.${vIndex}.variable`"
+                    :rules="{
+                      type: 'array',
+                      required: true,
+                      message: $t('views.applicationWorkflow.variable.placeholder'),
+                      trigger: 'change',
+                    }"
+                  >
+                    <NodeCascader
+                      ref="nodeCascaderRef"
+                      :nodeModel="nodeModel"
+                      style="width: 200px"
+                      :placeholder="$t('views.applicationWorkflow.variable.placeholder')"
+                      v-model="item.variable"
+                    />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="2">
+                  <el-button
+                    link
+                    class="mt-4 ml-4"
+                    :disabled="group.variable_list.length <= 1"
+                    @click="deleteVariable(gIndex, vIndex)"
+                  >
+                    <AppIcon iconName="app-delete"></AppIcon>
+                  </el-button>
+                </el-col>
+              </el-row>
+            </div>
+          </VueDraggable>
           <el-button @click="addVariable(gIndex)" type="primary" size="large" link>
             <AppIcon iconName="app-add-outlined" class="mr-4" />
             {{ $t('common.add') }}
@@ -116,6 +123,7 @@ import { isLastNode } from '@/workflow/common/data'
 import { t } from '@/locales'
 import { randomId } from '@/utils/common'
 import { MsgError } from '@/utils/message'
+import { VueDraggable } from 'vue-draggable-plus'
 
 const props = defineProps<{ nodeModel: any }>()
 const VariableAggregationRef = ref()
@@ -239,6 +247,17 @@ const validate = async () => {
   return Promise.all(validate_list).catch((err) => {
     return Promise.reject({ node: props.nodeModel, errMessage: err })
   })
+}
+
+function onEnd(event: any, gIndex: number) {
+  const { oldIndex, newIndex } = event
+  if (oldIndex === undefined || newIndex === undefined) return
+  const list = cloneDeep(props.nodeModel.properties.node_data.group_list[gIndex].variable_list)
+  const newInstance = { ...list[oldIndex] }
+  const oldInstance = { ...list[newIndex] }
+  list[newIndex] = newInstance
+  list[oldIndex] = oldInstance
+  set(props.nodeModel.properties.node_data.group_list[gIndex], 'variable_list', list)
 }
 
 onMounted(() => {

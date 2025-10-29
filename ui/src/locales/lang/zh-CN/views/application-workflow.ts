@@ -260,7 +260,7 @@ export default {
     },
     variableAggregationNode: {
       label: '变量聚合',
-      text: '对多个分支的输出进行聚合处理',
+      text: '按聚合策略聚合每组的变量',
       Strategy: '聚合策略',
       placeholder: '返回每组的第一个非空值',
       placeholder1: '返回每组变量的集合',

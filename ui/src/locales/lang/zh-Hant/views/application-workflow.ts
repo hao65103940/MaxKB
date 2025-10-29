@@ -259,7 +259,7 @@ export default {
     },
     variableAggregationNode: {
       label: '變量聚合',
-      text: '對多個分支的輸出進行聚合處理',
+      text: '按聚合策略聚合每組的變量',
       Strategy: '聚合策略',
       placeholder: '返回每組的第一個非空值',
       placeholder1: '返回每組變量的集合',

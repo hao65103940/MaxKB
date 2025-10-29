@@ -11,7 +11,7 @@
       <VueDraggable
         ref="el"
         v-bind:modelValue="form_data.branch"
-        :disabled="form_data.branch === 2"
+        :disabled="form_data.branch.length === 2"
         handle=".handle"
         :animation="150"
         ghostClass="ghost"
@@ -347,23 +347,5 @@ onMounted(() => {
 })
 </script>
 <style lang="scss" scoped>
-.drag-card.no-drag {
-  .handle {
-    .handle-img {
-      display: none;
-    }
-  }
-}
-.drag-card:not(.no-drag) {
-  .handle {
-    .handle-img {
-      display: none;
-    }
-    &:hover {
-      .handle-img {
-        display: block;
-      }
-    }
-  }
-}
+
 </style>

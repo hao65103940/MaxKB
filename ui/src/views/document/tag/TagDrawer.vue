@@ -259,11 +259,18 @@ function editTagValue(row: any) {
 }
 
 function delTagValue(row: any) {
-  loadSharedApi({ type: 'knowledge', systemType: apiType.value })
-    .delTag(id, row.id, 'one')
+  MsgConfirm(t('views.document.tag.deleteConfirm') + row.value, t('views.document.tag.deleteTip'), {
+    confirmButtonText: t('common.delete'),
+    confirmButtonClass: 'danger',
+  })
     .then(() => {
-      getList()
+      loadSharedApi({ type: 'knowledge', systemType: apiType.value })
+        .delTag(id, row.id, 'one')
+        .then(() => {
+          getList()
+        })
     })
+    .catch(() => {})
 }
 
 function getList() {

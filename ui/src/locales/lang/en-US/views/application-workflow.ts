@@ -259,7 +259,7 @@ You are a master of problem optimization, adept at accurately inferring user int
     },
     variableAggregationNode: {
       label: 'Variable Aggregation',
-      text: 'Perform aggregation processing on the outputs of multiple branches',
+      text: 'Aggregate variables of each group according to the aggregation strategy',
       Strategy: 'Aggregation Strategy',
       placeholder: 'Return the first non-null value of each group',
       placeholder1: 'Return the set of variables for each group',
