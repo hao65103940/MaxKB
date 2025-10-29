@@ -25,7 +25,7 @@ class BaseVariableAggregationNode(IVariableAggregation):
             v = self.workflow_manage.get_reference_field(
                 variable.get('variable')[0],
                 variable.get('variable')[1:])
-            if v is not None:
+            if v is not None and not(isinstance(v, (str,list,dict)) and len(v) == 0) :
                 return v
         return None
 
