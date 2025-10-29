@@ -25,15 +25,15 @@ class BaseVariableAggregationNode(IVariableAggregation):
             v = self.workflow_manage.get_reference_field(
                 variable.get('variable')[0],
                 variable.get('variable')[1:])
-            if v is not None and not(isinstance(v, (str,list,dict)) and len(v) == 0) :
+            if v is not None and not (isinstance(v, (str, list, dict)) and len(v) == 0):
                 return v
         return None
 
     def set_variable_to_json(self, variable_list):
 
-        return {variable.get('variable')[1:][0]: self.workflow_manage.get_reference_field(
+        return [self.workflow_manage.get_reference_field(
             variable.get('variable')[0],
-            variable.get('variable')[1:]) for variable in variable_list}
+            variable.get('variable')[1:]) for variable in variable_list]
 
     def reset_variable(self, variable):
         value = self.workflow_manage.get_reference_field(
