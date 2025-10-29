@@ -390,6 +390,7 @@ function openCreateDialog(data?: any) {
     storeTools.value.filter((item) => item.id === data.template_id).forEach((item) => {
       readMe = item.readMe
     })
+    bus.emit('select_node', data.folder_id)
     toolStoreDescDrawerRef.value?.open(readMe, data)
     return
   }
@@ -406,6 +407,7 @@ function openCreateDialog(data?: any) {
     loadSharedApi({ type: 'tool', systemType: apiType.value })
       .getToolById(data?.id, loading)
       .then((res: any) => {
+        bus.emit('select_node', data.folder_id)
         ToolFormDrawerRef.value.open(res.data)
       })
   } else {
