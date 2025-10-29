@@ -19,27 +19,15 @@
       :model="form"
       require-asterisk-position="right"
     >
-      <el-form-item
-        :label="$t('common.variable')"
-        :required="true"
-        prop="field"
-        :rules="rules.field"
-      >
+      <el-form-item :label="$t('common.variable')" prop="field">
         <el-input
           v-model="form.field"
           :maxlength="64"
-          :placeholder="
-            $t('views.applicationWorkflow.variable.inputPlaceholder')
-          "
+          :placeholder="$t('views.applicationWorkflow.variable.inputPlaceholder')"
           show-word-limit
         />
       </el-form-item>
-      <el-form-item
-        :label="$t('dynamicsForm.paramForm.name.label')"
-        :required="true"
-        prop="label"
-        :rules="rules.label"
-      >
+      <el-form-item :label="$t('dynamicsForm.paramForm.name.label')" prop="label">
         <el-input
           v-model="form.label"
           :maxlength="64"
@@ -49,7 +37,6 @@
       </el-form-item>
       <el-form-item
         :label="$t('views.applicationWorkflow.nodes.variableSplittingNode.expression.label')"
-        :required="true"
         prop="expression"
       >
         <el-input
@@ -91,13 +78,20 @@ const form = ref<any>({
 
 const rules = reactive({
   label: [
-    { required: true, message: t('dynamicsForm.paramForm.name.requiredMessage'), trigger: 'blur' },
+    { required: true, message: t('dynamicsForm.paramForm.name.placeholder'), trigger: 'blur' },
   ],
   field: [
-    { required: true, message: t('dynamicsForm.paramForm.field.requiredMessage'), trigger: 'blur' },
+    { required: true, message: t('views.applicationWorkflow.variable.inputPlaceholder'), trigger: 'blur' },
     {
       pattern: /^[a-zA-Z0-9_]+$/,
       message: t('dynamicsForm.paramForm.field.requiredMessage2'),
+      trigger: 'blur',
+    },
+  ],
+  expression: [
+    {
+      required: true,
+      message: t('views.applicationWorkflow.nodes.variableSplittingNode.expression.placeholder'),
       trigger: 'blur',
     },
   ],

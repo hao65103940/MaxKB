@@ -17,9 +17,7 @@
     >
       <el-form-item
         :label="$t('common.variable')"
-        :required="true"
         prop="field"
-        :rules="rules.field"
       >
         <el-input
           v-model="form.field"
@@ -30,9 +28,7 @@
       </el-form-item>
       <el-form-item
         :label="$t('dynamicsForm.paramForm.name.label')"
-        :required="true"
         prop="label"
-        :rules="rules.label"
       >
         <el-input
           v-model="form.label"
@@ -70,7 +66,7 @@ const form = ref<any>({
 
 const rules = reactive({
   label: [
-    { required: true, message: t('views.applicationWorkflow.variable.inputPlaceholder'), trigger: 'blur' },
+    { required: true, message: t('dynamicsForm.paramForm.name.placeholder'), trigger: 'blur' },
   ],
   field: [
     { required: true, message: t('views.applicationWorkflow.variable.inputPlaceholder'), trigger: 'blur' },
