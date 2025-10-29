@@ -233,7 +233,7 @@ export const replyNode = {
     config: {
       fields: [
         {
-          label: t('views.applicationWorkflow.nodes.replyNode.content'),
+          label: t('common.content'),
           value: 'answer',
         },
       ],

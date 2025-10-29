@@ -44,7 +44,7 @@
             >
             <el-select :teleported="false" v-model="item.source" size="small" style="width: 85px">
               <el-option
-                :label="$t('views.applicationWorkflow.nodes.replyNode.replyContent.reference')"
+                :label="$t('views.applicationWorkflow.variable.Referencing')"
                 value="referencing"
               />
               <el-option :label="$t('common.custom')" value="custom" />

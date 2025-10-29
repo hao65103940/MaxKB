@@ -57,6 +57,7 @@ export default {
     ReferencingError: '引用变量错误',
     NoReferencing: '不存在的引用变量',
     placeholder: '请选择变量',
+    inputPlaceholder: '请输入变量',
     loop: '循环变量',
   },
   condition: {
@@ -206,11 +207,7 @@ export default {
     replyNode: {
       label: '指定回复',
       text: '指定回复内容，引用变量会转换为字符串进行输出',
-      content: '内容',
-      replyContent: {
-        label: '回复内容',
-        reference: '引用变量',
-      },
+      replyContent: '回复内容',
     },
     rerankerNode: {
       label: '多路召回',
@@ -268,11 +265,11 @@ export default {
       placeholder: '返回每组的第一个非空值',
       placeholder1: '返回每组变量的集合',
       group: {
-        placeholder: '请选择变量',
         noneError: '名称不能为空',
         dupError: '名称不能重复',
       },
-      add: '添加分组',
+      addGroup: '添加分组',
+      editGroup: '编辑分组',
     },
     variableAssignNode: {
       label: '变量赋值',
@@ -433,7 +430,6 @@ export default {
       label: '循环开始',
       loopIndex: '下标',
       loopItem: '循环元素',
-      loopVariable: '循环变量',
     },
     loopBodyNode: {
       label: '循环体',
@@ -456,7 +452,6 @@ export default {
       inputVariables: '输入变量',
       addVariables: '添加变量',
       editVariables: '编辑变量',
-      variablePlaceholder: '请输入变量',
       variableListPlaceholder: '请添加拆分变量',
       expression: {
         label: '表达式',

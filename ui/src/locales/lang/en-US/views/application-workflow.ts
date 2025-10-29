@@ -50,13 +50,14 @@ export default {
     beautify: 'Auto-Arrange',
   },
   variable: {
-    label: 'Variable',
     global: 'Global Variable',
     Referencing: 'Referenced Variable',
     ReferencingRequired: 'Referenced variable is required',
     ReferencingError: 'Invalid referenced variable',
     NoReferencing: 'Referenced variable does not exist',
     placeholder: 'Please select a variable',
+    inputPlaceholder: 'Please enter variable',
+        loop: 'Loop Variable',
   },
   condition: {
     title: 'Execution Condition',
@@ -199,11 +200,7 @@ You are a master of problem optimization, adept at accurately inferring user int
     replyNode: {
       label: 'Specified Reply',
       text: 'Specify reply content, referenced variables will be converted to strings for output',
-      content: 'Content',
-      replyContent: {
-        label: 'Reply Content',
-        reference: 'Reference Variable',
-      },
+      replyContent: 'Reply Content',
     },
     rerankerNode: {
       label: 'Multi-path Recall',
@@ -267,11 +264,11 @@ You are a master of problem optimization, adept at accurately inferring user int
       placeholder: 'Return the first non-null value of each group',
       placeholder1: 'Return the set of variables for each group',
       group: {
-        placeholder: 'Please select a variable',
         noneError: 'Name cannot be empty',
         dupError: 'Name cannot be duplicated',
       },
-      add: 'Add Group',
+      addGroup: 'Add Group',
+      editGroup: 'Edit Group',
     },
     mcpNode: {
       label: 'MCP Node',
@@ -421,7 +418,6 @@ You are a master of problem optimization, adept at accurately inferring user int
       label: 'Loop Start',
       loopIndex: 'Index',
       loopItem: 'Loop Element',
-      loopVariable: 'Loop Variable',
     },
     loopBodyNode: {
       label: 'Loop Body',
@@ -445,7 +441,6 @@ You are a master of problem optimization, adept at accurately inferring user int
       inputVariables: 'Input Variable',
       addVariables: 'Add Variables',
       editVariables: 'Edit Variables',
-      variablePlaceholder: 'Please enter variable',
       variableListPlaceholder: 'Please add split variables',
       expression: {
         label: 'Expression',

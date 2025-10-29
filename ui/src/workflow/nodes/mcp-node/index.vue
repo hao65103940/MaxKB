@@ -142,7 +142,7 @@
                   @change="form_data.tool_params[form_data.params_nested][item.label.label] = ''"
                 >
                   <el-option
-                    :label="$t('views.applicationWorkflow.nodes.replyNode.replyContent.reference')"
+                    :label="$t('views.applicationWorkflow.variable.Referencing')"
                     value="referencing"
                   />
                   <el-option :label="$t('common.custom')" value="custom" />
@@ -212,7 +212,7 @@
                   @change="form_data.tool_params[item.label.label] = ''"
                 >
                   <el-option
-                    :label="$t('views.applicationWorkflow.nodes.replyNode.replyContent.reference')"
+                    :label="$t('views.applicationWorkflow.variable.Referencing')"
                     value="referencing"
                   />
                   <el-option :label="$t('common.custom')" value="custom" />

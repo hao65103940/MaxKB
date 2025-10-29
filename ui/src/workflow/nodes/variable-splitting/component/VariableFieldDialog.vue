@@ -29,7 +29,7 @@
           v-model="form.field"
           :maxlength="64"
           :placeholder="
-            $t('views.applicationWorkflow.nodes.variableSplittingNode.variablePlaceholder')
+            $t('views.applicationWorkflow.variable.inputPlaceholder')
           "
           show-word-limit
         />
