@@ -682,7 +682,7 @@ export const applicationLoopMenuNodes = [
   },
   {
     label: t('views.applicationWorkflow.nodes.classify.dataProcessing', '数据处理'),
-    list: [variableAssignNode, variableSplittingNode, parameterExtractionNode],
+    list: [variableAssignNode, variableSplittingNode, parameterExtractionNode, variableAggregationNode],
   },
   {
     label: t('views.applicationWorkflow.nodes.classify.other'),
