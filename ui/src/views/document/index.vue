@@ -298,13 +298,13 @@
                           :class="filterMethod['is_active'] === true ? 'is-active' : ''"
                           class="justify-center"
                           :command="beforeCommand('is_active', true)"
-                          >{{ $t('views.document.enableStatus.enable') }}
+                          >{{ $t('common.status.enabled') }}
                         </el-dropdown-item>
                         <el-dropdown-item
                           :class="filterMethod['is_active'] === false ? 'is-active' : ''"
                           class="justify-center"
                           :command="beforeCommand('is_active', false)"
-                          >{{ $t('views.document.enableStatus.close') }}
+                          >{{ $t('common.status.disabled') }}
                         </el-dropdown-item>
                       </el-dropdown-menu>
                     </template>
