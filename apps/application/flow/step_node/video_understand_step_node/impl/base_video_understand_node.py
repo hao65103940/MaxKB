@@ -124,7 +124,7 @@ class BaseVideoUnderstandNode(IVideoUnderstandNode):
             if self.node.id == val['node_id'] and 'video_list' in val:
                 if val['dialogue_type'] == 'WORKFLOW':
                     return chat_record.get_ai_message()
-                return AIMessage(content=val['answer'] or '')
+                return AIMessage(content=val.get('answer') or val.get('err_message') or '')
         return chat_record.get_ai_message()
 
     def generate_history_human_message_for_details(self, chat_record):
@@ -138,6 +138,7 @@ class BaseVideoUnderstandNode(IVideoUnderstandNode):
                 return HumanMessage(content=[
                     {'type': 'text', 'text': data['question']},
                     *[{'type': 'video_url', 'video_url': {'url': f'./oss/file/{file_id}'}} for file_id in file_id_list]
+
                 ])
         return HumanMessage(content=chat_record.problem_text)
 
