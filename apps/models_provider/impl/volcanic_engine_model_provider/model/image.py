@@ -32,6 +32,7 @@ class VolcanicEngineImage(MaxKBBaseModel, BaseChatOpenAI):
         return f'data:{video_format};base64,{base64_video}'
 
 
+
 def get_video_format(file_name):
     extension = file_name.split('.')[-1].lower()
     format_map = {

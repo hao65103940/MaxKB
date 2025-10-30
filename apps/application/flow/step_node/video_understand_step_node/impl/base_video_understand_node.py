@@ -124,20 +124,20 @@ class BaseVideoUnderstandNode(IVideoUnderstandNode):
             if self.node.id == val['node_id'] and 'video_list' in val:
                 if val['dialogue_type'] == 'WORKFLOW':
                     return chat_record.get_ai_message()
-                return AIMessage(content=val['answer'])
+                return AIMessage(content=val['answer'] or '')
         return chat_record.get_ai_message()
 
     def generate_history_human_message_for_details(self, chat_record):
         for data in chat_record.details.values():
             if self.node.id == data['node_id'] and 'video_list' in data:
                 video_list = data['video_list']
-                if len(video_list) == 0 or data['dialogue_type'] == 'WORKFLOW':
+                # 增加对 None 和空列表的检查
+                if not video_list or len(video_list) == 0 or data['dialogue_type'] == 'WORKFLOW':
                     return HumanMessage(content=chat_record.problem_text)
                 file_id_list = [video.get('file_id') for video in video_list]
                 return HumanMessage(content=[
                     {'type': 'text', 'text': data['question']},
                     *[{'type': 'video_url', 'video_url': {'url': f'./oss/file/{file_id}'}} for file_id in file_id_list]
-
                 ])
         return HumanMessage(content=chat_record.problem_text)
 
@@ -145,7 +145,7 @@ class BaseVideoUnderstandNode(IVideoUnderstandNode):
         start_index = len(history_chat_record) - dialogue_number
         history_message = reduce(lambda x, y: [*x, *y], [
             [self.generate_history_human_message(history_chat_record[index], video_model),
-             self.generate_history_ai_message(history_chat_record[index]), video_model]
+             self.generate_history_ai_message(history_chat_record[index])]
             for index in
             range(start_index if start_index > 0 else 0, len(history_chat_record))], [])
         return history_message
