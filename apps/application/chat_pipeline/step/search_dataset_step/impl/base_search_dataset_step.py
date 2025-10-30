@@ -22,10 +22,9 @@ from common.db.search import native_search
 from common.utils.common import get_file_content
 from knowledge.models import Paragraph, Knowledge
 from knowledge.models import SearchMode
-from knowledge.serializers.common import get_embedding_model_default_params
 from maxkb.conf import PROJECT_DIR
 from models_provider.models import Model
-from models_provider.tools import get_model, get_model_by_id
+from models_provider.tools import get_model, get_model_by_id, get_model_default_params
 
 
 def reset_meta(meta):
@@ -65,7 +64,7 @@ class BaseSearchDatasetStep(ISearchDatasetStep):
         if model.model_type != "EMBEDDING":
             raise Exception(_("Model does not exist"))
         self.context['model_name'] = model.name
-        default_params = get_embedding_model_default_params(model)
+        default_params = get_model_default_params(model)
         embedding_model = ModelManage.get_model(model_id, lambda _id: get_model(model, **{**default_params}))
         embedding_value = embedding_model.embed_query(exec_problem_text)
         vector = VectorStore.get_embedding_vector()

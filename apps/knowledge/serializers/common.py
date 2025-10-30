@@ -26,7 +26,7 @@ from common.utils.logger import maxkb_logger
 from knowledge.models import Document
 from knowledge.models import Paragraph, Problem, ProblemParagraphMapping, Knowledge, File
 from maxkb.conf import PROJECT_DIR
-from models_provider.tools import get_model
+from models_provider.tools import get_model, get_model_default_params
 
 
 class MetaSerializer(serializers.Serializer):
@@ -112,21 +112,6 @@ class ProblemParagraphManage:
         ], problem_paragraph_mapping_list
         return result
 
-def get_embedding_model_default_params(model):
-    def convert_to_int(value):
-        if isinstance(value, str):
-            try:
-                return int(value)
-            except ValueError:
-                return value
-        return value
-
-    return {
-        p.get('field'): convert_to_int(p.get('default_value'))
-        for p in model.model_params_form
-        if p.get('default_value') is not None
-    }
-
 
 def get_embedding_model_by_knowledge_id_list(knowledge_id_list: List):
     knowledge_list = QuerySet(Knowledge).filter(id__in=knowledge_id_list)
@@ -135,7 +120,7 @@ def get_embedding_model_by_knowledge_id_list(knowledge_id_list: List):
     if len(knowledge_list) == 0:
         raise Exception(_('Knowledge base setting error, please reset the knowledge base'))
 
-    default_params = get_embedding_model_default_params(knowledge_list[0].embedding_model)
+    default_params = get_model_default_params(knowledge_list[0].embedding_model)
 
     return ModelManage.get_model(
         str(knowledge_list[0].embedding_model_id),
@@ -146,14 +131,14 @@ def get_embedding_model_by_knowledge_id_list(knowledge_id_list: List):
 def get_embedding_model_by_knowledge_id(knowledge_id: str):
     knowledge = QuerySet(Knowledge).select_related('embedding_model').filter(id=knowledge_id).first()
 
-    default_params = get_embedding_model_default_params(knowledge.embedding_model)
+    default_params = get_model_default_params(knowledge.embedding_model)
 
     return ModelManage.get_model(str(knowledge.embedding_model_id),
                                  lambda _id: get_model(knowledge.embedding_model, **{**default_params}))
 
 
 def get_embedding_model_by_knowledge(knowledge):
-    default_params = get_embedding_model_default_params(knowledge.embedding_model)
+    default_params = get_model_default_params(knowledge.embedding_model)
 
     return ModelManage.get_model(str(knowledge.embedding_model_id),
                                  lambda _id: get_model(knowledge.embedding_model, **{**default_params}))

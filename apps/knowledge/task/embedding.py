@@ -12,9 +12,9 @@ from common.event import ListenerManagement, UpdateProblemArgs, UpdateEmbeddingK
     UpdateEmbeddingDocumentIdArgs
 from common.utils.logger import maxkb_logger
 from knowledge.models import Document, TaskType, State
-from knowledge.serializers.common import drop_knowledge_index, get_embedding_model_default_params
+from knowledge.serializers.common import drop_knowledge_index
 from models_provider.models import Model
-from models_provider.tools import get_model
+from models_provider.tools import get_model, get_model_default_params
 from ops import celery_app
 
 
@@ -26,7 +26,7 @@ def get_embedding_model(model_id, exception_handler=lambda e: maxkb_logger.error
     try:
         model = QuerySet(Model).filter(id=model_id).first()
 
-        default_params = get_embedding_model_default_params(model)
+        default_params = get_model_default_params(model)
 
         embedding_model = ModelManage.get_model(model_id, lambda _id: get_model(model, **{**default_params}))
     except Exception as e:
