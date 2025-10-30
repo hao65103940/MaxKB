@@ -64,6 +64,9 @@ def auth_folder(apps, schema_editor):
 class Migration(migrations.Migration):
     dependencies = [
         ('system_manage', '0002_refresh_collation_reindex'),
+        ('tools', '0001_initial'),
+        ('application', '0001_initial'),
+        ('knowledge', '0001_initial'),
     ]
 
     operations = [
