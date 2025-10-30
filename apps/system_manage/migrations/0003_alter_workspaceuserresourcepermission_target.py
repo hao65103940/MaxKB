@@ -50,11 +50,11 @@ def auth_folder(apps, schema_editor):
 
     workspace_user_resource_permission_list += get_workspace_user_resource_permission_list(apps,"TOOL",
                                                                                            workspace_user_role_mapping_model_workspace_dict,
-                                                                                           knowledge_folder_model)
+                                                                                           tool_folder_model)
 
     workspace_user_resource_permission_list += get_workspace_user_resource_permission_list(apps,"KNOWLEDGE",
                                                                                            workspace_user_role_mapping_model_workspace_dict,
-                                                                                           tool_folder_model)
+                                                                                           knowledge_folder_model)
     delete_auth(apps,application_folder_model)
     delete_auth(apps,knowledge_folder_model)
     delete_auth(apps,tool_folder_model)
