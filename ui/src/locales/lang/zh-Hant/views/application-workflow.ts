@@ -431,6 +431,7 @@ export default {
       expression: {
         label: '表達式',
         placeholder: '請輸入表達式',
+        tooltip: '請使用JSON Path 表達式拆分變量，例如：$.store.book',
       },
     },
     parameterExtractionNode: {

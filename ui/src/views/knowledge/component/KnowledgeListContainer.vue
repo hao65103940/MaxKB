@@ -534,7 +534,7 @@ function openCreateFolder() {
 watch(
   () => folder.currentFolder,
   (newValue) => {
-    if (newValue && newValue.id) {
+    if (newValue && newValue.id && !isSystemShare.value) {
       paginationConfig.current_page = 1
       knowledge.setKnowledgeList([])
       getList()
