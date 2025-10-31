@@ -151,7 +151,7 @@ class ApplicationChatQuerySerializers(serializers.Serializer):
     @staticmethod
     def to_row(row: Dict):
         details = row.get('details') or {}
-        padding_problem_text = ' '.join(node.get("answer", "") for key, node in details.items() if
+        padding_problem_text = ' '.join((node.get("answer", "") or "") for key, node in details.items() if
                                         node.get("type") == 'question-node')
         search_dataset_node_list = [(key, node) for key, node in details.items() if
                                     node.get("type") == 'search-dataset-node' or node.get(
