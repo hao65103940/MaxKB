@@ -683,10 +683,11 @@ class DocumentSerializers(serializers.Serializer):
             ]
             QuerySet(File).filter(id__in=source_file_ids).delete()
             QuerySet(File).filter(source_id=document_id, source_type=FileSourceType.DOCUMENT).delete()
+            paragraph_ids = QuerySet(model=Paragraph).filter(document_id=document_id).values_list("id", flat=True)
+            # 删除问题
+            delete_problems_and_mappings(paragraph_ids)
             # 删除段落
             QuerySet(model=Paragraph).filter(document_id=document_id).delete()
-            # 删除问题
-            delete_problems_and_mappings([document_id])
             # 删除向量库
             delete_embedding_by_document(document_id)
             QuerySet(model=DocumentTag).filter(document_id=document_id).delete()
@@ -1217,9 +1218,12 @@ class DocumentSerializers(serializers.Serializer):
                                Document.objects.filter(id__in=document_id_list).values("meta")]
             QuerySet(File).filter(id__in=source_file_ids).delete()
             QuerySet(Document).filter(id__in=document_id_list).delete()
-            QuerySet(Paragraph).filter(document_id__in=document_id_list).delete()
             QuerySet(DocumentTag).filter(document_id__in=document_id_list).delete()
-            delete_problems_and_mappings(document_id_list)
+            paragraph_ids = QuerySet(Paragraph).filter(document_id__in=document_id_list).values_list("id", flat=True)
+            # 删除问题关系
+            delete_problems_and_mappings(paragraph_ids)
+            # 删除段落
+            QuerySet(Paragraph).filter(document_id__in=document_id_list).delete()
             # 删除向量库
             delete_embedding_by_document_list(document_id_list)
             return True
