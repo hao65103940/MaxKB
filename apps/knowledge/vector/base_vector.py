@@ -21,7 +21,7 @@ lock = threading.Lock()
 
 
 def chunk_data(data: Dict):
-    if str(data.get('source_type')) == SourceType.PARAGRAPH.value:
+    if str(data.get('source_type')) == str(SourceType.PARAGRAPH.value):
         text = data.get('text')
         chunk_list = text_to_chunk(text)
         return [{**data, 'text': chunk} for chunk in chunk_list]
