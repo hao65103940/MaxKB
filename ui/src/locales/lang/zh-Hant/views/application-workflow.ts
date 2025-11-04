@@ -157,7 +157,7 @@ export default {
       result: '檢索結果',
       searchParam: '檢索參數',
       select_variable: '選擇變數',
-      valueMessage: `值或{name}`,
+      valueMessage: `值或變量`,
       showKnowledge: {
         label: '結果顯示在知識來源',
         requiredMessage: '請設定參數',

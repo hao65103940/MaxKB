@@ -217,7 +217,7 @@
                   <el-input
                     v-model="c.value"
                     :placeholder="
-                      $t('views.applicationWorkflow.nodes.searchDocumentNode.valueMessage', {'name': '{变量}'})
+                      $t('views.applicationWorkflow.nodes.searchDocumentNode.valueMessage')
                     "
                   ></el-input>
                 </el-col>
