@@ -18,4 +18,5 @@ def enable_force_gc():
     t.start()
 
 if CONFIG.get("ENABLE_MEMORY_OPTIMIZATION", '1') == "1":
+    maxkb_logger.info(f"(PID: {CURRENT_PID}) Forced GC enabled")
     enable_force_gc()
