@@ -13,7 +13,7 @@ GC_INTERVAL = 3600
 def enable_force_gc():
     collected = gc.collect()
     maxkb_logger.debug(f"(PID: {CURRENT_PID}) Forced GC ({collected} objects collected)")
-    t = threading.Timer(GC_INTERVAL - random.randint(0, 900), force_gc)
+    t = threading.Timer(GC_INTERVAL - random.randint(0, 900), enable_force_gc)
     t.daemon = True
     t.start()
 
