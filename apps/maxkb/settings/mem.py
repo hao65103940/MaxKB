@@ -10,10 +10,12 @@ CURRENT_PID=os.getpid()
 # 1 hour
 GC_INTERVAL = 3600
 
-def force_gc():
+def enable_force_gc():
     collected = gc.collect()
     maxkb_logger.debug(f"(PID: {CURRENT_PID}) Forced GC ({collected} objects collected)")
-    threading.Timer(GC_INTERVAL - random.randint(0, 900), force_gc).start()
+    t = threading.Timer(GC_INTERVAL - random.randint(0, 900), force_gc)
+    t.daemon = True
+    t.start()
 
 if CONFIG.get("ENABLE_MEMORY_OPTIMIZATION", '1') == "1":
-    threading.Timer(GC_INTERVAL - random.randint(0, 900), force_gc).start()
+    enable_force_gc()
