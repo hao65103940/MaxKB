@@ -242,7 +242,6 @@ const handleDrop = (draggingNode: any, dropNode: any, dropType: string, ev: Drag
       emit('refreshTree')
     })
     .catch(() => {
-      MsgError(t('components.folder.requiredMessage'))
       emit('refreshTree')
     })
 }

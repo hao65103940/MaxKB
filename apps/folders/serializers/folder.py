@@ -189,6 +189,7 @@ class FolderSerializer(serializers.Serializer):
                     field in instance and instance.get(field) is not None)}
 
             QuerySet(Folder).filter(id=current_id).update(**edit_dict)
+            current_node.refresh_from_db()
 
             if parent_id is not None and current_id != current_node.workspace_id and current_node.parent_id != parent_id:
 
@@ -204,7 +205,9 @@ class FolderSerializer(serializers.Serializer):
                                                workspace_id=current_node.workspace_id).exists():
                         raise serializers.ValidationError(_('Folder name already exists'))
 
-                    current_node.move_to(parent)
+                    current_node.parent = parent
+                    current_node.save()
+                    current_node.refresh_from_db()
                 else:
                     raise AppApiException(403, _('No permission for the target folder'))
 
