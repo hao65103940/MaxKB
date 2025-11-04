@@ -34,5 +34,5 @@ def init_memory_optimization():
     force_gc()
     maxkb_logger.debug("(PID: {CURRENT_PID}) Memory optimization (GC tuning) started.")
 
-if CONFIG.get("ENABLE_MEMORY_OPTIMIZATION", '1') == "1":
+if CONFIG.get("ENABLE_MEMORY_OPTIMIZATION", '0') == "1":
     init_memory_optimization()
