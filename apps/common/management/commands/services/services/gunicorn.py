@@ -19,7 +19,6 @@ class GunicornService(BaseService):
         cmd = [
             'gunicorn', 'maxkb.wsgi:application',
             '-b', bind,
-            '--preload',
             '-k', 'gthread',
             '--threads', '200',
             '-w', str(self.worker),
