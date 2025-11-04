@@ -1,5 +1,6 @@
 <template>
-  <iframe :src="iframeUrl" width="100%" height="380px" frameborder="0"></iframe>
+  <iframe :src="iframeUrl" width="100%" height="380px" frameborder="0"
+          style="margin-top: -30px"></iframe>
 </template>
 
 <script lang="ts" setup>
