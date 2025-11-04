@@ -36,7 +36,8 @@ class GunicornLocalModelService(BaseService):
             '--max-requests-jitter', '2048',
             '--access-logformat', log_format,
             '--access-logfile', '/dev/null',
-            '--error-logfile', '-'
+            '--error-logfile', '-',
+            '-e', 'ENABLE_LOCAL_MODEL=1'
         ]
         if DEBUG:
             cmd.append('--reload')
