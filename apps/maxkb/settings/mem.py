@@ -13,7 +13,7 @@ GC_INTERVAL = 3600
 def force_gc():
     collected = gc.collect()
     maxkb_logger.debug(f"(PID: {CURRENT_PID}) Forced GC ({collected} objects collected)")
-    threading.Timer(GC_INTERVAL - random.randint(0, 900, force_gc).start()
+    threading.Timer(GC_INTERVAL - random.randint(0, 900), force_gc).start()
 
 if CONFIG.get("ENABLE_MEMORY_OPTIMIZATION", '1') == "1":
     threading.Timer(GC_INTERVAL - random.randint(0, 900), force_gc).start()
