@@ -57,7 +57,7 @@ def get_folder_tree_serializer(source):
         return None
 
 
-FOLDER_DEPTH = 2  # Folder 不能超过3层
+FOLDER_DEPTH = 10000
 
 
 def check_depth(source, parent_id, workspace_id, current_depth=0):
@@ -79,7 +79,7 @@ def check_depth(source, parent_id, workspace_id, current_depth=0):
 
         # 验证层级深度
         if depth + current_depth > FOLDER_DEPTH:
-            raise serializers.ValidationError(_('Folder depth cannot exceed 3 levels'))
+            raise serializers.ValidationError(_('Folder depth cannot exceed 10000 levels'))
 
 
 def get_max_depth(current_node):
@@ -98,6 +98,12 @@ def get_max_depth(current_node):
     max_depth = max_level - current_level
 
     return max_depth
+
+
+def has_target_permission(workspace_id, source, user_id, target):
+    return QuerySet(WorkspaceUserResourcePermission).filter(workspace_id=workspace_id, user_id=user_id,
+                                                            auth_target_type=source, target=target,
+                                                            permission_list__contains=['MANAGE']).exists()
 
 
 class FolderSerializer(serializers.Serializer):
@@ -185,11 +191,22 @@ class FolderSerializer(serializers.Serializer):
             QuerySet(Folder).filter(id=current_id).update(**edit_dict)
 
             if parent_id is not None and current_id != current_node.workspace_id and current_node.parent_id != parent_id:
-                # Folder 不能超过3层
-                current_depth = get_max_depth(current_node)
-                check_depth(self.data.get('source'), parent_id, current_node.workspace_id, current_depth)
-                parent = Folder.objects.get(id=parent_id)
-                current_node.move_to(parent)
+
+                source_type = self.data.get('source')
+                if has_target_permission(current_node.workspace_id, source_type, self.data.get('user_id'),
+                                         parent_id) or is_workspace_manage(self.data.get('user_id'),
+                                                                           current_node.workspace_id):
+                    current_depth = get_max_depth(current_node)
+                    check_depth(self.data.get('source'), parent_id, current_node.workspace_id, current_depth)
+                    parent = Folder.objects.get(id=parent_id)
+
+                    if QuerySet(Folder).filter(name=current_node.name, parent_id=parent_id,
+                                               workspace_id=current_node.workspace_id).exists():
+                        raise serializers.ValidationError(_('Folder name already exists'))
+
+                    current_node.move_to(parent)
+                else:
+                    raise AppApiException(403, _('No permission for the target folder'))
 
             return self.one()
 

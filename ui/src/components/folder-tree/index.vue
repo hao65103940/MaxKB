@@ -34,6 +34,10 @@
           :current-node-key="currentNodeKey"
           highlight-current
           class="overflow-inherit_node__children"
+          draggable
+          :allow-drop="allowDrop"
+          :allow-drag="allowDrag"
+          @node-drop="handleDrop"
           node-key="id"
           v-loading="loading"
           v-bind="$attrs"
@@ -63,7 +67,7 @@
                     <el-dropdown-menu>
                       <el-dropdown-item
                         @click.stop="openCreateFolder(data)"
-                        v-if="node.level !== 3 && permissionPrecise.folderCreate(data.id)"
+                        v-if="permissionPrecise.folderCreate(data.id)"
                       >
                         <AppIcon iconName="app-add-folder" class="color-secondary"></AppIcon>
                         {{ $t('components.folder.addChildFolder') }}
@@ -74,6 +78,13 @@
                       >
                         <AppIcon iconName="app-edit" class="color-secondary"></AppIcon>
                         {{ $t('common.edit') }}
+                      </el-dropdown-item>
+                      <el-dropdown-item
+                        @click.stop="openMoveToDialog(data)"
+                        v-if="node.level !== 1 && permissionPrecise.folderEdit(data.id)"
+                      > 
+                        <AppIcon iconName="app-migrate" class="color-secondary"></AppIcon>
+                              {{ $t('common.moveTo') }}
                       </el-dropdown-item>
                       <el-dropdown-item
                         @click.stop="openAuthorization(data)"
@@ -101,6 +112,11 @@
       </el-scrollbar>
     </div>
     <CreateFolderDialog ref="CreateFolderDialogRef" @refresh="refreshFolder" :title="title" />
+    <MoveToDialog
+      ref="MoveToDialogRef"
+      :source="props.source"
+      @refresh="emit('refreshTree')"
+    />
     <ResourceAuthorizationDrawer
       :type="props.source"
       :is-folder="true"
@@ -117,13 +133,14 @@ import type { TreeInstance } from 'element-plus'
 import CreateFolderDialog from '@/components/folder-tree/CreateFolderDialog.vue'
 import ResourceAuthorizationDrawer from '@/components/resource-authorization-drawer/index.vue'
 import { t } from '@/locales'
+import MoveToDialog from '@/components/folder-tree/MoveToDialog.vue'
 import { i18n_name } from '@/utils/common'
 import folderApi from '@/api/folder'
 import { EditionConst } from '@/utils/permission/data'
 import { hasPermission } from '@/utils/permission/index'
 import useStore from '@/stores'
 import { TreeToFlatten } from '@/utils/array'
-import { MsgConfirm } from '@/utils/message'
+import { MsgConfirm, MsgError, MsgSuccess } from '@/utils/message'
 import permissionMap from '@/permission'
 import bus from '@/bus'
 defineOptions({ name: 'FolderTree' })
@@ -177,11 +194,57 @@ const permissionPrecise = computed(() => {
 
 const MoreFilledPermission = (node: any, data: any) => {
   return (
-    (node.level !== 3 && permissionPrecise.value.folderCreate(data.id)) ||
+    permissionPrecise.value.folderCreate(data.id) ||
     permissionPrecise.value.folderEdit(data.id) ||
     permissionPrecise.value.folderDelete(data.id) ||
     permissionPrecise.value.folderAuth(data.id)
   )
+}
+
+const MoveToDialogRef = ref()
+function openMoveToDialog(data:any) {
+  const obj = {
+    id: data.id,
+    folder_type: props.source,
+  }
+  MoveToDialogRef.value.open(obj, true)
+}
+
+const allowDrag = (node: any) => {
+  return permissionPrecise.value.folderEdit(node.data.id)   
+}
+
+const allowDrop = (draggingNode: any, dropNode: any, type: string) => {
+  const dropData = dropNode.data
+  if (type === 'inner') {
+    return permissionPrecise.value.folderEdit(dropData.id)
+  } 
+  return false
+}
+
+const handleDrop = (draggingNode: any, dropNode: any, dropType: string, ev: DragEvent) => {
+  const dragData = draggingNode.data
+  const dropData = dropNode.data
+
+  let newParentId: string
+  if (dropType === 'inner') {
+    newParentId = dropData.id
+  } else {
+    newParentId = dropData.parent_id
+  }
+  const obj = {
+    ...dragData,
+    parent_id: newParentId
+  }
+  folderApi.putFolder(dragData.id, props.source, obj, loading)
+    .then(() => {
+      MsgSuccess(t('common.saveSuccess'))
+      emit('refreshTree')
+    })
+    .catch(() => {
+      MsgError(t('components.folder.requiredMessage'))
+      emit('refreshTree')
+    })
 }
 
 const { folder } = useStore()
@@ -328,6 +391,19 @@ onUnmounted(() => {
     height: calc(100vh - 210px);
   }
 }
+:deep(.el-tree) {
+    .el-tree-node.is-dragging {
+      opacity: 0.5;
+    }
+    .el-tree-node.is-drop-inner > .el-tree-node__content {
+      background-color: var(--el-color-primary-light-9);
+      border: 2px dashed var(--el-color-primary);
+      border-radius: 4px;
+    }
+    .el-tree-node__content {
+      position: relative;
+    }
+  }
 :deep(.overflow-inherit_node__children) {
   .el-tree-node__children {
     overflow: inherit !important;

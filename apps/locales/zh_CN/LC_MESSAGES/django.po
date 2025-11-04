@@ -2214,8 +2214,8 @@ msgid "parent id"
 msgstr "父级 ID"
 
 #: apps/folders/serializers/folder.py:75
-msgid "Folder depth cannot exceed 3 levels"
-msgstr "文件夹深度不能超过3级"
+msgid "Folder depth cannot exceed 5 levels"
+msgstr "文件夹深度不能超过5级"
 
 #: apps/folders/serializers/folder.py:100
 msgid "folder user id"
@@ -8890,3 +8890,7 @@ msgstr "标签值已存在"
 
 msgid "Non-existent id"
 msgstr "不存在的ID"
+
+msgid "No permission for the target folder"
+msgstr "没有目标文件夹的权限"
+

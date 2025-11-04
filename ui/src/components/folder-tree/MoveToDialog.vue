@@ -36,6 +36,7 @@
 </template>
 <script setup lang="ts">
 import { ref, watch, reactive } from 'vue'
+import folderApi from '@/api/folder'
 import { MsgError, MsgSuccess } from '@/utils/message'
 import { t } from '@/locales'
 import useStore from '@/stores'
@@ -71,8 +72,11 @@ watch(dialogVisible, (bool) => {
   }
 })
 
-const open = (data: any) => {
+const isFolder = ref<boolean>(false)
+
+const open = (data: any, is_folder?:any) => {
   detail.value = data
+  isFolder.value = is_folder
   getFolder()
   dialogVisible.value = true
 }
@@ -99,7 +103,19 @@ const submitHandle = async () => {
       ...detail.value,
       folder_id: selectForderId.value,
     }
-    if (props.source === SourceTypeEnum.KNOWLEDGE) {
+    if (isFolder.value) {
+      const folder_obj = {
+      ...detail.value,
+      parent_id: selectForderId.value,
+    }
+      folderApi.putFolder(detail.value.id, detail.value.folder_type, folder_obj, loading)
+        .then(() => {
+          MsgSuccess(t('common.saveSuccess'))
+        emit('refresh')
+        dialogVisible.value = false
+      })
+    }
+    else if (props.source === SourceTypeEnum.KNOWLEDGE) {
       if (detail.value.type === 2) {
         KnowledgeApi.putLarkKnowledge(detail.value.id, obj, loading).then(() => {
           MsgSuccess(t('common.saveSuccess'))

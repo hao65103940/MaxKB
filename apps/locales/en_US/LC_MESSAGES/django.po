@@ -2207,7 +2207,7 @@ msgid "parent id"
 msgstr ""
 
 #: apps/folders/serializers/folder.py:75
-msgid "Folder depth cannot exceed 3 levels"
+msgid "Folder depth cannot exceed 5 levels"
 msgstr ""
 
 #: apps/folders/serializers/folder.py:100
@@ -8763,4 +8763,7 @@ msgid "Tag value already exists"
 msgstr ""
 
 msgid "Non-existent id"
+msgstr ""
+
+msgid "No permission for the target folder"
 msgstr ""
