@@ -30,10 +30,8 @@ def post_scheduler_handler():
 
     job.run()
 
-# 仅在非local_model模式下启动后处理函数，dev celery scheduler 不需要
-if os.environ.get("ENABLE_LOCAL_MODEL") != '1':
-    # 启动后处理函数
-    post_handler()
+# 启动后处理函数
+post_handler()
 
 # 仅在scheduler中启动定时任务，dev local_model celery 不需要
 if os.environ.get('ENABLE_SCHEDULER') == '1':
