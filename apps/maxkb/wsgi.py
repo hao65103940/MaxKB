@@ -10,57 +10,29 @@ https://docs.djangoproject.com/en/4.2/howto/deployment/wsgi/
 import os
 
 from django.core.wsgi import get_wsgi_application
-#
-# # 检查是否启用 memray 分析
-# if os.environ.get('ENABLE_MEMRAY') == '1':
-#     import memray
-#     import atexit
-#
-#     # 为每个进程创建单独的追踪文件
-#     pid = os.getpid()
-#     output_file = f"memray_output_{pid}.bin"
-#
-#     tracker = memray.Tracker(output_file)
-#     tracker.__enter__()
-#
-#
-#     def cleanup():
-#         tracker.__exit__(None, None, None)
-#
-#
-#     atexit.register(cleanup)
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'maxkb.settings')
 
 application = get_wsgi_application()
 
 
-# -----------------------------
-# 全局初始化，只希望在 master preload 阶段执行一次
-# -----------------------------
-def preloaded_init():
+
+def post_handler():
     from common.database_model_manage.database_model_manage import DatabaseModelManage
     from common import event
-    from common.utils.logger import maxkb_logger
 
     event.run()
     DatabaseModelManage.init()
 
-    if os.environ.get("ENABLE_SCHEDULER") == "1":
-        from common import job
 
-        job.run()
+def post_scheduler_handler():
+    from common import job
 
-    maxkb_logger.info("✅ preloaded_init: master 初始化完成，内存将被 worker 共享")
+    job.run()
 
+# 启动后处理函数
+post_handler()
 
-# Gunicorn preload 阶段会执行此逻辑
-if os.environ.get("GUNICORN_PRELOAD", "1") == "1":
-    try:
-        preloaded_init()
-    except Exception as e:
-        import traceback
-        from common.utils.logger import maxkb_logger
-
-        maxkb_logger.info("⚠️ preload 初始化失败:", e)
-        traceback.print_exc()
+# 仅在scheduler中启动定时任务，dev local_model celery 不需要
+if os.environ.get('ENABLE_SCHEDULER') == '1':
+    post_scheduler_handler()

@@ -18,7 +18,6 @@ class GunicornService(BaseService):
         bind = f'{HTTP_HOST}:{HTTP_PORT}'
         cmd = [
             'gunicorn', 'maxkb.wsgi:application',
-            '--preload',
             '-b', bind,
             '-k', 'gthread',
             '--threads', '200',
