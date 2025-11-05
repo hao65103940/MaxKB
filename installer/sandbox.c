@@ -8,7 +8,7 @@
 #include <regex.h>
 #include <unistd.h>
 
-static const char *ENV_NAME = "MAXKB_SANDBOX_PYTHON_BANNED_HOSTS";
+static const char *ENV_NAME = "SANDBOX_BANNED_HOSTS";
 
 static int match_env_patterns(const char *target, const char *env_val) {
     if (!target || !env_val || !*env_val) return 0;
