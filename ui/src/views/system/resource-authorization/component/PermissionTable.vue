@@ -60,7 +60,7 @@
         :maxTableHeight="260"
         :row-key="(row: any) => row.id"
         style="min-width: 600px"
-        :expand-row-keys="defaultExpandKeys"
+
         show-overflow-tooltip
       >
         <el-table-column type="selection" width="55" :reserve-selection="true"> </el-table-column>

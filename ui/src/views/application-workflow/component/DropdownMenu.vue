@@ -1,5 +1,9 @@
 <template>
-  <div v-show="show" class="workflow-dropdown-menu border border-r-6 white-bg" :style="{ width: activeName === 'base' ? '400px':'640px' }">
+  <div
+    v-show="show"
+    class="workflow-dropdown-menu border border-r-6 white-bg"
+    :style="{ width: activeName === 'base' ? '400px' : '640px' }"
+  >
     <el-tabs v-model="activeName" class="workflow-dropdown-tabs" @tab-change="handleClick">
       <div
         v-show="activeName === 'base'"
@@ -80,6 +84,7 @@
                 :shareTitle="$t('views.shared.shared_tool')"
                 :showShared="permissionPrecise['is_share']()"
                 :canOperation="false"
+                :treeStyle="{ height: '400px' }"
               />
             </div>
           </template>
@@ -103,6 +108,7 @@
                 :currentNodeKey="folder.currentFolder?.id"
                 @handleNodeClick="folderClickHandle"
                 :canOperation="false"
+                :treeStyle="{ height: '400px' }"
               />
             </div>
           </template>
@@ -341,10 +347,6 @@ onMounted(() => {})
 
   :deep(.el-tabs__header) {
     margin-bottom: 0;
-  }
-
-  :deep(.tree-height) {
-    height: 400px;
   }
 }
 </style>
