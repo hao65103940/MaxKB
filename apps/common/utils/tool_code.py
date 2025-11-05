@@ -54,8 +54,8 @@ try:
     path_to_exclude = ['/opt/py3/lib/python3.11/site-packages', '/opt/maxkb-app/apps']
     sys.path = [p for p in sys.path if p not in path_to_exclude]
     sys.path += {python_paths}
+    os.environ['MAXKB_SANDBOX_PYTHON_BANNED_HOSTS'] = '{self.banned_hosts}'
     os.environ['LD_PRELOAD'] = '/opt/maxkb-app/sandbox/sandbox.so'
-    os.environ['SANDBOX_BANNED_HOSTS'] = {self.banned_hosts}
     locals_v={'{}'}
     keywords={keywords}
     globals_v=globals()
@@ -162,8 +162,8 @@ logging.getLogger("mcp.server").setLevel(logging.ERROR)
 path_to_exclude = ['/opt/py3/lib/python3.11/site-packages', '/opt/maxkb-app/apps']
 sys.path = [p for p in sys.path if p not in path_to_exclude]
 sys.path += {python_paths}
+os.environ['MAXKB_SANDBOX_PYTHON_BANNED_HOSTS'] = '{self.banned_hosts}'
 os.environ['LD_PRELOAD'] = '/opt/maxkb-app/sandbox/sandbox.so'
-os.environ['SANDBOX_BANNED_HOSTS'] = {self.banned_hosts}
 exec({dedent(code)!a})
 """
 
