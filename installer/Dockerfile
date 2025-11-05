@@ -13,7 +13,7 @@ RUN apt-get update && \
     apt-get clean all  && \
     rm -rf /var/lib/apt/lists/*
 WORKDIR /opt/maxkb-app
-RUN gcc -shared -fPIC -o /opt/maxkb-app/apps/sanbox_ban_host.so /opt/maxkb-app/installer/sanbox_ban_host.c -ldl && \
+RUN gcc -shared -fPIC -o /opt/maxkb-app/apps/sandbox.so /opt/maxkb-app/installer/sandbox.c -ldl && \
     rm -rf /opt/maxkb-app/ui && \
     pip install uv --break-system-packages && \
     python -m uv pip install -r pyproject.toml && \
