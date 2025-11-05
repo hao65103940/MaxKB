@@ -224,11 +224,12 @@ class LoopWorkFlowPostHandler(WorkFlowPostHandler):
 
 class BaseLoopNode(ILoopNode):
     def save_context(self, details, workflow_manage):
-        self.context['result'] = details.get('result')
+        self.context['loop_context_data'] = details.get('loop_context_data')
+        self.context['loop_answer_data'] = details.get('loop_answer_data')
         for key, value in details['context'].items():
             if key not in self.context:
                 self.context[key] = value
-        self.answer_text = str(details.get('result'))
+        self.answer_text = ""
 
     def get_answer_list(self) -> List[Answer] | None:
         result = []
