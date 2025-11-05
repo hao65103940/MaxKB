@@ -60,7 +60,8 @@
         :maxTableHeight="260"
         :row-key="(row: any) => row.id"
         style="min-width: 600px"
-
+        :expand-row-keys="defaultExpandKeys"
+        :default-expand-all="searchForm.name || searchForm.permission?.length > 0"
         show-overflow-tooltip
       >
         <el-table-column type="selection" width="55" :reserve-selection="true"> </el-table-column>
@@ -138,7 +139,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { ref, onMounted, computed, nextTick } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import type { Provider } from '@/api/type/model'
 import { SourceTypeEnum } from '@/enums/common'
@@ -159,25 +160,40 @@ const props = defineProps<{
 }>()
 const emit = defineEmits(['submitPermissions'])
 
-const defaultExpandKeys = computed(() => {
-  const searchName = searchForm.value.name || ''
-  const searchPermissions = searchForm.value.permission ?? []
-  if (!searchName && (!searchPermissions || searchPermissions.length === 0)) {
-    return props.data?.length > 0 ? [props.data[0]?.id] : []
-  }
-  const expandIds: string[] = []
-  // 传入过滤后的数据
-  const collectExpandIds = (nodes: any[]) => {
-    nodes.forEach((node) => {
-      if (node.children && node.children.length > 0) {
-        expandIds.push(node.id)
-        collectExpandIds(node.children)
-      }
-    })
-  }
-  collectExpandIds(filteredData.value)
-  return expandIds
-})
+const defaultExpandKeys = ref<Array<string>>([])
+const isComputedFirst = ref(true) // 仅第一次获得数据的时候需要计算一次展开属性
+
+watch(
+  () => props.data,
+  (newData) => {
+    if (newData && newData.length > 0 && isComputedFirst.value) {
+      defaultExpandKeys.value = props.data?.length > 0 ? [props.data[0]?.id] : []
+      isComputedFirst.value = false
+    }
+  },
+  { immediate: true },
+)
+
+// const defaultExpandKeys = computed(() => {
+// const searchName = searchForm.value.name || ''
+// const searchPermissions = searchForm.value.permission ?? []
+// if (!searchName && (!searchPermissions || searchPermissions.length === 0)) {
+// return props.data?.length > 0 ? [props.data[0]?.id] : []
+
+// }
+// const expandIds: string[] = []
+// // 传入过滤后的数据
+// const collectExpandIds = (nodes: any[]) => {
+//   nodes.forEach((node) => {
+//     if (node.children && node.children.length > 0) {
+//       expandIds.push(node.id)
+//       collectExpandIds(node.children)
+//     }
+//   })
+// }
+// collectExpandIds(filteredData.value)
+// return expandIds
+// })
 
 const permissionOptionMap = computed(() => {
   return {
