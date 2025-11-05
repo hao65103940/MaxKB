@@ -20,6 +20,7 @@ class SchedulerService(BaseService):
         bind = f'127.0.0.1:6060'
         cmd = [
             'gunicorn', 'maxkb.wsgi:application',
+            '--preload',
             '-b', bind,
             '-k', 'gthread',
             '--threads', '200',

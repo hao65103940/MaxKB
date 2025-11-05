@@ -28,6 +28,7 @@ class GunicornLocalModelService(BaseService):
         worker = CONFIG.get("LOCAL_MODEL_HOST_WORKER", 1)
         cmd = [
             'gunicorn', 'maxkb.wsgi:application',
+            '--preload',
             '-b', bind,
             '-k', 'gthread',
             '--threads', '200',
