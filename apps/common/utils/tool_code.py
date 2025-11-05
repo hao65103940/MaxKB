@@ -197,7 +197,7 @@ exec({dedent(code)!a})
             file.write(_code)
             os.system(f"chown {self.user}:root {exec_python_file}")
         kwargs = {'cwd': BASE_DIR}
-        kwargs['env'] = {}
+        kwargs['env'] = {'LD_PRELOAD': '/opt/maxkb-app/apps/sanbox_ban_host.so'}
         subprocess_result = subprocess.run(
             ['su', '-s', python_directory, '-c', "exec(open('" + exec_python_file + "').read())", self.user],
             text=True,
