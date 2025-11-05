@@ -180,6 +180,7 @@ exec({dedent(code)!a})
                     self.user,
                 ],
                 'cwd': self.sandbox_path,
+                'env': {},
                 'transport': 'stdio',
             }
         else:
