@@ -5,7 +5,7 @@ import os
 import subprocess
 import sys
 from textwrap import dedent
-
+import socket
 import uuid_utils.compat as uuid
 from django.utils.translation import gettext_lazy as _
 
@@ -28,7 +28,15 @@ class ToolExecutor:
         if self.sandbox:
             os.system(f"chown -R {self.user}:root {self.sandbox_path}")
         self.banned_keywords = CONFIG.get("SANDBOX_PYTHON_BANNED_KEYWORDS", 'nothing_is_banned').split(',');
-        self.banned_hosts = CONFIG.get("SANDBOX_PYTHON_BANNED_HOSTS", '');
+        banned_hosts = CONFIG.get("SANDBOX_PYTHON_BANNED_HOSTS", '').strip()
+        try:
+            if banned_hosts:
+                hostname = socket.gethostname()
+                local_ip = socket.gethostbyname(hostname)
+                banned_hosts = f"{banned_hosts},{hostname},{local_ip}"
+        except Exception:
+            pass
+        self.banned_hosts = banned_hosts
 
     def _createdir(self):
         old_mask = os.umask(0o077)
