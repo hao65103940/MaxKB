@@ -181,7 +181,10 @@ exec({dedent(code)!a})
                     self.user,
                 ],
                 'cwd': self.sandbox_path,
-                'env': {},
+                'env': {
+                    'LD_PRELOAD': '/opt/maxkb-app/sandbox/sandbox.so',
+                    'SANDBOX_ALLOW_HOSTS_REGEXES': self.allow_hosts_regexes,
+                },
                 'transport': 'stdio',
             }
         else:
