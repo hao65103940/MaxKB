@@ -11,7 +11,6 @@ from typing import Sequence, Optional, Dict, Any
 
 from langchain_core.callbacks import Callbacks
 from langchain_core.documents import Document, BaseDocumentCompressor
-from transformers import AutoModelForSequenceClassification, AutoTokenizer
 
 from models_provider.base_model_provider import MaxKBBaseModel
 
@@ -25,6 +24,7 @@ class LocalReranker(MaxKBBaseModel, BaseDocumentCompressor):
 
     def __init__(self, model_name, cache_dir=None, **model_kwargs):
         super().__init__()
+        from transformers import AutoModelForSequenceClassification, AutoTokenizer
         self.model = model_name
         self.cache_dir = cache_dir
         self.model_kwargs = model_kwargs
