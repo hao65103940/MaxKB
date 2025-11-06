@@ -25,7 +25,7 @@ from rest_framework import serializers
 from xlwt import Utils
 
 from common.db.search import native_search, get_dynamics_model, native_page_search
-from common.event import ListenerManagement
+from common.event.listener_manage import ListenerManagement
 from common.event.common import work_thread_pool
 from common.exception.app_exception import AppApiException
 from common.field.common import UploadedFileField
