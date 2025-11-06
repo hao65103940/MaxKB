@@ -65,7 +65,7 @@ static int is_allowed_by_env(const char *target, const char *env_val) {
 
 /** 检查逻辑封装 */
 static int check_host(const char *host) {
-    const char *env = getenv("SANDBOX_ALLOW_HOSTS_REGEXES");
+    const char *env = getenv("SANDBOX_ALLOW_HOST_REGEXES");
     return is_allowed_by_env(host, env);
 }
 
