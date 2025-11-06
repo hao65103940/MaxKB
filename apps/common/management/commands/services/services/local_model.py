@@ -6,6 +6,8 @@
     @date：2024/8/21 13:28
     @desc:
 """
+import subprocess
+
 from maxkb.const import CONFIG
 from .base import BaseService
 from ..hands import *
@@ -22,7 +24,6 @@ class GunicornLocalModelService(BaseService):
     @property
     def cmd(self):
         print("\n- Start Gunicorn Local Model WSGI HTTP Server")
-        os.environ.setdefault('SERVER_NAME', 'local_model')
         log_format = '%(h)s %(t)s %(L)ss "%(r)s" %(s)s %(b)s '
         bind = f'{CONFIG.get("LOCAL_MODEL_HOST")}:{CONFIG.get("LOCAL_MODEL_PORT")}'
         worker = CONFIG.get("LOCAL_MODEL_HOST_WORKER", 1)
@@ -45,3 +46,15 @@ class GunicornLocalModelService(BaseService):
     @property
     def cwd(self):
         return APPS_DIR
+
+    def open_subprocess(self):
+        # 复制当前环境变量，并设置 ENABLE_SCHEDULER=1
+        env = os.environ.copy()
+        env['SERVER_NAME'] = 'local_model'
+        kwargs = {
+            'cwd': self.cwd,
+            'stderr': self.log_file,
+            'stdout': self.log_file,
+            'env': env
+        }
+        self._process = subprocess.Popen(self.cmd, **kwargs)
