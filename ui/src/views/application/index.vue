@@ -2,15 +2,15 @@
   <LayoutContainer showCollapse class="application-manage">
     <template #left>
       <h4 class="p-12-16 pb-0 mt-12">{{ $t('views.application.title') }}</h4>
-      <div class="p-8">
-        <folder-tree
-          :source="SourceTypeEnum.APPLICATION"
-          :data="folderList"
-          :currentNodeKey="folder.currentFolder?.id"
-          @handleNodeClick="folderClickHandle"
-          @refreshTree="refreshFolder"
-        />
-      </div>
+
+      <folder-tree
+        :source="SourceTypeEnum.APPLICATION"
+        :data="folderList"
+        :currentNodeKey="folder.currentFolder?.id"
+        @handleNodeClick="folderClickHandle"
+        @refreshTree="refreshFolder"
+        :draggable="true"
+      />
     </template>
     <ContentContainer>
       <template #header>
