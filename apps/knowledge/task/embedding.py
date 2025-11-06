@@ -8,7 +8,7 @@ from django.db.models import QuerySet
 from django.utils.translation import gettext_lazy as _
 
 from common.config.embedding_config import ModelManage
-from common.event import ListenerManagement, UpdateProblemArgs, UpdateEmbeddingKnowledgeIdArgs, \
+from common.event.listener_manage import ListenerManagement, UpdateProblemArgs, UpdateEmbeddingKnowledgeIdArgs, \
     UpdateEmbeddingDocumentIdArgs
 from common.utils.logger import maxkb_logger
 from knowledge.models import Document, TaskType, State
