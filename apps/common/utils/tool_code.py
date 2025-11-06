@@ -64,7 +64,7 @@ try:
     sys.path += {python_paths}
     locals_v={'{}'}
     keywords={keywords}
-    globals_v=globals()
+    globals_v={'{}'}
     exec({dedent(code_str)!a}, globals_v, locals_v)
     f_name, f = locals_v.popitem()
     for local in locals_v:
