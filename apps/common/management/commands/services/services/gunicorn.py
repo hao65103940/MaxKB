@@ -27,7 +27,7 @@ class GunicornService(BaseService):
             '--max-requests', '10240',
             '--max-requests-jitter', '2048',
             '--timeout', '0',
-            '--graceful_timeout', '0',
+            '--graceful-timeout', '0',
             '--access-logformat', log_format,
             '--access-logfile', '/dev/null',
             '--error-logfile', '-'
