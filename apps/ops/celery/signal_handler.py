@@ -22,6 +22,14 @@ def init_scheduler():
 
     job.run()
 
+    try:
+        from xpack import job as xpack_job
+
+        xpack_job.run()
+    except ImportError:
+        pass 
+
+
 
 @worker_ready.connect
 def on_app_ready(sender=None, headers=None, **kwargs):
