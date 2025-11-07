@@ -6,11 +6,8 @@
     @date：2024/4/28 10:17
     @desc:
 """
+
 import os
-from pathlib import Path
-
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
-
 
 class MKTokenizer:
     def __init__(self, tokenizer):
@@ -27,6 +24,7 @@ class TokenizerManage:
     def get_tokenizer():
         from tokenizers import Tokenizer
         # 创建Tokenizer
-        s = os.path.join(BASE_DIR.parent, 'tokenizer', 'bert-base-cased', 'tokenizer.json')
-        TokenizerManage.tokenizer = Tokenizer.from_file(s)
+        model_path = os.path.join("/opt/maxkb-app", "model", "tokenizer", "models--bert-base-cased")
+        with open(f"{model_path}/refs/main", encoding="utf-8") as f: snapshot = f.read()
+        TokenizerManage.tokenizer = Tokenizer.from_file(f"{model_path}/snapshots/{snapshot}/tokenizer.json")
         return MKTokenizer(TokenizerManage.tokenizer)
