@@ -9,14 +9,51 @@
 #include <unistd.h>
 #include <sys/socket.h>
 #include <errno.h>
+#include <limits.h>
+#include <libgen.h>
 
-static const char *ENV_NAME = "SANDBOX_BANNED_HOSTS";
+static const char *BANNED_FILE_NAME = ".SANDBOX_BANNED_HOSTS";
+
+/**
+ * 从 .so 文件所在目录读取 .SANDBOX_BANNED_HOSTS 文件内容
+ * 返回 malloc 出的字符串（需 free），读取失败则返回空字符串
+ */
+static char *load_banned_hosts() {
+    Dl_info info;
+    if (dladdr((void *)load_banned_hosts, &info) == 0 || !info.dli_fname) {
+        fprintf(stderr, "[sandbox] ⚠️ Unable to locate shared object path — allowing all hosts\n");
+        return strdup("");
+    }
+
+    char so_path[PATH_MAX];
+    strncpy(so_path, info.dli_fname, sizeof(so_path));
+    so_path[sizeof(so_path) - 1] = '\0';
+
+    char *dir = dirname(so_path);
+    char file_path[PATH_MAX];
+    snprintf(file_path, sizeof(file_path), "%s/%s", dir, BANNED_FILE_NAME);
+
+    FILE *fp = fopen(file_path, "r");
+    if (!fp) {
+        fprintf(stderr, "[sandbox] ⚠️ Cannot open %s — allowing all hosts\n", file_path);
+        return strdup("");
+    }
+
+    char *buf = malloc(4096);
+    if (!buf) {
+        fclose(fp);
+        fprintf(stderr, "[sandbox] ⚠️ Memory allocation failed — allowing all hosts\n");
+        return strdup("");
+    }
+
+    size_t len = fread(buf, 1, 4095, fp);
+    buf[len] = '\0';
+    fclose(fp);
+    return buf;
+}
 
 /**
  * 精确匹配黑名单
- * target: 待检测字符串
- * env_val: 逗号分隔的黑名单列表
- * 返回 1 = 匹配，0 = 不匹配
  */
 static int match_env_patterns(const char *target, const char *env_val) {
     if (!target || !env_val || !*env_val) return 0;
@@ -33,7 +70,6 @@ static int match_env_patterns(const char *target, const char *env_val) {
 
         if (*token) {
             regex_t regex;
-            // 精确匹配，加 ^ 和 $，忽略大小写
             char fullpattern[512];
             snprintf(fullpattern, sizeof(fullpattern), "^%s$", token);
 
@@ -48,7 +84,6 @@ static int match_env_patterns(const char *target, const char *env_val) {
                 fprintf(stderr, "[sandbox] ⚠️ Invalid regex '%s' — allowing host by default\n", token);
             }
         }
-
         token = strtok(NULL, ",");
     }
 
@@ -62,7 +97,8 @@ int connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen) {
     if (!real_connect)
         real_connect = dlsym(RTLD_NEXT, "connect");
 
-    const char *banned_env = getenv(ENV_NAME);
+    static char *banned_env = NULL;
+    if (!banned_env) banned_env = load_banned_hosts();
 
     char ip[INET6_ADDRSTRLEN] = {0};
     if (addr->sa_family == AF_INET)
@@ -70,7 +106,7 @@ int connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen) {
     else if (addr->sa_family == AF_INET6)
         inet_ntop(AF_INET6, &((struct sockaddr_in6 *)addr)->sin6_addr, ip, sizeof(ip));
 
-    if (banned_env && match_env_patterns(ip, banned_env)) {
+    if (banned_env && *banned_env && match_env_patterns(ip, banned_env)) {
         fprintf(stderr, "[sandbox] 🚫 Access to host %s is banned\n", ip);
         errno = EACCES;
         return -1;
@@ -87,11 +123,12 @@ int getaddrinfo(const char *node, const char *service,
     if (!real_getaddrinfo)
         real_getaddrinfo = dlsym(RTLD_NEXT, "getaddrinfo");
 
-    const char *banned_env = getenv(ENV_NAME);
+    static char *banned_env = NULL;
+    if (!banned_env) banned_env = load_banned_hosts();
 
-    if (banned_env && node && match_env_patterns(node, banned_env)) {
+    if (banned_env && *banned_env && node && match_env_patterns(node, banned_env)) {
         fprintf(stderr, "[sandbox] 🚫 Access to host %s is banned\n", node);
-        return EAI_FAIL; // 模拟 DNS 失败
+        return EAI_FAIL;
     }
 
     return real_getaddrinfo(node, service, hints, res);

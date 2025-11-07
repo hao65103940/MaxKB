@@ -8,12 +8,11 @@ from textwrap import dedent
 import socket
 import uuid_utils.compat as uuid
 from django.utils.translation import gettext_lazy as _
-
 from maxkb.const import BASE_DIR, CONFIG
 from maxkb.const import PROJECT_DIR
+from common.utils.logger import maxkb_logger
 
 python_directory = sys.executable
-
 
 class ToolExecutor:
     def __init__(self, sandbox=False):
@@ -28,15 +27,21 @@ class ToolExecutor:
         if self.sandbox:
             os.system(f"chown -R {self.user}:root {self.sandbox_path}")
         self.banned_keywords = CONFIG.get("SANDBOX_PYTHON_BANNED_KEYWORDS", 'nothing_is_banned').split(',');
-        banned_hosts = CONFIG.get("SANDBOX_PYTHON_BANNED_HOSTS", '').strip()
         try:
+            banned_hosts = CONFIG.get("SANDBOX_PYTHON_BANNED_HOSTS", '').strip()
             if banned_hosts:
                 hostname = socket.gethostname()
                 local_ip = socket.gethostbyname(hostname)
                 banned_hosts = f"{banned_hosts},{hostname},{local_ip}"
-        except Exception:
+                banned_hosts_file_path = f'{self.sandbox_path}/.SANDBOX_BANNED_HOSTS'
+                if os.path.exists(banned_hosts_file_path):
+                    os.remove(banned_hosts_file_path)
+                with open(banned_hosts_file_path, "w") as f:
+                    f.write(banned_hosts)
+                os.chmod(banned_hosts_file_path, 0o644)
+        except Exception as e:
+            maxkb_logger.error(f'Failed to init SANDBOX_BANNED_HOSTS due to exception: {e}', exc_info=True)
             pass
-        self.banned_hosts = banned_hosts
 
     def _createdir(self):
         old_mask = os.umask(0o077)
@@ -190,8 +195,7 @@ exec({dedent(code)!a})
                 ],
                 'cwd': self.sandbox_path,
                 'env': {
-                    'LD_PRELOAD': '/opt/maxkb-app/sandbox/sandbox.so',
-                    'SANDBOX_BANNED_HOSTS': self.banned_hosts,
+                    'LD_PRELOAD': f'{self.sandbox_path}/sandbox.so',
                 },
                 'transport': 'stdio',
             }
@@ -210,8 +214,7 @@ exec({dedent(code)!a})
             os.system(f"chown {self.user}:root {exec_python_file}")
         kwargs = {'cwd': BASE_DIR}
         kwargs['env'] = {
-            'LD_PRELOAD': '/opt/maxkb-app/sandbox/sandbox.so',
-            'SANDBOX_BANNED_HOSTS': self.banned_hosts,
+            'LD_PRELOAD': f'{self.sandbox_path}/sandbox.so',
         }
         subprocess_result = subprocess.run(
             ['su', '-s', python_directory, '-c', "exec(open('" + exec_python_file + "').read())", self.user],
