@@ -3,7 +3,7 @@
     {{ breadcrumbData[0]?.name }}
   </h2>
   <el-breadcrumb separator-icon="ArrowRight" style="line-height: normal" class="mt-4" v-else>
-    <template v-if="breadcrumbData.length > 3">
+    <template v-if="breadcrumbData?.length > 3">
       <el-breadcrumb-item>
         <el-button link @click="handleClick(breadcrumbData[0])" :title="breadcrumbData[0].name">
           <span class="ellipsis"> {{ breadcrumbData[0].name }}</span>
