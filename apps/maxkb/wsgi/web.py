@@ -32,7 +32,7 @@ class TorchBlocker:
 builtins.__import__ = TorchBlocker()
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'maxkb.settings')
-
+os.environ['TIKTOKEN_CACHE_DIR'] = '/opt/maxkb-app/model/tokenizer/openai-tiktoken-cl100k-base'
 application = get_wsgi_application()
 
 
