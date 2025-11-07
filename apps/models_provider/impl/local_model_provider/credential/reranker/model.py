@@ -1,9 +1,9 @@
 # coding=utf-8
 """
     @project: MaxKB
-    @Author：虎
-    @file： reranker.py
-    @date：2024/9/3 14:33
+    @Author：虎虎
+    @file： model.py
+    @date：2025/11/7 14:23
     @desc:
 """
 import traceback
