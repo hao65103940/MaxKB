@@ -27,6 +27,8 @@ class SchedulerService(BaseService):
             '-w', str(self.worker),
             '--max-requests', str(max_requests),
             '--max-requests-jitter', '2048',
+            '--timeout', '0',
+            '--graceful_timeout', '0',
             '--access-logformat', log_format,
             '--access-logfile', '/dev/null',
             '--error-logfile', '-'
