@@ -27,7 +27,7 @@ class GunicornLocalModelService(BaseService):
         log_format = '%(h)s %(t)s %(L)ss "%(r)s" %(s)s %(b)s '
         bind = f'{CONFIG.get("LOCAL_MODEL_HOST")}:{CONFIG.get("LOCAL_MODEL_PORT")}'
         worker = CONFIG.get("LOCAL_MODEL_HOST_WORKER", 1)
-        max_requests = 10240 if worker > 1 else 0
+        max_requests = 10240 if int(worker) > 1 else 0
         cmd = [
             'gunicorn', 'maxkb.wsgi:application',
             '-b', bind,
