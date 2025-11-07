@@ -6,6 +6,18 @@
     @date：2024/4/28 10:17
     @desc:
 """
+import os
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+
+
+class MKTokenizer:
+    def __init__(self, tokenizer):
+        self.tokenizer = tokenizer
+
+    def encode(self, text):
+        return self.tokenizer.encode(text).ids
 
 
 class TokenizerManage:
@@ -13,12 +25,8 @@ class TokenizerManage:
 
     @staticmethod
     def get_tokenizer():
-        from transformers import BertTokenizer
-        if TokenizerManage.tokenizer is None:
-            TokenizerManage.tokenizer = BertTokenizer.from_pretrained(
-                'bert-base-cased',
-                cache_dir="/opt/maxkb-app/model/tokenizer",
-                local_files_only=True,
-                resume_download=False,
-                force_download=False)
-        return TokenizerManage.tokenizer
+        from tokenizers import Tokenizer
+        # 创建Tokenizer
+        s = os.path.join(BASE_DIR.parent, 'tokenizer', 'bert-base-cased', 'tokenizer.json')
+        TokenizerManage.tokenizer = Tokenizer.from_file(s)
+        return MKTokenizer(TokenizerManage.tokenizer)
