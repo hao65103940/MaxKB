@@ -115,7 +115,7 @@ int connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen) {
     return real_connect(sockfd, addr, addrlen);
 }
 
-/** 拦截 getaddrinfo() —— 精确匹配域名 */
+/** 拦截 getaddrinfo() —— 只拦截域名，不拦截纯 IP */
 int getaddrinfo(const char *node, const char *service,
                 const struct addrinfo *hints, struct addrinfo **res) {
     static int (*real_getaddrinfo)(const char *, const char *,
@@ -126,9 +126,18 @@ int getaddrinfo(const char *node, const char *service,
     static char *banned_env = NULL;
     if (!banned_env) banned_env = load_banned_hosts();
 
-    if (banned_env && *banned_env && node && match_env_patterns(node, banned_env)) {
-        fprintf(stderr, "[sandbox] 🚫 Access to host %s is banned\n", node);
-        return EAI_FAIL;
+    if (banned_env && *banned_env && node) {
+        // 检测 node 是否是 IP
+        struct in_addr ipv4;
+        struct in6_addr ipv6;
+        int is_ip = (inet_pton(AF_INET, node, &ipv4) == 1) ||
+                    (inet_pton(AF_INET6, node, &ipv6) == 1);
+
+        // 只对“非IP的域名”进行屏蔽
+        if (!is_ip && match_env_patterns(node, banned_env)) {
+            fprintf(stderr, "[sandbox] 🚫 Access to host %s is banned (DNS blocked)\n", node);
+            return EAI_FAIL; // 模拟 DNS 层禁止
+        }
     }
 
     return real_getaddrinfo(node, service, hints, res);
