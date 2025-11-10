@@ -28,14 +28,14 @@ class ToolExecutor:
             os.system(f"chown -R {self.user}:root {self.sandbox_path}")
         self.banned_keywords = CONFIG.get("SANDBOX_PYTHON_BANNED_KEYWORDS", 'nothing_is_banned').split(',');
         try:
+            banned_hosts_file_path = f'{self.sandbox_path}/.SANDBOX_BANNED_HOSTS'
+            if os.path.exists(banned_hosts_file_path):
+                os.remove(banned_hosts_file_path)
             banned_hosts = CONFIG.get("SANDBOX_PYTHON_BANNED_HOSTS", '').strip()
             if banned_hosts:
                 hostname = socket.gethostname()
                 local_ip = socket.gethostbyname(hostname)
                 banned_hosts = f"{banned_hosts},{hostname},{local_ip}"
-                banned_hosts_file_path = f'{self.sandbox_path}/.SANDBOX_BANNED_HOSTS'
-                if os.path.exists(banned_hosts_file_path):
-                    os.remove(banned_hosts_file_path)
                 with open(banned_hosts_file_path, "w") as f:
                     f.write(banned_hosts)
                 os.chmod(banned_hosts_file_path, 0o644)
