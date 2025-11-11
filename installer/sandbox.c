@@ -108,7 +108,7 @@ int connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen) {
 
     if (banned_env && *banned_env && match_env_patterns(ip, banned_env)) {
         fprintf(stderr, "[sandbox] 🚫 Access to host %s is banned\n", ip);
-        errno = EACCES;
+        errno = EACCES; // EACCES 的值是 13, 意思是 Permission denied
         return -1;
     }
 
