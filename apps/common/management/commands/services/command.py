@@ -96,7 +96,7 @@ class BaseActionCommand(BaseCommand):
         )
         parser.add_argument('-d', '--daemon', nargs="?", const=True)
         parser.add_argument('-w', '--worker', type=int, nargs="?",
-                            default=2 if os.cpu_count() > 6 else math.floor(os.cpu_count() / 2))
+                            default=3 if os.cpu_count() > 6 else max(1, math.floor(os.cpu_count() / 2)))
         parser.add_argument('-f', '--force', nargs="?", const=True)
 
     def initial_util(self, *args, **options):
