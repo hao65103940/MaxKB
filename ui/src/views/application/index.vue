@@ -1,5 +1,5 @@
 <template>
-  <LayoutContainer showCollapse class="application-manage">
+  <LayoutContainer showCollapse resizable class="application-manage">
     <template #left>
       <h4 class="p-12-16 pb-0 mt-12">{{ $t('views.application.title') }}</h4>
 
