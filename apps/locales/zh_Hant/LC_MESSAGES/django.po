@@ -2952,8 +2952,8 @@ msgstr "批量刷新文檔向量庫"
 
 #: apps/knowledge/views/document.py:466 apps/knowledge/views/document.py:467
 #: apps/knowledge/views/document.py:468
-msgid "Batch generate related documents"
-msgstr "批量生成相關文檔"
+msgid "Batch generate related problems"
+msgstr "批量生成相關問題"
 
 #: apps/knowledge/views/document.py:496 apps/knowledge/views/document.py:497
 #: apps/knowledge/views/document.py:498
@@ -5251,8 +5251,8 @@ msgstr "批量刷新文檔向量庫"
 #: apps/resource_manage/views/document.py:261
 #: apps/resource_manage/views/document.py:262
 #: apps/resource_manage/views/document.py:263
-msgid "Batch generate related system document"
-msgstr "批量生成相關文檔"
+msgid "Batch generate related system problems"
+msgstr "批量生成相關問題"
 
 #: apps/resource_manage/views/document.py:290
 #: apps/resource_manage/views/document.py:291
@@ -6071,8 +6071,8 @@ msgstr "批量刷新共享文檔向量庫"
 #: apps/shared/views/shared_document.py:262
 #: apps/shared/views/shared_document.py:263
 #: apps/shared/views/shared_document.py:264
-msgid "Batch generate related shared documents"
-msgstr "批量生成相關共享文檔"
+msgid "Batch generate related shared problems"
+msgstr "批量生成相關問題"
 
 #: apps/shared/views/shared_document.py:291
 #: apps/shared/views/shared_document.py:292
