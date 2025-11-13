@@ -77,12 +77,12 @@ class ApplicationStats(APIView):
 
     class TopQuestionsStatistics(APIView):
         authentication_classes = [TokenAuth]
-        # 应用的top10问题统计
+        # 应用的top问题统计
         @extend_schema(
             methods=['GET'],
-            description=_('Application top10 question statistics'),
-            summary=_('Application top10 question statistics'),
-            operation_id=_('Application top10 question statistics'),  # type: ignore
+            description=_('Application top question statistics'),
+            summary=_('Application top question statistics'),
+            operation_id=_('Application top question statistics'),  # type: ignore
             parameters=ApplicationStatsAPI.get_parameters(),
             responses=ApplicationStatsAPI.get_response(),
             tags=[_('Application')]  # type: ignore
