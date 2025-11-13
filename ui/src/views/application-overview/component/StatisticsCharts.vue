@@ -13,14 +13,14 @@
       <el-card shadow="never">
         <div class="flex align-center ml-8 mr-8">
           <el-avatar :size="40" shape="square" :style="{ background: item.background }">
-            <appIcon :iconName="item.icon" :style="{ fontSize: '24px', color: item.color }" />
+            <appIcon :iconName="item.icon" :style="{ fontSize: '24px', color: item.color }"/>
           </el-avatar>
           <div class="ml-12">
             <p class="color-secondary lighter mb-4">{{ item.name }}</p>
             <div v-if="item.id !== 'starCharts'" class="flex align-baseline">
               <h2>{{ numberFormat(item.sum?.[0]) }}</h2>
               <span v-if="item.sum.length > 1" class="ml-12" style="color: #f54a45"
-                >+{{ numberFormat(item.sum?.[1]) }}</span
+              >+{{ numberFormat(item.sum?.[1]) }}</span
               >
             </div>
             <div v-else class="flex align-center mr-8">
@@ -47,23 +47,32 @@
     >
       <el-card shadow="never">
         <div class="p-8">
-          <AppCharts height="316px" :id="item.id" type="line" :option="item.option" />
+          <AppCharts height="316px" :id="item.id" type="line" :option="item.option"/>
         </div>
       </el-card>
     </el-col>
   </el-row>
 </template>
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import {ref, computed, onMounted} from 'vue'
 import AppCharts from '@/components/app-charts/index.vue'
-import { getAttrsArray, getSum } from '@/utils/array'
-import { numberFormat } from '@/utils/common'
-import { t } from '@/locales'
+import {getAttrsArray, getSum} from '@/utils/array'
+import {numberFormat} from '@/utils/common'
+import {t} from '@/locales'
+
 const props = defineProps({
   data: {
     type: Array,
     default: () => [],
   },
+  tokenUsage: {
+    type: Array,
+    default: () => [],
+  },
+  topQuestions: {
+     type: Array,
+    default: () => [],
+  }
 })
 const statisticsType = computed(() => [
   {
