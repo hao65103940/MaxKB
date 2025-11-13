@@ -1,9 +1,7 @@
 # coding=utf-8
-import base64
-import mimetypes
+
 import time
 from functools import reduce
-from imghdr import what
 from typing import List, Dict
 
 from django.db.models import QuerySet
@@ -12,7 +10,6 @@ from langchain_core.messages import BaseMessage, HumanMessage, SystemMessage, AI
 from application.flow.i_step_node import NodeResult, INode
 from application.flow.step_node.video_understand_step_node.i_video_understand_node import IVideoUnderstandNode
 from knowledge.models import File
-from models_provider.impl.volcanic_engine_model_provider.model.image import get_video_format
 from models_provider.tools import get_model_instance_by_model_workspace_id
 
 
