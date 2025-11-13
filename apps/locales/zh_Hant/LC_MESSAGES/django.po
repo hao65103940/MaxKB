@@ -8894,3 +8894,8 @@ msgstr "不存在的ID"
 msgid "No permission for the target folder"
 msgstr "沒有目標資料夾的權限"
 
+msgid "Application token usage statistics"
+msgstr "應用令牌使用統計"
+
+msgid "Application top question statistics"
+msgstr "應用提問次數統計"

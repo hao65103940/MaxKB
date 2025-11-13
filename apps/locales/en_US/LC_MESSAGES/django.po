@@ -8767,3 +8767,9 @@ msgstr ""
 
 msgid "No permission for the target folder"
 msgstr ""
+
+msgid "Application token usage statistics"
+msgstr ""
+
+msgid "Application top question statistics"
+msgstr ""
