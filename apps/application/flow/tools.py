@@ -201,30 +201,45 @@ def to_stream_response_simple(stream_event):
     r['Cache-Control'] = 'no-cache'
     return r
 
-tool_message_template = """
-<details>
-    <summary>
-        <strong>Called MCP Tool: <em>%s</em></strong>
-    </summary>
-
-%s
-
-</details>
-
-"""
-
 tool_message_json_template = """
 ```json
 %s
 ```
 """
 
+tool_message_complete_template = """
+<details>
+    <summary>
+        <strong>Called MCP Tool: <em>%s</em></strong>
+    </summary>
 
-def generate_tool_message_template(name, context):
-    if '```' in context:
-        return tool_message_template % (name, context)
+**Input:**
+%s
+
+**Output:**
+%s
+
+</details>
+
+"""
+
+
+
+def generate_tool_message_complete(name, input_content, output_content):
+    """生成包含输入和输出的工具消息模版"""
+    # 格式化输入
+    if '```' not in input_content:
+        input_formatted = tool_message_json_template % input_content
     else:
-        return tool_message_template % (name, tool_message_json_template % (context))
+        input_formatted = input_content
+
+    # 格式化输出
+    if '```' not in output_content:
+        output_formatted = tool_message_json_template % output_content
+    else:
+        output_formatted = output_content
+
+    return tool_message_complete_template % (name, input_formatted, output_formatted)
 
 
 async def _yield_mcp_response(chat_model, message_list, mcp_servers, mcp_output_enable=True):
@@ -232,12 +247,34 @@ async def _yield_mcp_response(chat_model, message_list, mcp_servers, mcp_output_
     tools = await client.get_tools()
     agent = create_react_agent(chat_model, tools)
     response = agent.astream({"messages": message_list}, stream_mode='messages')
+
+    # 用于存储工具调用信息
+    tool_calls_info = {}
+
     async for chunk in response:
-        if mcp_output_enable and isinstance(chunk[0], ToolMessage):
-            content = generate_tool_message_template(chunk[0].name, chunk[0].content)
-            chunk[0].content = content
-            yield chunk[0]
         if isinstance(chunk[0], AIMessageChunk):
+            tool_calls = chunk[0].additional_kwargs.get('tool_calls', [])
+            for tool_call in tool_calls:
+                tool_id = tool_call.get('id', '')
+                if tool_id:
+                    # 保存工具调用的输入
+                    tool_calls_info[tool_id] = {
+                        'name': tool_call.get('function', {}).get('name', ''),
+                        'input': tool_call.get('function', {}).get('arguments', '')
+                    }
+            yield chunk[0]
+
+        if mcp_output_enable and isinstance(chunk[0], ToolMessage):
+            tool_id = chunk[0].tool_call_id
+            if tool_id in tool_calls_info:
+                # 合并输入和输出
+                tool_info = tool_calls_info[tool_id]
+                content = generate_tool_message_complete(
+                    tool_info['name'],
+                    tool_info['input'],
+                    chunk[0].content
+                )
+                chunk[0].content = content
             yield chunk[0]
 
 
