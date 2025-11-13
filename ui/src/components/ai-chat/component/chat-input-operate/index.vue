@@ -4,8 +4,7 @@
       <el-button class="border-primary video-stop-button" @click="stopChat">
         <app-icon iconName="app-video-stop" class="mr-8"></app-icon>
         {{ $t('chat.operation.stopChat') }}
-      </el-button
-      >
+      </el-button>
     </div>
 
     <div class="operate-textarea">
@@ -43,7 +42,7 @@
                   @mouseleave.stop="mouseleave()"
                 >
                   <div class="flex align-center">
-                    <img :src="getImgUrl(item && item?.name)" alt="" width="24"/>
+                    <img :src="getImgUrl(item && item?.name)" alt="" width="24" />
                     <div class="ml-4 ellipsis-1" :title="item && item?.name">
                       {{ item && item?.name }}
                     </div>
@@ -54,7 +53,7 @@
                     v-if="showDelete === item.url"
                   >
                     <el-icon style="font-size: 16px; top: 2px">
-                      <CircleCloseFilled/>
+                      <CircleCloseFilled />
                     </el-icon>
                   </div>
                 </div>
@@ -81,7 +80,7 @@
                   @mouseleave.stop="mouseleave()"
                 >
                   <div class="flex align-center">
-                    <img :src="getImgUrl(item && item?.name)" alt="" width="24"/>
+                    <img :src="getImgUrl(item && item?.name)" alt="" width="24" />
                     <div class="ml-4 ellipsis-1" :title="item && item?.name">
                       {{ item && item?.name }}
                     </div>
@@ -92,7 +91,7 @@
                     v-if="showDelete === item.url"
                   >
                     <el-icon style="font-size: 16px; top: 2px">
-                      <CircleCloseFilled/>
+                      <CircleCloseFilled />
                     </el-icon>
                   </div>
                 </div>
@@ -116,7 +115,7 @@
                   @mouseleave.stop="mouseleave()"
                 >
                   <div class="flex align-center">
-                    <img :src="getImgUrl(item && item?.name)" alt="" width="24"/>
+                    <img :src="getImgUrl(item && item?.name)" alt="" width="24" />
                     <div class="ml-4 ellipsis-1" :title="item && item?.name">
                       {{ item && item?.name }}
                     </div>
@@ -127,7 +126,7 @@
                     v-if="showDelete === item.url"
                   >
                     <el-icon style="font-size: 16px; top: 2px">
-                      <CircleCloseFilled/>
+                      <CircleCloseFilled />
                     </el-icon>
                   </div>
                 </div>
@@ -147,7 +146,7 @@
                   v-if="showDelete === item.url"
                 >
                   <el-icon style="font-size: 16px; top: 2px">
-                    <CircleCloseFilled/>
+                    <CircleCloseFilled />
                   </el-icon>
                 </div>
                 <el-image
@@ -174,13 +173,14 @@
                   v-if="showDelete === item.url"
                 >
                   <el-icon style="font-size: 16px; top: 2px">
-                    <CircleCloseFilled/>
+                    <CircleCloseFilled />
                   </el-icon>
                 </div>
                 <video
                   v-if="item.url"
                   :src="item.url"
-                  controls style="width: 100px; display: block"
+                  controls
+                  style="width: 100px; display: block"
                   class="border-r-6"
                   autoplay
                 />
@@ -213,7 +213,7 @@
 
       <div class="operate flex-between">
         <div>
-          <slot name="userInput"/>
+          <slot name="userInput" />
         </div>
         <div class="flex align-center">
           <template v-if="props.applicationDetails.stt_model_enable">
@@ -223,7 +223,7 @@
                 <AppIcon v-if="isMicrophone" iconName="app-keyboard"></AppIcon>
                 <el-icon v-else>
                   <!-- 录音 -->
-                  <Microphone/>
+                  <Microphone />
                 </el-icon>
               </el-button>
             </span>
@@ -235,13 +235,13 @@
                 v-if="recorderStatus === 'STOP'"
               >
                 <el-icon>
-                  <Microphone/>
+                  <Microphone />
                 </el-icon>
               </el-button>
 
               <div v-else class="operate flex align-center">
                 <el-text type="info"
-                >00:{{ recorderTime < 10 ? `0${recorderTime}` : recorderTime }}</el-text
+                  >00:{{ recorderTime < 10 ? `0${recorderTime}` : recorderTime }}</el-text
                 >
                 <el-button
                   text
@@ -257,6 +257,16 @@
 
           <template v-if="recorderStatus === 'STOP' || mode === 'mobile'">
             <span v-if="props.applicationDetails.file_upload_enable" class="flex align-center ml-4">
+              <!-- 如果URL地址 -->
+              <!-- <el-button
+                text
+                :disabled="checkMaxFilesLimit() || loading"
+                class="mt-4"
+                @click="showURLSetting = true"
+              >
+                <el-icon><Paperclip /></el-icon>
+              </el-button> -->
+              <!-- 没有URL地址 -->
               <el-upload
                 action="#"
                 multiple
@@ -275,18 +285,16 @@
                 >
                   <template #content>
                     <div class="break-all pre-wrap">
-                      {{ $t('chat.uploadFile.label') }}：{{
-                        $t('chat.uploadFile.most')
-                      }}{{
-                        props.applicationDetails.file_upload_setting.maxFiles
+                      {{ $t('chat.uploadFile.label') }}：{{ $t('chat.uploadFile.most')
+                      }}{{ props.applicationDetails.file_upload_setting.maxFiles
                       }}{{ $t('chat.uploadFile.limit') }}
-                      {{ props.applicationDetails.file_upload_setting.fileLimit }}MB<br/>{{
+                      {{ props.applicationDetails.file_upload_setting.fileLimit }}MB<br />{{
                         $t('chat.uploadFile.fileType')
                       }}：{{ getAcceptList().replace(/\./g, '').replace(/,/g, '、').toUpperCase() }}
                     </div>
                   </template>
                   <el-button text :disabled="checkMaxFilesLimit() || loading" class="mt-4">
-                    <el-icon><Paperclip/></el-icon>
+                    <el-icon><Paperclip /></el-icon>
                   </el-button>
                 </el-tooltip>
               </el-upload>
@@ -309,7 +317,7 @@
                 src="@/assets/icon_send.svg"
                 alt=""
               />
-              <SendIcon v-show="!isDisabledChat && !loading && !uploadLoading"/>
+              <SendIcon v-show="!isDisabledChat && !loading && !uploadLoading" />
             </el-button>
           </template>
         </div>
@@ -323,28 +331,78 @@
         </auto-tooltip>
       </el-text>
     </div>
+
+    <!-- 弹出URL设置框 -->
+    <div class="popperURLSetting" v-if="showURLSetting">
+      <el-card shadow="always" class="border-r-8" style="--el-card-padding: 16px">
+        <el-form label-position="top" ref="urlFormRef" :model="urlForm">
+          <el-form-item>
+            <template #label>
+              <div class="flex-between">
+                <span>URL 地址</span>
+                <el-select
+                  :teleported="false"
+                  v-model="urlForm.type"
+                  size="small"
+                  style="width: 85px"
+                >
+                  <el-option :label="$t('common.fileUpload.image')" value="image" />
+                  <el-option :label="$t('common.fileUpload.audio')" value="audio" />
+                </el-select>
+              </div>
+            </template>
+            <el-input
+              v-model="urlForm.source_url"
+              placeholder="请输入URL地址，每行一个地址"
+              :rows="5"
+              type="textarea"
+            />
+          </el-form-item>
+        </el-form>
+        <div class="text-right">
+          <el-button @click="showURLSetting = false">{{ $t('common.cancel') }}</el-button>
+          <el-button type="primary" @click="showURLSetting = false">{{
+            $t('common.confirm')
+          }}</el-button>
+        </div>
+        <el-divider style="margin: 16px 0" />
+        <el-upload
+          action="#"
+          multiple
+          :auto-upload="false"
+          :show-file-list="false"
+          :accept="getAcceptList()"
+          :on-change="(file: any, fileList: any) => uploadFile(file, fileList)"
+          v-model:file-list="fileAllList"
+          ref="upload"
+          class="import-button"
+        >
+          <el-button class="w-full url-upload-button">本地上传</el-button>
+        </el-upload>
+      </el-card>
+    </div>
   </div>
 </template>
 <script setup lang="ts">
-import {ref, computed, onMounted, nextTick, reactive, type Ref} from 'vue'
-import {t} from '@/locales'
+import { ref, computed, onMounted, nextTick, reactive, type Ref } from 'vue'
+import { t } from '@/locales'
 import Recorder from 'recorder-core'
 import TouchChat from './TouchChat.vue'
 import applicationApi from '@/api/application/application'
-import {MsgAlert} from '@/utils/message'
-import {type chatType} from '@/api/type/application'
-import {useRoute, useRouter} from 'vue-router'
-import {getImgUrl} from '@/utils/common'
+import { MsgAlert } from '@/utils/message'
+import { type chatType } from '@/api/type/application'
+import { useRoute, useRouter } from 'vue-router'
+import { getImgUrl } from '@/utils/common'
 import bus from '@/bus'
 import 'recorder-core/src/engine/mp3'
 import 'recorder-core/src/engine/mp3-engine'
-import {MsgWarning} from '@/utils/message'
+import { MsgWarning } from '@/utils/message'
 import chatAPI from '@/api/chat/chat'
 
 const router = useRouter()
 const route = useRoute()
 const {
-  query: {mode, question},
+  query: { mode, question },
 } = route as any
 const quickInputRef = ref()
 const props = withDefaults(
@@ -387,6 +445,12 @@ const localLoading = computed({
   },
 })
 
+const showURLSetting = ref(false)
+const urlForm = reactive({
+  source_url: '',
+  type: '',
+})
+
 const uploadLoading = computed(() => {
   return Object.values(filePromisionDict.value).length > 0
 })
@@ -408,7 +472,7 @@ const audioExtensions = ['MP3', 'WAV', 'OGG', 'AAC', 'M4A']
 const otherExtensions = ref(['PPT', 'DOC'])
 
 const getAcceptList = () => {
-  const {image, document, audio, video, other} = props.applicationDetails.file_upload_setting
+  const { image, document, audio, video, other } = props.applicationDetails.file_upload_setting
   let accepts: any = []
   if (image) {
     accepts = [...imageExtensions]
@@ -438,15 +502,15 @@ const checkMaxFilesLimit = () => {
   return (
     props.applicationDetails.file_upload_setting.maxFiles <=
     uploadImageList.value.length +
-    uploadDocumentList.value.length +
-    uploadAudioList.value.length +
-    uploadVideoList.value.length +
-    uploadOtherList.value.length
+      uploadDocumentList.value.length +
+      uploadAudioList.value.length +
+      uploadVideoList.value.length +
+      uploadOtherList.value.length
   )
 }
 const filePromisionDict: any = ref<any>({})
 const uploadFile = async (file: any, fileList: any) => {
-  const {maxFiles, fileLimit} = props.applicationDetails.file_upload_setting
+  const { maxFiles, fileLimit } = props.applicationDetails.file_upload_setting
   // 单次上传文件数量限制
   const file_limit_once =
     uploadImageList.value.length +
@@ -612,8 +676,7 @@ const TouchEnd = (bool?: boolean) => {
   }
 }
 // 取消录音控制台日志
-Recorder.CLog = function () {
-}
+Recorder.CLog = function () {}
 
 class RecorderManage {
   recorder?: any
@@ -919,16 +982,16 @@ onMounted(() => {
       // 获取当前路由信息
       const route = router.currentRoute.value
       // 复制query对象
-      const query = {...route.query}
+      const query = { ...route.query }
       // 删除特定的参数
       delete query.question
       const newRoute =
         Object.entries(query)?.length > 0
           ? route.path +
-          '?' +
-          Object.entries(query)
-            .map(([key, value]) => `${key}=${value}`)
-            .join('&')
+            '?' +
+            Object.entries(query)
+              .map(([key, value]) => `${key}=${value}`)
+              .join('&')
           : route.path
 
       history.pushState(null, '', '/chat' + newRoute)
@@ -1026,14 +1089,21 @@ onMounted(() => {
       }
     }
   }
+  .popperURLSetting {
+    right: 30px;
+  }
 }
 
-.popperUserInput {
+.popperURLSetting {
   position: absolute;
   z-index: 999;
-  left: 0;
-  bottom: 50px;
+  right: 60px;
+  bottom: 65px;
   width: calc(100% - 50px);
-  max-width: 400px;
+  max-width: 320px;
+  .url-upload-button {
+    border-color: var(--el-color-primary);
+    color: var(--el-color-primary);
+  }
 }
 </style>
