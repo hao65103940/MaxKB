@@ -362,11 +362,13 @@ function getAppStatistics() {
   loadSharedApi({type: 'application', systemType: apiType.value})
     .getTokenUsage(id, daterange.value, statisticsLoading)
     .then((res: any) => {
+      // [{'token_usage': 200, 'username': '张三'}, ...]
       tokenUsage.value = res.data
     })
   loadSharedApi({type: 'application', systemType: apiType.value})
     .topQuestions(id, daterange.value, statisticsLoading)
     .then((res: any) => {
+      // [{'chat_record_count': 200, 'username': '张三'}, ...]
       topQuestions.value = res.data
     })
 }
