@@ -97,6 +97,9 @@ export default {
       userSatisfaction: '用户满意度',
       approval: '赞同',
       disapproval: '反对',
+      tokenUsage: '用户消耗 Tokens',
+      topQuestions: '用户提问次数',
+
     },
   },
 }

@@ -97,6 +97,8 @@ export default {
       userSatisfaction: 'User Feedback Metrics',
       approval: 'Like',
       disapproval: 'Dislike',
+      tokenUsage: 'User used Tokens',
+      topQuestions: 'Number of user question',
     },
   },
 }

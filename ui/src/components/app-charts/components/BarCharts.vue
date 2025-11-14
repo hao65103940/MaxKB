@@ -1,5 +1,5 @@
 <template>
-  <div :id="id" ref="LineChartRef" :style="{ height: height, width: width }" />
+  <div :id="id" ref="BarChartRef" :style="{ height: height, width: width }" />
 </template>
 <script lang="ts" setup>
 import { onMounted, nextTick, watch, onBeforeUnmount } from 'vue'
@@ -8,7 +8,7 @@ import { numberFormat } from '@/utils/common'
 const props = defineProps({
   id: {
     type: String,
-    default: 'lineChartId',
+    default: 'barChartId',
   },
   width: {
     type: String,
@@ -37,7 +37,8 @@ function initChart() {
   if (props.option?.yData?.length) {
     props.option?.yData.forEach((item: any, index: number) => {
       series.push({
-        type: 'line',
+        type: 'bar',
+        barWidth: '20',
         itemStyle: {
           color: color[index],
         },
