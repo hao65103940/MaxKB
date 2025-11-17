@@ -28,7 +28,7 @@ class ToolExecutor:
         self.sandbox_so_path = f'{self.sandbox_path}/sandbox.so'
         try:
             if os.path.exists(self.sandbox_so_path):
-                os.chmod(self.sandbox_so_path, 0o644)
+                os.chmod(self.sandbox_so_path, 0o444)
             # 初始化host黑名单
             banned_hosts_file_path = f'{self.sandbox_path}/.SANDBOX_BANNED_HOSTS'
             if os.path.exists(banned_hosts_file_path):
@@ -40,7 +40,7 @@ class ToolExecutor:
                 banned_hosts = f"{banned_hosts},{hostname},{local_ip}"
                 with open(banned_hosts_file_path, "w") as f:
                     f.write(banned_hosts)
-                os.chmod(banned_hosts_file_path, 0o644)
+                os.chmod(banned_hosts_file_path, 0o444)
         except Exception as e:
             maxkb_logger.error(f'Failed to init SANDBOX_BANNED_HOSTS due to exception: {e}', exc_info=True)
             pass
