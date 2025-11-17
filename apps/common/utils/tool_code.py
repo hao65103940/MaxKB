@@ -50,13 +50,10 @@ class ToolExecutor:
         os.makedirs(execute_file_path, 0o500, exist_ok=True)
         result_file_path = os.path.join(self.sandbox_path, 'result')
         os.makedirs(result_file_path, 0o300, exist_ok=True)
-        tmp_file_path = os.path.join(self.sandbox_path, 'tmp')
-        os.makedirs(tmp_file_path, 0o600, exist_ok=True)
         if self.sandbox:
             os.system(f"chown {self.user}:root {self.sandbox_path}")
             os.system(f"chown -R {self.user}:root {execute_file_path}")
             os.system(f"chown -R {self.user}:root {result_file_path}")
-            os.system(f"chown -R {self.user}:root {tmp_file_path}")
             os.chmod(self.sandbox_path, 0o550)
 
     def exec_code(self, code_str, keywords):
