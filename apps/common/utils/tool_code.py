@@ -28,7 +28,7 @@ class ToolExecutor:
         self.sandbox_so_path = f'{self.sandbox_path}/sandbox.so'
         try:
             if os.path.exists(self.sandbox_so_path):
-                os.chmod(self.sandbox_so_path, 0o444)
+                os.chmod(self.sandbox_so_path, 0o440)
             # 初始化host黑名单
             banned_hosts_file_path = f'{self.sandbox_path}/.SANDBOX_BANNED_HOSTS'
             if os.path.exists(banned_hosts_file_path):
@@ -40,7 +40,7 @@ class ToolExecutor:
                 banned_hosts = f"{banned_hosts},{hostname},{local_ip}"
                 with open(banned_hosts_file_path, "w") as f:
                     f.write(banned_hosts)
-                os.chmod(banned_hosts_file_path, 0o444)
+                os.chmod(banned_hosts_file_path, 0o440)
         except Exception as e:
             maxkb_logger.error(f'Failed to init SANDBOX_BANNED_HOSTS due to exception: {e}', exc_info=True)
             pass
@@ -50,10 +50,14 @@ class ToolExecutor:
         os.makedirs(execute_file_path, 0o500, exist_ok=True)
         result_file_path = os.path.join(self.sandbox_path, 'result')
         os.makedirs(result_file_path, 0o300, exist_ok=True)
+        tmp_file_path = os.path.join(self.sandbox_path, 'tmp')
+        os.makedirs(tmp_file_path, 0o600, exist_ok=True)
         if self.sandbox:
             os.system(f"chown {self.user}:root {self.sandbox_path}")
             os.system(f"chown -R {self.user}:root {execute_file_path}")
             os.system(f"chown -R {self.user}:root {result_file_path}")
+            os.system(f"chown -R {self.user}:root {tmp_file_path}")
+            os.chmod(self.sandbox_path, 0o550)
 
     def exec_code(self, code_str, keywords):
         self.validate_banned_keywords(code_str)
