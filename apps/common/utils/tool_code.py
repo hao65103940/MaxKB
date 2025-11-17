@@ -23,11 +23,13 @@ class ToolExecutor:
         else:
             self.sandbox_path = os.path.join(PROJECT_DIR, 'data', 'sandbox')
             self.user = None
-        self._createdir()
-        if self.sandbox:
-            os.system(f"chown -R {self.user}:root {self.sandbox_path}")
+        self._init_dir()
         self.banned_keywords = CONFIG.get("SANDBOX_PYTHON_BANNED_KEYWORDS", 'nothing_is_banned').split(',');
+        self.sandbox_so_path = f'{self.sandbox_path}/sandbox.so'
         try:
+            if os.path.exists(self.sandbox_so_path):
+                os.chmod(self.sandbox_so_path, 0o644)
+            # 初始化host黑名单
             banned_hosts_file_path = f'{self.sandbox_path}/.SANDBOX_BANNED_HOSTS'
             if os.path.exists(banned_hosts_file_path):
                 os.remove(banned_hosts_file_path)
@@ -43,14 +45,15 @@ class ToolExecutor:
             maxkb_logger.error(f'Failed to init SANDBOX_BANNED_HOSTS due to exception: {e}', exc_info=True)
             pass
 
-    def _createdir(self):
-        old_mask = os.umask(0o077)
-        try:
-            os.makedirs(self.sandbox_path, 0o700, exist_ok=True)
-            os.makedirs(os.path.join(self.sandbox_path, 'execute'), 0o700, exist_ok=True)
-            os.makedirs(os.path.join(self.sandbox_path, 'result'), 0o700, exist_ok=True)
-        finally:
-            os.umask(old_mask)
+    def _init_dir(self):
+        execute_file_path = os.path.join(self.sandbox_path, 'execute')
+        os.makedirs(execute_file_path, 0o500, exist_ok=True)
+        result_file_path = os.path.join(self.sandbox_path, 'result')
+        os.makedirs(result_file_path, 0o300, exist_ok=True)
+        if self.sandbox:
+            os.system(f"chown {self.user}:root {self.sandbox_path}")
+            os.system(f"chown -R {self.user}:root {execute_file_path}")
+            os.system(f"chown -R {self.user}:root {result_file_path}")
 
     def exec_code(self, code_str, keywords):
         self.validate_banned_keywords(code_str)
@@ -184,8 +187,6 @@ exec({dedent(code)!a})
         with open(code_path, 'w') as f:
             f.write(code)
         if self.sandbox:
-            os.system(f"chown {self.user}:root {code_path}")
-
             tool_config = {
                 'command': 'su',
                 'args': [
@@ -195,7 +196,7 @@ exec({dedent(code)!a})
                 ],
                 'cwd': self.sandbox_path,
                 'env': {
-                    'LD_PRELOAD': f'{self.sandbox_path}/sandbox.so',
+                    'LD_PRELOAD': self.sandbox_so_path,
                 },
                 'transport': 'stdio',
             }
@@ -211,10 +212,9 @@ exec({dedent(code)!a})
         exec_python_file = f'{self.sandbox_path}/execute/{_id}.py'
         with open(exec_python_file, 'w') as file:
             file.write(_code)
-            os.system(f"chown {self.user}:root {exec_python_file}")
         kwargs = {'cwd': BASE_DIR}
         kwargs['env'] = {
-            'LD_PRELOAD': f'{self.sandbox_path}/sandbox.so',
+            'LD_PRELOAD': self.sandbox_so_path,
         }
         subprocess_result = subprocess.run(
             ['su', '-s', python_directory, '-c', "exec(open('" + exec_python_file + "').read())", self.user],
