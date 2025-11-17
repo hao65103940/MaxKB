@@ -11,10 +11,14 @@ from django.utils.translation import gettext_lazy as _
 from maxkb.const import BASE_DIR, CONFIG
 from maxkb.const import PROJECT_DIR
 from common.utils.logger import maxkb_logger
+import threading
 
 python_directory = sys.executable
 
 class ToolExecutor:
+
+    _dir_initialized = False
+    _lock = threading.Lock()
     def __init__(self, sandbox=False):
         self.sandbox = sandbox
         if sandbox:
@@ -23,9 +27,28 @@ class ToolExecutor:
         else:
             self.sandbox_path = os.path.join(PROJECT_DIR, 'data', 'sandbox')
             self.user = None
-        self._init_dir()
         self.banned_keywords = CONFIG.get("SANDBOX_PYTHON_BANNED_KEYWORDS", 'nothing_is_banned').split(',');
         self.sandbox_so_path = f'{self.sandbox_path}/sandbox.so'
+        with ToolExecutor._lock:
+            self._init_dir()
+
+    def _init_dir(self):
+        if ToolExecutor._dir_initialized:
+            # 只初始化一次
+            return
+        execute_file_path = os.path.join(self.sandbox_path, 'execute')
+        os.makedirs(execute_file_path, 0o500, exist_ok=True)
+        result_file_path = os.path.join(self.sandbox_path, 'result')
+        os.makedirs(result_file_path, 0o300, exist_ok=True)
+        if self.sandbox:
+            os.system(f"chown {self.user}:root {self.sandbox_path}")
+            os.system(f"chown -R {self.user}:root {execute_file_path}")
+            os.system(f"chown -R {self.user}:root {result_file_path}")
+            os.chmod(self.sandbox_path, 0o550)
+            if CONFIG.get("SANDBOX_TMP_DIR_ENABLED", '0') == "1":
+                tmp_dir_path = os.path.join(self.sandbox_path, 'tmp')
+                os.makedirs(tmp_dir_path, 0o700, exist_ok=True)
+                os.system(f"chown -R {self.user}:root {tmp_dir_path}")
         try:
             if os.path.exists(self.sandbox_so_path):
                 os.chmod(self.sandbox_so_path, 0o440)
@@ -44,17 +67,7 @@ class ToolExecutor:
         except Exception as e:
             maxkb_logger.error(f'Failed to init SANDBOX_BANNED_HOSTS due to exception: {e}', exc_info=True)
             pass
-
-    def _init_dir(self):
-        execute_file_path = os.path.join(self.sandbox_path, 'execute')
-        os.makedirs(execute_file_path, 0o500, exist_ok=True)
-        result_file_path = os.path.join(self.sandbox_path, 'result')
-        os.makedirs(result_file_path, 0o300, exist_ok=True)
-        if self.sandbox:
-            os.system(f"chown {self.user}:root {self.sandbox_path}")
-            os.system(f"chown -R {self.user}:root {execute_file_path}")
-            os.system(f"chown -R {self.user}:root {result_file_path}")
-            os.chmod(self.sandbox_path, 0o550)
+        ToolExecutor._dir_initialized = True
 
     def exec_code(self, code_str, keywords):
         self.validate_banned_keywords(code_str)
