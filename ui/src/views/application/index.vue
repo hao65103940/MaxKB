@@ -242,9 +242,11 @@
                               <AppIcon iconName="app-create-chat" class="color-secondary"></AppIcon>
                               {{ $t('views.application.operation.toChat') }}
                             </el-dropdown-item>
+
                             <el-dropdown-item
-                              @click.stop="settingApplication(item)"
+                              @mousedown.stop="settingApplication($event, item)"
                               v-if="permissionPrecise.edit(item.id)"
+                              @click.stop
                             >
                               <AppIcon iconName="app-setting" class="color-secondary"></AppIcon>
                               {{ $t('common.setting') }}
@@ -587,9 +589,15 @@ function copyApplication(row: any) {
   })
 }
 
-function settingApplication(row: any) {
+function settingApplication(event: any, row: any) {
   if (isWorkFlow(row.type)) {
-    router.push({ path: `/application/workspace/${row.id}/workflow` })
+    if (event?.ctrlKey) {
+      event?.preventDefault()
+      event.stopPropagation()
+      window.open(`/application/workspace/${row.id}/workflow`, '_blank')
+    } else {
+      router.push({ path: `/application/workspace/${row.id}/workflow` })
+    }
   } else {
     router.push({ path: `/application/workspace/${row.id}/${row.type}/setting` })
   }
