@@ -86,9 +86,9 @@ try:
     for local in locals_v:
         globals_v[local] = locals_v[local]
     exec_result=f(**keywords)
-    print(f"{_id}:" + base64.b64encode(json.dumps({success}, default=str).encode()).decode())
+    print("{_id}:" + base64.b64encode(json.dumps({success}, default=str).encode()).decode())
 except Exception as e:
-    print(f"{_id}:" + base64.b64encode(json.dumps({err}, default=str).encode()).decode())
+    print("{_id}:" + base64.b64encode(json.dumps({err}, default=str).encode()).decode())
 """
         if self.sandbox:
             subprocess_result = self._exec_sandbox(_exec_code)
