@@ -2,8 +2,8 @@
 
 if [ ! -d /opt/maxkb/logs ]; then
     mkdir -p /opt/maxkb/logs
-    chmod 700 /opt/maxkb/logs
 fi
+chmod -R 700 /opt/maxkb/logs
 if [ ! -d /opt/maxkb/local ]; then
     mkdir -p /opt/maxkb/local
     chmod 700 /opt/maxkb/local

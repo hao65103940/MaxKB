@@ -200,14 +200,6 @@ class BaseChatStep(IChatStep):
                                       mcp_enable, mcp_tool_ids, mcp_servers, mcp_source, tool_enable, tool_ids, mcp_output_enable)
 
     def get_details(self, manage, **kwargs):
-        # 删除临时生成的MCP代码文件
-        if self.context.get('execute_ids'):
-            executor = ToolExecutor(CONFIG.get('SANDBOX'))
-            # 清理工具代码文件，延时删除，避免文件被占用
-            for tool_id in self.context.get('execute_ids'):
-                code_path = f'{executor.sandbox_path}/execute/{tool_id}.py'
-                if os.path.exists(code_path):
-                    os.remove(code_path)
         return {
             'step_type': 'chat_step',
             'run_time': self.context['run_time'],
@@ -254,7 +246,6 @@ class BaseChatStep(IChatStep):
         if tool_enable:
             if tool_ids and len(tool_ids) > 0:  # 如果有工具ID，则将其转换为MCP
                 self.context['tool_ids'] = tool_ids
-                self.context['execute_ids'] = []
                 for tool_id in tool_ids:
                     tool = QuerySet(Tool).filter(id=tool_id).first()
                     if tool is None or tool.is_active is False:
@@ -264,9 +255,8 @@ class BaseChatStep(IChatStep):
                         params = json.loads(rsa_long_decrypt(tool.init_params))
                     else:
                         params = {}
-                    _id, tool_config = executor.get_tool_mcp_config(tool.code, params)
+                    tool_config = executor.get_tool_mcp_config(tool.code, params)
 
-                    self.context['execute_ids'].append(_id)
                     mcp_servers_config[str(tool.id)] = tool_config
 
         if len(mcp_servers_config) > 0:
