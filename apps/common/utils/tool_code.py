@@ -71,11 +71,7 @@ class ToolExecutor:
         python_paths = CONFIG.get_sandbox_python_package_paths().split(',')
         _exec_code = f"""
 try:
-    import os
-    import sys
-    import json
-    import base64
-    import builtins
+    import sys, json, base64, builtins
     path_to_exclude = ['/opt/py3/lib/python3.11/site-packages', '/opt/maxkb-app/apps']
     sys.path = [p for p in sys.path if p not in path_to_exclude]
     sys.path += {python_paths}
