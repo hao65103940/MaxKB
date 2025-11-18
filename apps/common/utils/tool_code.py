@@ -86,8 +86,10 @@ try:
     for local in locals_v:
         globals_v[local] = locals_v[local]
     exec_result=f(**keywords)
+    print("-\n-\n-")
     print("{_id}:" + base64.b64encode(json.dumps({success}, default=str).encode()).decode())
 except Exception as e:
+    print("-\n-\n-")
     print("{_id}:" + base64.b64encode(json.dumps({err}, default=str).encode()).decode())
 """
         if self.sandbox:
