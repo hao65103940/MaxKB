@@ -75,6 +75,7 @@ try:
     import sys
     import json
     import base64
+    import builtins
     path_to_exclude = ['/opt/py3/lib/python3.11/site-packages', '/opt/maxkb-app/apps']
     sys.path = [p for p in sys.path if p not in path_to_exclude]
     sys.path += {python_paths}
@@ -86,11 +87,11 @@ try:
     for local in locals_v:
         globals_v[local] = locals_v[local]
     exec_result=f(**keywords)
-    print("-\n-\n-")
-    print("{_id}:" + base64.b64encode(json.dumps({success}, default=str).encode()).decode())
+    builtins.print("-\n-\n-")
+    builtins.print("{_id}:" + base64.b64encode(json.dumps({success}, default=str).encode()).decode())
 except Exception as e:
-    print("-\n-\n-")
-    print("{_id}:" + base64.b64encode(json.dumps({err}, default=str).encode()).decode())
+    builtins.print("-\n-\n-")
+    builtins.print("{_id}:" + base64.b64encode(json.dumps({err}, default=str).encode()).decode())
 """
         if self.sandbox:
             subprocess_result = self._exec_sandbox(_exec_code)
