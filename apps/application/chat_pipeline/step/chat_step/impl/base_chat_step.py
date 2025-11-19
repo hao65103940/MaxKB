@@ -93,6 +93,7 @@ def event_content(response,
                 reasoning_content_chunk = chunk.additional_kwargs.get('reasoning_content', '')
             else:
                 reasoning_content_chunk = reasoning_chunk.get('reasoning_content')
+            content_chunk = reasoning._normalize_content(content_chunk)
             all_text += content_chunk
             if reasoning_content_chunk is None:
                 reasoning_content_chunk = ''
@@ -191,13 +192,15 @@ class BaseChatStep(IChatStep):
                                        manage, padding_problem_text, chat_user_id, chat_user_type,
                                        no_references_setting,
                                        model_setting,
-                                       mcp_enable, mcp_tool_ids, mcp_servers, mcp_source, tool_enable, tool_ids, mcp_output_enable)
+                                       mcp_enable, mcp_tool_ids, mcp_servers, mcp_source, tool_enable, tool_ids,
+                                       mcp_output_enable)
         else:
             return self.execute_block(message_list, chat_id, problem_text, post_response_handler, chat_model,
                                       paragraph_list,
                                       manage, padding_problem_text, chat_user_id, chat_user_type, no_references_setting,
                                       model_setting,
-                                      mcp_enable, mcp_tool_ids, mcp_servers, mcp_source, tool_enable, tool_ids, mcp_output_enable)
+                                      mcp_enable, mcp_tool_ids, mcp_servers, mcp_source, tool_enable, tool_ids,
+                                      mcp_output_enable)
 
     def get_details(self, manage, **kwargs):
         return {
@@ -264,7 +267,6 @@ class BaseChatStep(IChatStep):
 
         return None
 
-
     def get_stream_result(self, message_list: List[BaseMessage],
                           chat_model: BaseChatModel = None,
                           paragraph_list=None,
@@ -294,7 +296,8 @@ class BaseChatStep(IChatStep):
         else:
             # 处理 MCP 请求
             mcp_result = self._handle_mcp_request(
-                mcp_enable, tool_enable, mcp_source, mcp_servers, mcp_tool_ids, tool_ids, mcp_output_enable, chat_model, message_list,
+                mcp_enable, tool_enable, mcp_source, mcp_servers, mcp_tool_ids, tool_ids, mcp_output_enable, chat_model,
+                message_list,
             )
             if mcp_result:
                 return mcp_result, True
@@ -319,7 +322,8 @@ class BaseChatStep(IChatStep):
                        tool_ids=None,
                        mcp_output_enable=True):
         chat_result, is_ai_chat = self.get_stream_result(message_list, chat_model, paragraph_list,
-                                                         no_references_setting, problem_text, mcp_enable, mcp_tool_ids, mcp_servers, mcp_source, tool_enable, tool_ids,
+                                                         no_references_setting, problem_text, mcp_enable, mcp_tool_ids,
+                                                         mcp_servers, mcp_source, tool_enable, tool_ids,
                                                          mcp_output_enable)
         chat_record_id = uuid.uuid7()
         r = StreamingHttpResponse(
@@ -394,7 +398,9 @@ class BaseChatStep(IChatStep):
         # 调用模型
         try:
             chat_result, is_ai_chat = self.get_block_result(message_list, chat_model, paragraph_list,
-                                                            no_references_setting, problem_text, mcp_enable, mcp_tool_ids, mcp_servers, mcp_source, tool_enable, tool_ids, mcp_output_enable)
+                                                            no_references_setting, problem_text, mcp_enable,
+                                                            mcp_tool_ids, mcp_servers, mcp_source, tool_enable,
+                                                            tool_ids, mcp_output_enable)
             if is_ai_chat:
                 request_token = chat_model.get_num_tokens_from_messages(message_list)
                 response_token = chat_model.get_num_tokens(chat_result.content)

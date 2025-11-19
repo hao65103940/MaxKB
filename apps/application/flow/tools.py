@@ -48,6 +48,21 @@ class Reasoning:
             return r
         return {'content': '', 'reasoning_content': ''}
 
+    def _normalize_content(self, content):
+        """将不同类型的内容统一转换为字符串"""
+        if isinstance(content, str):
+            return content
+        elif isinstance(content, list):
+            # 处理包含多种内容类型的列表
+            normalized_parts = []
+            for item in content:
+                if isinstance(item, dict):
+                    if item.get('type') == 'text':
+                        normalized_parts.append(item.get('text', ''))
+            return ''.join(normalized_parts)
+        else:
+            return str(content)
+
     def get_reasoning_content(self, chunk):
         # 如果没有开始思考过程标签那么就全是结果
         if self.reasoning_content_start_tag is None or len(self.reasoning_content_start_tag) == 0:
@@ -56,6 +71,7 @@ class Reasoning:
         # 如果没有结束思考过程标签那么就全部是思考过程
         if self.reasoning_content_end_tag is None or len(self.reasoning_content_end_tag) == 0:
             return {'content': '', 'reasoning_content': chunk.content}
+        chunk.content = self._normalize_content(chunk.content)
         self.all_content += chunk.content
         if not self.reasoning_content_is_start and len(self.all_content) >= self.reasoning_content_start_tag_len:
             if self.all_content.startswith(self.reasoning_content_start_tag):
@@ -201,6 +217,7 @@ def to_stream_response_simple(stream_event):
 
     r['Cache-Control'] = 'no-cache'
     return r
+
 
 tool_message_json_template = """
 ```json
