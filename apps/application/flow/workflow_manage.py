@@ -9,7 +9,6 @@
 import concurrent
 import json
 import threading
-import traceback
 from concurrent.futures import ThreadPoolExecutor
 from functools import reduce
 from typing import List, Dict
@@ -26,6 +25,7 @@ from application.flow.i_step_node import INode, WorkFlowPostHandler, NodeResult
 from application.flow.step_node import get_node
 from common.handle.base_to_response import BaseToResponse
 from common.handle.impl.response.system_to_response import SystemToResponse
+from common.utils.logger import maxkb_logger
 
 executor = ThreadPoolExecutor(max_workers=200)
 
@@ -383,7 +383,7 @@ class WorkflowManage:
                 current_node, node_result_future)
             return result
         except Exception as e:
-            traceback.print_exc()
+            maxkb_logger.error(f'Exception: {e}', exc_info=True)
         return None
 
     def hand_node_result(self, current_node, node_result_future):
@@ -395,7 +395,7 @@ class WorkflowManage:
                 list(result)
             return current_result
         except Exception as e:
-            traceback.print_exc()
+            maxkb_logger.error(f'Exception: {e}', exc_info=True)
             self.status = 500
             current_node.get_write_error_context(e)
             self.answer += str(e)
@@ -473,7 +473,7 @@ class WorkflowManage:
             return current_result
         except Exception as e:
             # 添加节点
-            traceback.print_exc()
+            maxkb_logger.error(f'Exception: {e}', exc_info=True)
             chunk = self.base_to_response.to_stream_chunk_response(self.params['chat_id'],
                                                                    self.params['chat_record_id'],
                                                                    current_node.id,
