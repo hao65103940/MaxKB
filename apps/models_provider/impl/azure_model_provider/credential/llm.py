@@ -66,8 +66,7 @@ class AzureLLMModelCredential(BaseForm, BaseModelCredential):
                     return False
         try:
             model = provider.get_model(model_type, model_name, model_credential, **model_params)
-            res = model.invoke([HumanMessage(content=gettext('Hello'))])
-            print( res)
+            model.invoke([HumanMessage(content=gettext('Hello'))])
         except Exception as e:
             traceback.print_exc()
             if isinstance(e, AppApiException) or isinstance(e, BadRequestError):
