@@ -36,13 +36,10 @@ class ToolExecutor:
         if ToolExecutor._dir_initialized:
             # 只初始化一次
             return
-        if self.sandbox:
-            os.system(f"chown {self.user}:root {self.sandbox_path}")
-            os.chmod(self.sandbox_path, 0o550)
-            if CONFIG.get("SANDBOX_TMP_DIR_ENABLED", '0') == "1":
-                tmp_dir_path = os.path.join(self.sandbox_path, 'tmp')
-                os.makedirs(tmp_dir_path, 0o700, exist_ok=True)
-                os.system(f"chown -R {self.user}:root {tmp_dir_path}")
+        if CONFIG.get("SANDBOX_TMP_DIR_ENABLED", '0') == "1":
+            tmp_dir_path = os.path.join(self.sandbox_path, 'tmp')
+            os.makedirs(tmp_dir_path, 0o700, exist_ok=True)
+            os.system(f"chown -R {self.user}:root {tmp_dir_path}")
         if os.path.exists(self.sandbox_so_path):
             os.chmod(self.sandbox_so_path, 0o440)
         try:
