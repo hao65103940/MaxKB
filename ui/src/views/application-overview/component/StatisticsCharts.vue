@@ -199,7 +199,7 @@ const statisticsType = computed(() => [
   },
 ])
 
-const topOptions = [{ label: 'TOP 10', value: 10 }]
+const topOptions = [{ label: 'TOP 10', value: 10 }, { label: 'TOP 20', value: 20}, { label: 'TOP 50', value: 50}, { label: 'TOP 100', value: 100}]
 const tokenUsageCount = ref(10)
 const topQuestionsCount = ref(10)
 const tokenUsageOption = computed(() => {

@@ -61,6 +61,8 @@ export default {
     other: 'Other',
     addExtensions: 'Add Extensions',
     existingExtensionsTip: 'The following extensions already exist',
+    localUpload: 'Local Files',
+    urlUpload: 'URL',
   },
   status: {
     label: 'Status',
