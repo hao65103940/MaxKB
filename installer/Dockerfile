@@ -47,12 +47,9 @@ ENV MAXKB_VERSION="${DOCKER_IMAGE_TAG} (build at ${BUILD_AT}, commit: ${GITHUB_C
     MAXKB_LOCAL_MODEL_PROTOCOL=http \
     PIP_TARGET=/opt/maxkb/python-packages
 
-
 WORKDIR /opt/maxkb-app
 COPY --from=stage-build /opt/maxkb-app /opt/maxkb-app
 COPY --from=stage-build /opt/py3 /opt/py3
-
-RUN chmod 755 /tmp
 
 EXPOSE 8080
 VOLUME /opt/maxkb
