@@ -29,7 +29,13 @@ class ToolExecutor:
             self.user = None
         self.banned_keywords = CONFIG.get("SANDBOX_PYTHON_BANNED_KEYWORDS", 'nothing_is_banned').split(',');
         self.sandbox_so_path = f'{self.sandbox_path}/sandbox.so'
-        self._init_dir()
+        try:
+            self._init_dir()
+        except Exception as e:
+            # 本机忽略异常，容器内不忽略
+            maxkb_logger.error(f'Exception: {e}', exc_info=True)
+            if self.sandbox:
+                raise e
 
     def _init_dir(self):
         try:
@@ -38,7 +44,7 @@ class ToolExecutor:
                          os.O_CREAT | os.O_EXCL | os.O_WRONLY)
             os.close(fd)
         except FileExistsError:
-            # 文件已存在 → 已执行过
+            # 文件已存在 → 已初始化过
             return
         maxkb_logger.debug("init dir")
         if self.sandbox:
@@ -50,22 +56,18 @@ class ToolExecutor:
             os.system(f"chown -R {self.user}:root {tmp_dir_path}")
         if os.path.exists(self.sandbox_so_path):
             os.chmod(self.sandbox_so_path, 0o440)
-        try:
-            # 初始化host黑名单
-            banned_hosts_file_path = f'{self.sandbox_path}/.SANDBOX_BANNED_HOSTS'
-            if os.path.exists(banned_hosts_file_path):
-                os.remove(banned_hosts_file_path)
-            banned_hosts = CONFIG.get("SANDBOX_PYTHON_BANNED_HOSTS", '').strip()
-            if banned_hosts:
-                hostname = socket.gethostname()
-                local_ip = socket.gethostbyname(hostname)
-                banned_hosts = f"{banned_hosts},{hostname},{local_ip}"
-                with open(banned_hosts_file_path, "w") as f:
-                    f.write(banned_hosts)
-                os.chmod(banned_hosts_file_path, 0o440)
-        except Exception as e:
-            maxkb_logger.error(f'Failed to init SANDBOX_BANNED_HOSTS due to exception: {e}', exc_info=True)
-            pass
+        # 初始化host黑名单
+        banned_hosts_file_path = f'{self.sandbox_path}/.SANDBOX_BANNED_HOSTS'
+        if os.path.exists(banned_hosts_file_path):
+            os.remove(banned_hosts_file_path)
+        banned_hosts = CONFIG.get("SANDBOX_PYTHON_BANNED_HOSTS", '').strip()
+        if banned_hosts:
+            hostname = socket.gethostname()
+            local_ip = socket.gethostbyname(hostname)
+            banned_hosts = f"{banned_hosts},{hostname},{local_ip}"
+            with open(banned_hosts_file_path, "w") as f:
+                f.write(banned_hosts)
+            os.chmod(banned_hosts_file_path, 0o440)
 
     def exec_code(self, code_str, keywords):
         self.validate_banned_keywords(code_str)
