@@ -38,6 +38,7 @@ class ToolExecutor:
             return
         if self.sandbox:
             os.chmod("/dev/shm", 0o707)
+            os.chmod("/dev/mqueue", 0o707)
         if CONFIG.get("SANDBOX_TMP_DIR_ENABLED", '0') == "1":
             tmp_dir_path = os.path.join(self.sandbox_path, 'tmp')
             os.makedirs(tmp_dir_path, 0o700, exist_ok=True)
