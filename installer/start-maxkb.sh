@@ -10,5 +10,5 @@ if [ ! -d /opt/maxkb/local ]; then
 fi
 mkdir -p /opt/maxkb/python-packages
 
-rm -f /opt/maxkb-app/tmp/*.pid
+rm -f /opt/maxkb-app/tmp/*
 python /opt/maxkb-app/main.py start

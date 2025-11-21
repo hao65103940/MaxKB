@@ -18,7 +18,6 @@ python_directory = sys.executable
 
 
 class ToolExecutor:
-    _dir_initialized = False
 
     def __init__(self, sandbox=False):
         self.sandbox = sandbox
@@ -33,9 +32,15 @@ class ToolExecutor:
         self._init_dir()
 
     def _init_dir(self):
-        if ToolExecutor._dir_initialized:
+        try:
             # 只初始化一次
+            fd = os.open(os.path.join(PROJECT_DIR, 'tmp', 'tool_executor_init_dir.lock'),
+                         os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+            os.close(fd)
+        except FileExistsError:
+            # 文件已存在 → 已执行过
             return
+        maxkb_logger.debug("init dir")
         if self.sandbox:
             os.chmod("/dev/shm", 0o707)
             os.chmod("/dev/mqueue", 0o707)
@@ -61,7 +66,6 @@ class ToolExecutor:
         except Exception as e:
             maxkb_logger.error(f'Failed to init SANDBOX_BANNED_HOSTS due to exception: {e}', exc_info=True)
             pass
-        ToolExecutor._dir_initialized = True
 
     def exec_code(self, code_str, keywords):
         self.validate_banned_keywords(code_str)
