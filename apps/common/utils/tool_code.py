@@ -51,7 +51,8 @@ class ToolExecutor:
             try:
                 os.system("chmod -R g-rwx /dev/shm /dev/mqueue")
                 os.system("chmod o-rwx /run/postgresql")
-            except:
+            except Exception as e:
+                maxkb_logger.warning(f'Exception: {e}', exc_info=True)
                 pass
         if CONFIG.get("SANDBOX_TMP_DIR_ENABLED", '0') == "1":
             tmp_dir_path = os.path.join(self.sandbox_path, 'tmp')
