@@ -60,18 +60,21 @@ class ToolExecutor:
             os.system(f"chown -R {self.user}:root {tmp_dir_path}")
         if os.path.exists(self.sandbox_so_path):
             os.chmod(self.sandbox_so_path, 0o440)
-        # 初始化host黑名单
-        banned_hosts_file_path = f'{self.sandbox_path}/.SANDBOX_BANNED_HOSTS'
-        if os.path.exists(banned_hosts_file_path):
-            os.remove(banned_hosts_file_path)
+        # 初始化sandbox配置文件
+        sandbox_conf_file_path = f'{self.sandbox_path}/.sandbox.conf'
+        if os.path.exists(sandbox_conf_file_path):
+            os.remove(sandbox_conf_file_path)
+        allow_subprocess = CONFIG.get("SANDBOX_PYTHON_ALLOW_SUBPROCESS", '0')
         banned_hosts = CONFIG.get("SANDBOX_PYTHON_BANNED_HOSTS", '').strip()
         if banned_hosts:
             hostname = socket.gethostname()
             local_ip = socket.gethostbyname(hostname)
             banned_hosts = f"{banned_hosts},{hostname},{local_ip}"
-            with open(banned_hosts_file_path, "w") as f:
-                f.write(banned_hosts)
-            os.chmod(banned_hosts_file_path, 0o440)
+        with open(sandbox_conf_file_path, "w") as f:
+            f.write(f"SANDBOX_PYTHON_BANNED_HOSTS={banned_hosts}")
+            f.write("\n")
+            f.write(f"SANDBOX_PYTHON_ALLOW_SUBPROCESS={allow_subprocess}")
+        os.chmod(sandbox_conf_file_path, 0o440)
 
     def exec_code(self, code_str, keywords):
         self.validate_banned_keywords(code_str)
