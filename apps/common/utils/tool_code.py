@@ -27,7 +27,6 @@ class ToolExecutor:
         else:
             self.sandbox_path = os.path.join(PROJECT_DIR, 'data', 'sandbox')
             self.user = None
-        self.banned_keywords = CONFIG.get("SANDBOX_PYTHON_BANNED_KEYWORDS", 'nothing_is_banned').split(',');
         self.sandbox_so_path = f'{self.sandbox_path}/sandbox.so'
         try:
             self._init_dir()
@@ -74,10 +73,10 @@ class ToolExecutor:
             f.write(f"SANDBOX_PYTHON_BANNED_HOSTS={banned_hosts}")
             f.write("\n")
             f.write(f"SANDBOX_PYTHON_ALLOW_SUBPROCESS={allow_subprocess}")
+            f.write("\n")
         os.chmod(sandbox_conf_file_path, 0o440)
 
     def exec_code(self, code_str, keywords):
-        self.validate_banned_keywords(code_str)
         _id = str(uuid.uuid7())
         success = '{"code":200,"msg":"成功","data":exec_result}'
         err = '{"code":500,"msg":str(e),"data":None}'
@@ -116,8 +115,6 @@ except Exception as e:
         raise Exception(result.get('msg'))
 
     def _generate_mcp_server_code(self, _code, params):
-        self.validate_banned_keywords(_code)
-
         # 解析代码，提取导入语句和函数定义
         try:
             tree = ast.parse(_code)
@@ -238,11 +235,6 @@ exec({dedent(code)!a})
             text=True,
             capture_output=True, **kwargs)
         return subprocess_result
-
-    def validate_banned_keywords(self, code_str):
-        matched = next((bad for bad in self.banned_keywords if bad in code_str), None)
-        if matched:
-            raise Exception(f"keyword '{matched}' is banned in the tool.")
 
     def validate_mcp_transport(self, code_str):
         servers = json.loads(code_str)
