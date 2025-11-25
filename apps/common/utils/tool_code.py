@@ -82,13 +82,14 @@ class ToolExecutor:
         python_paths = CONFIG.get_sandbox_python_package_paths().split(',')
         _exec_code = f"""
 try:
-    import sys, json, base64, builtins
+    import os, sys, json, base64, builtins
     path_to_exclude = ['/opt/py3/lib/python3.11/site-packages', '/opt/maxkb-app/apps']
     sys.path = [p for p in sys.path if p not in path_to_exclude]
     sys.path += {python_paths}
     locals_v={'{}'}
     keywords={keywords}
     globals_v={'{}'}
+    os.environ.clear()
     exec({dedent(code_str)!a}, globals_v, locals_v)
     f_name, f = locals_v.popitem()
     for local in locals_v:
@@ -180,16 +181,14 @@ except Exception as e:
         python_paths = CONFIG.get_sandbox_python_package_paths().split(',')
         code = self._generate_mcp_server_code(code_str, params)
         return f"""
-import os
-import sys
-import logging
+import os, sys, logging
 logging.basicConfig(level=logging.WARNING)
 logging.getLogger("mcp").setLevel(logging.ERROR)
 logging.getLogger("mcp.server").setLevel(logging.ERROR)
-
 path_to_exclude = ['/opt/py3/lib/python3.11/site-packages', '/opt/maxkb-app/apps']
 sys.path = [p for p in sys.path if p not in path_to_exclude]
 sys.path += {python_paths}
+os.environ.clear()
 exec({dedent(code)!a})
 """
 
