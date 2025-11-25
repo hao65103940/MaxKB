@@ -28,6 +28,7 @@ class ToolExecutor:
             self.sandbox_path = os.path.join(PROJECT_DIR, 'data', 'sandbox')
             self.user = None
         self.sandbox_so_path = f'{self.sandbox_path}/sandbox.so'
+        self.process_timeout_seconds = int(CONFIG.get("SANDBOX_PYTHON_PROCESS_TIMEOUT_SECONDS", '3600'))
         try:
             self._init_dir()
         except Exception as e:
@@ -70,10 +71,8 @@ class ToolExecutor:
             local_ip = socket.gethostbyname(hostname)
             banned_hosts = f"{banned_hosts},{hostname},{local_ip}"
         with open(sandbox_conf_file_path, "w") as f:
-            f.write(f"SANDBOX_PYTHON_BANNED_HOSTS={banned_hosts}")
-            f.write("\n")
-            f.write(f"SANDBOX_PYTHON_ALLOW_SUBPROCESS={allow_subprocess}")
-            f.write("\n")
+            f.write(f"SANDBOX_PYTHON_BANNED_HOSTS={banned_hosts}\n")
+            f.write(f"SANDBOX_PYTHON_ALLOW_SUBPROCESS={allow_subprocess}\n")
         os.chmod(sandbox_conf_file_path, 0o440)
 
     def exec_code(self, code_str, keywords):
@@ -228,12 +227,17 @@ exec({dedent(code)!a})
         }
         maxkb_logger.debug(f"Sandbox execute code: {_code}")
         compressed_and_base64_encoded_code_str = base64.b64encode(gzip.compress(_code.encode())).decode()
-        subprocess_result = subprocess.run(
-            ['su', '-s', python_directory, '-c',
-             f'import base64,gzip; exec(gzip.decompress(base64.b64decode(\'{compressed_and_base64_encoded_code_str}\')).decode())',
-             self.user],
-            text=True,
-            capture_output=True, **kwargs)
+        try:
+            subprocess_result = subprocess.run(
+                ['su', '-s', python_directory, '-c',
+                 f'import base64,gzip; exec(gzip.decompress(base64.b64decode(\'{compressed_and_base64_encoded_code_str}\')).decode())',
+                 self.user],
+                text=True,
+                capture_output=True,
+                timeout=self.process_timeout_seconds,
+                **kwargs)
+        except subprocess.TimeoutExpired:
+            raise Exception(_("Sandbox process execution timeout, consider increasing MAXKB_SANDBOX_PYTHON_PROCESS_TIMEOUT_SECONDS."))
         return subprocess_result
 
     def validate_mcp_transport(self, code_str):

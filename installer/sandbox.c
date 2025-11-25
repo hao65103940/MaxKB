@@ -157,71 +157,59 @@ static int allow_create_subprocess() {
     ensure_config_loaded();
     return allow_subprocess || !is_sandbox_user();
 }
-static int return_deny() {
+static int deny() {
     fprintf(stderr, "[sandbox] Permission denied to create subprocess in sandbox.\n");
     _exit(1);
     return -1;
 }
-int execve(const char *filename, char *const argv[], char *const envp[]) {
-    if (!allow_create_subprocess()) {
-        return return_deny();
+#define RESOLVE_REAL(func)                      \
+    static typeof(func) *real_##func = NULL;    \
+    if (!real_##func) {                         \
+        real_##func = dlsym(RTLD_NEXT, #func);  \
     }
-    static int (*real_execve)(const char *, char *const[], char *const[]) = NULL;
-    if (!real_execve) real_execve = dlsym(RTLD_NEXT, "execve");
+
+int execve(const char *filename, char *const argv[], char *const envp[]) {
+    RESOLVE_REAL(execve);
+    if (!allow_create_subprocess()) return deny();
     return real_execve(filename, argv, envp);
 }
 
 int execveat(int dirfd, const char *pathname,
              char *const argv[], char *const envp[], int flags) {
-    if (!allow_create_subprocess()) {
-        return return_deny();
-    }
-    static int (*real_execveat)(int, const char *, char *const[], char *const[], int) = NULL;
-    if (!real_execveat) real_execveat = dlsym(RTLD_NEXT, "execveat");
+    RESOLVE_REAL(execveat);
+    if (!allow_create_subprocess())  return deny();
     return real_execveat(dirfd, pathname, argv, envp, flags);
 }
 
 pid_t fork(void) {
-    if (!allow_create_subprocess()) {
-        return return_deny();
-    }
-    static pid_t (*real_fork)(void) = NULL;
-    if (!real_fork) real_fork = dlsym(RTLD_NEXT, "fork");
+    RESOLVE_REAL(fork);
+    if (!allow_create_subprocess()) return deny();
     return real_fork();
 }
 
 pid_t vfork(void) {
-    if (!allow_create_subprocess()) {
-        return return_deny();
-    }
-    static pid_t (*real_vfork)(void) = NULL;
-    if (!real_vfork) real_vfork = dlsym(RTLD_NEXT, "vfork");
+    RESOLVE_REAL(vfork);
+    if (!allow_create_subprocess()) return deny();
     return real_vfork();
 }
 
 int clone(int (*fn)(void *), void *child_stack, int flags, void *arg, ...) {
-    if (!allow_create_subprocess()) {
-        return return_deny();
-    }
-    static int (*real_clone)(int (*)(void *), void *, int, void *, ...) = NULL;
-    if (!real_clone) real_clone = dlsym(RTLD_NEXT, "clone");
+    RESOLVE_REAL(clone);
+    if (!allow_create_subprocess()) return deny();
     va_list ap;
     va_start(ap, arg);
-    int ret = real_clone(fn, child_stack, flags, arg, ap);
+    long a4 = va_arg(ap, long);
+    long a5 = va_arg(ap, long);
     va_end(ap);
-    return ret;
+    return real_clone(fn, child_stack, flags, arg, (void *)a4, (void *)a5);
 }
 
 int posix_spawn(pid_t *pid, const char *path,
                 const posix_spawn_file_actions_t *file_actions,
                 const posix_spawnattr_t *attrp,
                 char *const argv[], char *const envp[]) {
-    if (!allow_create_subprocess()) {
-        return return_deny();
-    }
-    static int (*real_posix_spawn)(pid_t *, const char *, const posix_spawn_file_actions_t *,
-                                   const posix_spawnattr_t *, char *const[], char *const[]) = NULL;
-    if (!real_posix_spawn) real_posix_spawn = dlsym(RTLD_NEXT, "posix_spawn");
+    RESOLVE_REAL(posix_spawn);
+    if (!allow_create_subprocess()) return deny();
     return real_posix_spawn(pid, path, file_actions, attrp, argv, envp);
 }
 
@@ -229,30 +217,16 @@ int posix_spawnp(pid_t *pid, const char *file,
                  const posix_spawn_file_actions_t *file_actions,
                  const posix_spawnattr_t *attrp,
                  char *const argv[], char *const envp[]) {
-    if (!allow_create_subprocess()) {
-        return return_deny();
-    }
-    static int (*real_posix_spawnp)(pid_t *, const char *, const posix_spawn_file_actions_t *,
-                                    const posix_spawnattr_t *, char *const[], char *const[]) = NULL;
-    if (!real_posix_spawnp) real_posix_spawnp = dlsym(RTLD_NEXT, "posix_spawnp");
+    RESOLVE_REAL(posix_spawnp);
+    if (!allow_create_subprocess()) return deny();
     return real_posix_spawnp(pid, file, file_actions, attrp, argv, envp);
 }
 int __posix_spawn(pid_t *pid, const char *path,
                   const posix_spawn_file_actions_t *file_actions,
                   const posix_spawnattr_t *attrp,
                   char *const argv[], char *const envp[]) {
-    if (!allow_create_subprocess()) {
-        return return_deny();
-    }
-
-    static int (*real___posix_spawn)(pid_t *, const char *,
-                                     const posix_spawn_file_actions_t *,
-                                     const posix_spawnattr_t *,
-                                     char *const[], char *const[]) = NULL;
-
-    if (!real___posix_spawn)
-        real___posix_spawn = dlsym(RTLD_NEXT, "__posix_spawn");
-
+    RESOLVE_REAL(__posix_spawn);
+    if (!allow_create_subprocess()) return deny();
     return real___posix_spawn(pid, path, file_actions, attrp, argv, envp);
 }
 
@@ -260,44 +234,24 @@ int __posix_spawnp(pid_t *pid, const char *file,
                    const posix_spawn_file_actions_t *file_actions,
                    const posix_spawnattr_t *attrp,
                    char *const argv[], char *const envp[]) {
-    if (!allow_create_subprocess()) {
-        return return_deny();
-    }
-
-    static int (*real___posix_spawnp)(pid_t *, const char *,
-                                      const posix_spawn_file_actions_t *,
-                                      const posix_spawnattr_t *,
-                                      char *const[], char *const[]) = NULL;
-
-    if (!real___posix_spawnp)
-        real___posix_spawnp = dlsym(RTLD_NEXT, "__posix_spawnp");
-
+    RESOLVE_REAL(__posix_spawnp);
+    if (!allow_create_subprocess()) return deny();
     return real___posix_spawnp(pid, file, file_actions, attrp, argv, envp);
 }
 
 int system(const char *command) {
-    if (!allow_create_subprocess()) {
-        return return_deny();
-    }
-    static int (*real_system)(const char *) = NULL;
-    if (!real_system) real_system = dlsym(RTLD_NEXT, "system");
+    RESOLVE_REAL(system);
+    if (!allow_create_subprocess()) return deny();
     return real_system(command);
 }
 int __libc_system(const char *command) {
-    if (!allow_create_subprocess()) {
-        return return_deny();
-    }
-    static int (*real___libc_system)(const char *) = NULL;
-    if (!real___libc_system)
-        real___libc_system = dlsym(RTLD_NEXT, "__libc_system");
-
+    RESOLVE_REAL(__libc_system);
+    if (!allow_create_subprocess()) return deny();
     return real___libc_system(command);
 }
 long (*real_syscall)(long, ...) = NULL;
-
 long syscall(long number, ...) {
     if (!real_syscall) real_syscall = dlsym(RTLD_NEXT, "syscall");
-
     va_list ap;
     va_start(ap, number);
     long a1 = va_arg(ap, long);
@@ -307,13 +261,9 @@ long syscall(long number, ...) {
     long a5 = va_arg(ap, long);
     long a6 = va_arg(ap, long);
     va_end(ap);
-
     if (number == SYS_execve || number == SYS_execveat ||
         number == SYS_fork || number == SYS_vfork || number == SYS_clone) {
-        if (!allow_create_subprocess()) {
-            return return_deny();
-        }
+        if (!allow_create_subprocess()) return deny();
     }
-
     return real_syscall(number, a1, a2, a3, a4, a5, a6);
 }
