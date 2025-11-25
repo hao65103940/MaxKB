@@ -21,6 +21,8 @@
 #include <dlfcn.h>
 
 #define CONFIG_FILE ".sandbox.conf"
+#define KEY_BANNED_HOSTS "SANDBOX_PYTHON_BANNED_HOSTS"
+#define KEY_ALLOW_SUBPROCESS "SANDBOX_PYTHON_ALLOW_SUBPROCESS"
 
 static char *banned_hosts = NULL;
 static int allow_subprocess = 0; // 默认禁止
@@ -57,10 +59,10 @@ static void load_sandbox_config() {
         while (*value == ' ' || *value == '\t') value++;
         char *vend = value + strlen(value) - 1;
         while (vend > value && (*vend == ' ' || *vend == '\t')) *vend-- = '\0';
-        if (strcmp(key, "SANDBOX_PYTHON_BANNED_HOSTS") == 0) {
+        if (strcmp(key, KEY_BANNED_HOSTS) == 0) {
             free(banned_hosts);
             banned_hosts = strdup(value);
-        } else if (strcmp(key, "SANDBOX_PYTHON_ALLOW_SUBPROCESS") == 0) {
+        } else if (strcmp(key, KEY_ALLOW_SUBPROCESS) == 0) {
             allow_subprocess = atoi(value);
         }
     }
